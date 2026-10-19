@@ -186,7 +186,7 @@ public class Self0402 extends AppCompatActivity {
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:background="#00ff00"
+        android:backgroundTint="#00ff00"
         android:text="버튼 1"
         android:rotation="90" />
 
@@ -210,7 +210,7 @@ public class Self0402 extends AppCompatActivity {
         android:layout_width="137dp"
         android:layout_height="648dp"
         android:layout_margin="20dp"
-        android:background="#00ff00"
+        android:backgroundTint="#00ff00"
         android:text="버튼 2"
         android:layout_gravity="right" />
 
@@ -235,6 +235,16 @@ public class Self0403 extends AppCompatActivity {
     TextView textResult;
     String num1, num2;
     Double result; // 실수값으로 계산
+
+    // "." "1..2"처럼 숫자가 아니면 false (parseDouble에서 앱이 죽는 것 방지)
+    boolean isNum(String s) {
+        try {
+            Double.parseDouble(s.trim());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -261,6 +271,9 @@ public class Self0403 extends AppCompatActivity {
                 if (num1.trim().equals("") || num2.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
                             Toast.LENGTH_SHORT).show();
+                } else if (!isNum(num1) || !isNum(num2)) {
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     result = Double.parseDouble(num1) + Double.parseDouble(num2);
                     textResult.setText("계산 결과 : " + result.toString());
@@ -277,6 +290,9 @@ public class Self0403 extends AppCompatActivity {
                 if (num1.trim().equals("") || num2.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
                             Toast.LENGTH_SHORT).show();
+                } else if (!isNum(num1) || !isNum(num2)) {
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     result = Double.parseDouble(num1) - Double.parseDouble(num2);
                     textResult.setText("계산 결과 : " + result.toString());
@@ -290,6 +306,9 @@ public class Self0403 extends AppCompatActivity {
                 num2 = edit2.getText().toString();
                 if (num1.trim().equals("") || num2.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else if (!isNum(num1) || !isNum(num2)) {
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
                             Toast.LENGTH_SHORT).show();
                 } else {
                     result = Double.parseDouble(num1) * Double.parseDouble(num2);
@@ -305,14 +324,17 @@ public class Self0403 extends AppCompatActivity {
                 if (num1.trim().equals("") || num2.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
                             Toast.LENGTH_SHORT).show();
+                } else if (!isNum(num1) || !isNum(num2)) {
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     // num2가 0이면 나누지 않는다.
-                    if (num2.trim().equals("0")) {
+                    if (Double.parseDouble(num2) == 0) {   // "0", "0.0", "00" 모두 막기 (위 isNum 검사를 통과한 뒤라 안전)
                         Toast.makeText(getApplicationContext(), "0으로 나누면 안됩니다!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         result = Double.parseDouble(num1) / Double.parseDouble(num2);
-                        result = (int) (result * 10) / 10.0; // 소수점 아래 1자리까지만
+                        result = (long) (result * 10) / 10.0; // 소수점 아래 1자리까지만 ((int)는 약 2억이 넘는 결과에서 2147483647로 잘림)
                         textResult.setText("계산 결과 : " + result.toString());
                     }
                 }
@@ -326,8 +348,11 @@ public class Self0403 extends AppCompatActivity {
                 if (num1.trim().equals("") || num2.trim().equals("")) {
                     Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
                             Toast.LENGTH_SHORT).show();
+                } else if (!isNum(num1) || !isNum(num2)) {
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
+                            Toast.LENGTH_SHORT).show();
                 } else {
-                    if (num2.trim().equals("0")) {
+                    if (Double.parseDouble(num2) == 0) {   // "0", "0.0", "00" 모두 막기 (위 isNum 검사를 통과한 뒤라 안전)
                         Toast.makeText(getApplicationContext(), "0으로 나머지 값 안됩니다!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
@@ -1128,7 +1153,7 @@ public class Self0602 extends AppCompatActivity {
 
 <!-- ================= 7장 ================= -->
 <h2 id="s0701">7-1 옵션 메뉴 (제주도 풍경)</h2>
-<div class="warn">수업 파일의 menu1.xml은 7-2 원본용(버튼 회전/확대)입니다. 7-1을 실행하려면 menu1.xml을 아래 내용으로 바꾸거나, 아래를 <b>menu3.xml</b>로 만들고 Java의 <code>R.menu.menu1</code>을 <code>R.menu.menu3</code>으로 바꾸세요.</div>
+<div class="warn">수업 파일의 menu1.xml은 7-2 원본용(버튼 회전/확대, <code>subRotate</code>)입니다. 7-1을 실행하려면 menu1.xml을 아래 내용으로 바꾸거나, 아래를 <b>menu3.xml</b>로 만들고 Java의 <code>R.menu.menu1</code>을 <code>R.menu.menu3</code>으로 바꾸세요.<br><b>주의:</b> 7-2 원본(Self0702_org)이 <b>같은 프로젝트</b>에 있으면 menu1.xml을 바꾸지 말고 <b>menu3.xml 방법</b>을 쓰세요. menu1.xml을 덮어쓰면 <code>R.id.subRotate</code>가 없어져 "cannot find symbol"로 앱 전체가 빌드되지 않습니다. (시험 문제가 menu1.xml을 요구하면 새 프로젝트에서 menu1.xml로 만드세요.) 연습 문제 14·변형 14 정답에도 <code>menu3.xml</code>이 있으니, 그 정답은 이 프로젝트에 덮어쓰지 말고 <b>새 프로젝트</b>에서 연습하세요.</div>
 <script type="text/plain" data-file="java / Self0701.java">
 import android.os.Bundle;
 import android.view.Menu;
@@ -1165,7 +1190,10 @@ public class Self0701 extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.itemRotate) {
-            imageView1.setRotation(Float.parseFloat(edtAngle.getText().toString()));
+            try {   // 빈 칸이나 숫자가 아닌 글자면 parseFloat에서 앱이 죽으므로 그때는 무시
+                imageView1.setRotation(Float.parseFloat(edtAngle.getText().toString().trim()));
+            } catch (NumberFormatException e) {
+            }
             return true;
         } else if (item.getItemId() == R.id.item1) {
             imageView1.setImageResource(R.drawable.jeju2);
@@ -1270,6 +1298,7 @@ public class Self0701 extends AppCompatActivity {
 </script>
 
 <h2 id="s0702">7-2 토스트 랜덤 위치 (수정본)</h2>
+<div class="warn">targetSdk 34 + Android 11(API 30) 이상 에뮬레이터(기본값)에서는 <code>Toast.makeText()</code>로 만든 글자 토스트의 <code>setGravity()</code>가 무시되어 <b>항상 아래쪽</b>에 뜹니다. 그러면 "랜덤 위치"가 안 보입니다. → 아래 Self0702.java 다음의 <b>"대안" 칸</b>으로 토스트 생성 부분만 바꾸면 직접 만든 뷰 토스트라서 위치가 적용됩니다.</div>
 <script type="text/plain" data-file="java / Self0702.java">
 import android.os.Bundle;
 import android.view.Display;
@@ -1310,6 +1339,16 @@ public class Self0702 extends AppCompatActivity {
         });
     }
 }
+</script>
+<script type="text/plain" data-file="대안: onClick 안의 Toast.makeText(...) 두 줄만 이걸로 교체 (import android.widget.TextView; import android.graphics.Color; 추가)">
+                Toast tMsg = new Toast(getApplicationContext());
+                TextView tv = new TextView(Self0702.this);
+                tv.setText("토스트 연습");
+                tv.setTextColor(Color.WHITE);
+                tv.setBackgroundColor(Color.DKGRAY);
+                tv.setPadding(30, 20, 30, 20);
+                tMsg.setView(tv);   // 직접 만든 뷰 토스트는 Android 11 이상에서도 setGravity가 적용됨
+                tMsg.setDuration(Toast.LENGTH_SHORT);
 </script>
 <script type="text/plain" data-file="res/layout / self0702_main.xml">
 <?xml version="1.0" encoding="utf-8"?>
@@ -1368,12 +1407,13 @@ public class Self0702_org extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
 
         MenuInflater mInflater = getMenuInflater();
+        // menu2 = 배경색(itemRed/Green/Blue), menu1 = 버튼 회전/확대(subRotate/subSize)
         if (v == button1) {
             menu.setHeaderTitle("배경색 변경");
-            mInflater.inflate(R.menu.menu1, menu);
-        }
-        if (v == button2) {
             mInflater.inflate(R.menu.menu2, menu);
+        } else if (v == button2) {
+            menu.setHeaderTitle("버튼 변경");
+            mInflater.inflate(R.menu.menu1, menu);
         }
     }
 
@@ -1454,8 +1494,9 @@ public class Self0702_org extends AppCompatActivity {
 </script>
 
 <h2 id="s0703">7-3 대화상자 + 커스텀 토스트</h2>
+<div class="warn">그림 <b>ic_menu_allfriends</b>(대화상자 아이콘), <b>btn_star_big_on</b>(toast1.xml 별)이 <b>내 res/drawable 폴더</b>에 있어야 합니다. 없으면 빨간 줄 → Java는 <code>R.mipmap.ic_launcher</code>, XML은 <code>@mipmap/ic_launcher</code>로 바꾸세요.</div>
 <script type="text/plain" data-file="java / Self0703_org.java">
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -1734,7 +1775,7 @@ button1.setOnTouchListener(new View.OnTouchListener() {
 </tr>
 <tr class="even">
 <td>소수점 첫째 자리까지 자르기</td>
-<td><code>result = (int)(result * 10) / 10.0;</code></td>
+<td><code>result = (long)(result * 10) / 10.0;</code> (<code>(int)</code>는 큰 값에서 잘림)</td>
 </tr>
 </tbody>
 </table>
@@ -1992,30 +2033,41 @@ for (int i = 0; i &lt; numBtnIDs.length; i++) {
 </main>
 
 <script>
+  // 복사: clipboard API -> 실패하면 textarea + execCommand -> 그것도 실패하면 코드를 선택해 두고 "Ctrl+C" 안내
+  function copyCode(pre, b, okLabel) {
+    var t = pre.textContent;
+    function done(ok) {
+      if (!ok) { var r = document.createRange(); r.selectNodeContents(pre); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+      b.textContent = ok ? okLabel : '실패: Ctrl+C';
+      setTimeout(function () { b.textContent = '복사'; }, ok ? 1200 : 3000);
+    }
+    function fallback() {
+      // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체 (화면 밖 고정 위치라 스크롤이 튀지 않음)
+      var a = document.createElement('textarea'), ok = false;
+      a.value = t; a.setAttribute('readonly', '');
+      a.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+      document.body.appendChild(a); a.focus({ preventScroll: true }); a.select();
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      a.remove(); done(ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { done(true); }, fallback);
+    } else { fallback(); }
+  }
   // <script type="text/plain"> 안의 코드를 그대로 <pre>로 (XML의 < 를 escape하지 않으려고)
   document.querySelectorAll('script[type="text/plain"]').forEach(function (s) {
     var box = document.createElement('div'); box.className = 'box';
     var fn = document.createElement('div'); fn.className = 'fn'; fn.textContent = s.dataset.file;
     var pre = document.createElement('pre'); pre.textContent = s.textContent.replace(/^\n/, '').replace(/\s+$/, '');
-    var b = document.createElement('button'); b.className = 'copy'; b.textContent = '복사';
-    b.onclick = function () {
-      var t = pre.textContent;
-      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
-        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
-      }).finally(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); });
-    };
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'copy'; b.textContent = '복사';
+    b.onclick = function () { copyCode(pre, b, '복사됨!'); };
     box.appendChild(fn); box.appendChild(pre); box.appendChild(b); s.replaceWith(box);
   });
   document.querySelectorAll('.box').forEach(function (box) {
     if (box.querySelector('.copy')) return;
-    var b = document.createElement('button'); b.className = 'copy'; b.textContent = '복사';
-    b.onclick = function () {
-      var t = box.querySelector('pre').textContent;
-      // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체
-      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
-        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
-      }).finally(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); });
-    };
+    var pre = box.querySelector('pre'); if (!pre) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'copy'; b.textContent = '복사';
+    b.onclick = function () { copyCode(pre, b, '복사됨!'); };
     box.appendChild(b);
   });
   var links = [].slice.call(document.querySelectorAll('nav a'));

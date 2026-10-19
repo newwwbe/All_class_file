@@ -111,6 +111,7 @@
     <li>새 Activity를 만들었다면 <b>AndroidManifest.xml에 등록</b>돼야 실행됩니다. 실행할 Activity에 <code>&lt;intent-filter&gt;</code>(MAIN + LAUNCHER)를 옮기세요.</li>
     <li><b><code>switch (v.getId())</code> + <code>case R.id.xxx:</code>는 쓰지 마세요.</b> 최신 Android Studio(AGP 8 이상)에서는 R.id 값이 상수가 아니라서 "Constant expression required" 오류가 납니다. 그래서 이 해설은 전부 <code>if / else if</code>로 썼습니다.</li>
     <li>리스너 안(익명 클래스)에서 <code>this</code>는 Activity가 아니라 리스너 자신입니다. Context가 필요하면 <code>MainActivity.this</code>처럼 <b>클래스명.this</b> 또는 <code>getApplicationContext()</code>를 쓰세요.</li>
+    <li><b>수업 실습 프로젝트에 정답 파일을 덮어쓰지 마세요.</b> 이름이 수업(오픈북) 파일과 겹칩니다. 문제 2의 <code>Self0402</code>·<code>self0402_main.xml</code>은 오픈북에서 4-2(위젯 속성) 파일 이름이고, 문제 11의 <code>menu1.xml</code>에는 7-2 원본(Self0702_org)이 쓰는 <code>subRotate</code>가 없습니다. 오픈북 안내대로 7-1 메뉴를 <code>menu3.xml</code>로 만들었다면 문제 14의 <code>menu3.xml</code>도 겹칩니다. 덮어쓰면 원래 실습 화면이 바뀌거나 "cannot find symbol"로 <b>앱 전체가 빌드되지 않습니다</b>. 연습은 <b>새 프로젝트</b>에서 하세요.</li>
   </ul>
 </div>
   </details>
@@ -184,7 +185,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:background="#00ff00"
+        android:backgroundTint="#00ff00"
         android:rotation="90"
         android:text="버튼 1" />
 
@@ -224,7 +225,7 @@ public class Self0401 extends AppCompatActivity {
   </script>
   <div class="warn"><b>자주 틀리는 점</b><br>
     · TextView "가운데 정렬"을 <code>layout_gravity</code>로 쓰면 오답. 가로가 match_parent라 위젯은 이미 꽉 차 있고, <b>글자</b>를 옮겨야 하니 <code>gravity</code>.<br>
-    · 버튼 배경색이 안 바뀌고 보라색이면 Material 테마 때문. <code>android:backgroundTint="#00ff00"</code>로 바꾸면 됩니다.</div>
+    · Material 테마에서는 버튼에 <code>android:background</code>를 줘도 테마 색(보라)이 덮어써서 초록이 안 보입니다. 그래서 정답은 <b><code>android:backgroundTint="#00ff00"</code></b>를 썼어요. EditText는 <code>background</code> 그대로 됩니다.</div>
   </details>
 </section>
 
@@ -360,7 +361,7 @@ public class Self0401 extends AppCompatActivity {
         android:textSize="30sp" />
 </LinearLayout>
   </script>
-  <script type="text/plain" data-file="java/Self0402.java">
+  <script type="text/plain" data-file="java/Self0402.java (오픈북 4-2와 같은 이름 → 새 프로젝트에서)">
 public class Self0402 extends AppCompatActivity {
     EditText edit1, edit2;
     Button btnAdd, btnSub, btnMul, btnDiv, btnRem;
@@ -393,8 +394,15 @@ public class Self0402 extends AppCompatActivity {
                     return;
                 }
 
-                double num1 = Double.parseDouble(s1);
-                double num2 = Double.parseDouble(s2);
+                double num1, num2;
+                try {
+                    num1 = Double.parseDouble(s1);
+                    num2 = Double.parseDouble(s2);
+                } catch (NumberFormatException e) {   // "." 이나 "-"만 입력하면 여기서 앱이 죽지 않게
+                    Toast.makeText(getApplicationContext(), "숫자 형식이 아닙니다",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if ((v == btnDiv || v == btnRem) && num2 == 0) {
                     Toast.makeText(getApplicationContext(), "0으로 나누면 안됩니다!",
@@ -461,15 +469,15 @@ public class Self0402 extends AppCompatActivity {
             <div id="q3hide" class="col" style="gap:6px;">
               <div>좋아하는 안드로이드 버전은?</div>
               <div class="q3r" data-img="q10" style="cursor:pointer;"><span class="radio"></span>Q 10</div>
-              <div class="q3r" data-img="r11" style="cursor:pointer;"><span class="radio on"></span>R 11</div>
+              <div class="q3r" data-img="r11" style="cursor:pointer;"><span class="radio"></span>R 11</div>
               <div class="q3r" data-img="s12" style="cursor:pointer;"><span class="radio"></span>S 12</div>
               <div class="btn click" id="q3ok" style="align-self:flex-start;padding:7px 14px;">선택 완료<span class="mk">2</span></div>
-              <div class="img" id="q3img" style="width:150px;height:150px;">(그림: r11)</div>
+              <div class="img" id="q3img" style="width:150px;height:150px;">(그림 없음)</div>
               <div class="toast" id="q3toast" style="display:none;bottom:12px;left:50%;transform:translateX(-50%);">버전을 먼저 선택하세요</div>
             </div>
           </div>
         </div>
-        <div class="cap">② 체크 후 R 선택 → 선택 완료<br><b>눌러보기:</b> 체크박스, 라디오, 버튼</div>
+        <div class="cap">② 체크 후 R 선택 → 선택 완료<br><b>눌러보기:</b> 체크박스, 라디오, 버튼 (실제 앱처럼 처음엔 아무것도 안 골라져 있어요. 그대로 선택 완료를 누르면 토스트)</div>
       </div>
     </div>
     <div class="desc">
@@ -660,12 +668,8 @@ public class Prob03 extends AppCompatActivity {
     <li>두 방향을 합칠 땐 <code>|</code>: <code>"right|top"</code> = 오른쪽 위.</li>
     <li>세로 LinearLayout 안에서 layout_gravity는 <b>가로 위치만</b> 의미 있어요 (세로는 순서대로 쌓이니까).</li>
   </ul>
-  <script type="text/plain" data-file="res/values/colors.xml (기존 파일에 한 줄 추가)">
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 기존 color들은 그대로 두고 아래 줄만 추가 -->
+  <script type="text/plain" data-file="res/values/colors.xml (기존 파일의 &lt;resources&gt; 안에 이 한 줄만 추가)">
     <color name="red">#FF0000</color>
-</resources>
   </script>
   <script type="text/plain" data-file="res/layout/prob04_main.xml">
 <?xml version="1.0" encoding="utf-8"?>
@@ -700,7 +704,7 @@ public class Prob03 extends AppCompatActivity {
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:gravity="center"
-        android:background="@color/red"
+        android:backgroundTint="@color/red"
         android:text="버튼4" />
 
     <Button
@@ -708,14 +712,15 @@ public class Prob03 extends AppCompatActivity {
         android:layout_height="100dp"
         android:layout_gravity="left"
         android:gravity="left|top"
-        android:background="@color/red"
+        android:backgroundTint="@color/red"
         android:text="버튼5" />
 </LinearLayout>
   </script>
   <div class="warn"><b>자주 틀리는 점</b><br>
     · <code>center_vertical</code>(세로 가운데)과 <code>center</code>(가로+세로 가운데)는 다릅니다. 버튼2는 "왼쪽 가운데"라 <code>left|center_vertical</code>.<br>
     · 빨간색을 <code>#FF0000</code>으로 직접 쓰면 "colors.xml 등록" 조건 위반.<br>
-    · 빨간 배경이 안 보이면 문제 1과 같은 Material 테마 문제 → <code>android:backgroundTint="@color/red"</code>.</div>
+    · 버튼 색은 문제 1과 같은 이유(Material 테마)로 <code>android:background</code>가 아니라 <code>android:backgroundTint="@color/red"</code>로 씁니다.<br>
+    · Java는 <code>setContentView(R.layout.prob04_main)</code> + 상단바 제목 <code>setTitle("gravity 연습")</code>.</div>
   </details>
 </section>
 
@@ -852,7 +857,7 @@ public class Prob03 extends AppCompatActivity {
   <div class="warn"><b>자주 틀리는 점</b><br>
     · 바깥 레이아웃에 <code>orientation</code>을 빼먹으면 기본값이 <b>horizontal</b>이라 위/아래가 아니라 좌/우로 나뉩니다.<br>
     · 0dp 대신 match_parent에 weight를 주면 비율이 거꾸로 나오는 등 이상해질 수 있어요.<br>
-    · Java는 <code>setContentView(R.layout.prob05_main)</code>만 있으면 됩니다.</div>
+    · Java는 <code>setContentView(R.layout.prob05_main)</code> + 상단바 제목 <code>setTitle("weight 연습")</code>.</div>
   </details>
 </section>
 
@@ -1060,6 +1065,7 @@ public class Prob07 extends AppCompatActivity {
         LinearLayout baseLayout = new LinearLayout(this);
         baseLayout.setOrientation(LinearLayout.VERTICAL);
         setContentView(baseLayout, params);
+        setTitle("Java로 만든 화면");
 
         final EditText edt = new EditText(this);
         baseLayout.addView(edt);
@@ -1677,7 +1683,11 @@ public class Prob10 extends AppCompatActivity {
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                web.loadUrl(edtUrl.getText().toString());
+                String url = edtUrl.getText().toString().trim();
+                if (!url.isEmpty() && !url.matches("(?is)[a-z][a-z0-9+.-]*://.*")) {
+                    url = "https://" + url;   // 맨 앞에 "http://" 같은 주소 형식이 없으면 붙임 ("m.naver.com"도 열림, "HTTPS://..."는 그대로)
+                }
+                web.loadUrl(url);
             }
         });
 
@@ -1699,7 +1709,7 @@ public class Prob10 extends AppCompatActivity {
   </script>
   <div class="warn"><b>자주 틀리는 점</b><br>
     · 권한을 <code>&lt;application&gt;</code> <b>안에</b> 넣으면 안 됩니다. 바깥이에요.<br>
-    · 주소에 <code>https://</code>를 빼고 "naver.com"만 넣으면 안 열려요. 시험 중엔 <code>https://m.naver.com</code>처럼 전체 주소로 테스트하세요.<br>
+    · <code>loadUrl()</code>에 <code>https://</code> 없이 "naver.com"만 넘기면 안 열려요. 그래서 위 코드는 없으면 <code>https://</code>를 붙입니다. 그래도 시험 중엔 <code>https://m.naver.com</code>처럼 전체 주소로 테스트하세요.<br>
     · <code>http://</code>(s 없음) 사이트가 "ERR_CLEARTEXT_NOT_PERMITTED"로 막히면 위 Manifest의 <code>usesCleartextTraffic</code>를 추가.<br>
     · 페이지가 하얗게 일부만 나오면 <code>webSet.setJavaScriptEnabled(true);</code>를 추가하면 대부분 해결돼요(문제 조건은 아님).</div>
   </details>
@@ -1801,7 +1811,7 @@ public class Prob10 extends AppCompatActivity {
         android:src="@drawable/jeju2" />
 </RelativeLayout>
   </script>
-  <script type="text/plain" data-file="res/menu/menu1.xml  (res 우클릭 → New → Android Resource File → Resource type: Menu)">
+  <script type="text/plain" data-file="res/menu/menu1.xml  (수업 7-2용 menu1.xml과 이름이 같음 → 새 프로젝트에서 · res 우클릭 → New → Android Resource File → Resource type: Menu)">
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -1861,9 +1871,10 @@ public class Self0701 extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.itemRotate) {
-            String angle = edtAngle.getText().toString();
-            if (!angle.isEmpty()) {
+            String angle = edtAngle.getText().toString().trim();
+            try {
                 imageView1.setRotation(Float.parseFloat(angle));
+            } catch (NumberFormatException e) {   // 빈 칸, "-", "." 이면 회전하지 않음
             }
         } else if (id == R.id.item1) {
             imageView1.setImageResource(R.drawable.jeju2);
@@ -1892,7 +1903,7 @@ public class Self0701 extends AppCompatActivity {
     · <code>item.setChecked(true)</code>를 빼면 다른 항목을 눌러도 체크 표시가 "한라산"에 그대로 남아요. single 그룹은 <b>체크 표시를 자동으로 옮겨주지 않습니다</b>.<br>
     · <code>0.5</code>만 쓰면 double이라 오류. float 자리엔 <code>0.5f</code>.<br>
     · ⋮ 버튼 자체가 안 보이면 테마가 <code>NoActionBar</code>인지 확인하세요. 상단바가 없으면 옵션 메뉴도 없어요.<br>
-    · EditText가 비었을 때 <code>Float.parseFloat("")</code>은 앱을 죽입니다. 그래서 위 코드는 빈 값이면 회전을 건너뜁니다.</div>
+    · EditText가 비었거나 "-", "."만 있을 때 <code>Float.parseFloat()</code>은 앱을 죽입니다. 그래서 위 코드는 <code>try/catch</code>로 그때는 회전을 건너뜁니다.</div>
   </details>
 </section>
 
@@ -1920,7 +1931,7 @@ public class Self0701 extends AppCompatActivity {
         <li>화면 <b>정가운데</b>에 버튼 "메시지 출력" 하나</li>
         <li>누를 때마다 "토스트 연습"이 <b>화면 무작위 위치</b>에 <code>LENGTH_SHORT</code>로</li>
       </ul>
-      <div class="warn"><b>Android 11(API 30) 이상</b>을 타깃으로 하면 글자만 있는 토스트에서 <code>setGravity()</code>가 무시돼서 항상 아래쪽에 뜹니다. 위치가 안 바뀌면 코드가 틀린 게 아니라 이것 때문일 수 있어요. 에뮬레이터를 API 29 이하로 쓰거나, 수업에서 안내한 방식을 따르세요.</div>
+      <div class="warn"><b>Android 11(API 30) 이상</b>을 타깃으로 하면 글자만 있는 토스트에서 <code>setGravity()</code>가 무시돼서 항상 아래쪽에 뜹니다. 위치가 안 바뀌면 코드가 틀린 게 아니라 이것 때문일 수 있어요. 에뮬레이터를 API 29 이하로 쓰거나, 정답·해설의 <b>대안 코드</b>(직접 만든 뷰 토스트, <code>setView</code>)를 쓰세요.</div>
       <details><summary>코드 힌트 (스포일러)</summary>
         <code>getWindowManager().getDefaultDisplay()</code>로 가로/세로 크기 · <code>(int)(Math.random() * 가로)</code> · <code>toast.setGravity(Gravity.TOP | Gravity.LEFT, x, y)</code> · <code>layout_gravity="center"</code> 또는 <code>gravity="center"</code>
       </details>
@@ -2004,7 +2015,7 @@ tMsg.setDuration(Toast.LENGTH_SHORT);
         <div class="appbar">사용자 정보</div>
         <div class="screen col" style="padding:10px;gap:6px;">
           <div style="display:flex;gap:8px;"><span>사용자 이름</span><b>홍길동</b></div>
-          <div style="display:flex;gap:8px;"><span>이메일</span><b>hong@mail.com</b></div>
+          <div style="display:flex;gap:8px;"><span>이메일</span><b>hong@example.com</b></div>
           <div class="btn" style="margin-top:6px;">여기를 클릭</div>
         </div>
       </div>
@@ -2015,14 +2026,14 @@ tMsg.setDuration(Toast.LENGTH_SHORT);
         <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
         <div class="appbar">사용자 정보</div>
         <div class="screen col" style="padding:10px;gap:6px;">
-          <div>사용자 이름 홍길동</div><div>이메일 hong@mail.com</div>
+          <div>사용자 이름 홍길동</div><div>이메일 hong@example.com</div>
           <div class="btn">여기를 클릭</div>
           <div class="dim">
             <div class="dialog">
               <div class="t">ⓘ 사용자 정보 입력</div>
               <div class="dash" style="padding:4px;">
                 <div style="font-size:11px;">사용자 이름</div><div class="edit">홍길동</div>
-                <div style="font-size:11px;margin-top:6px;">이메일</div><div class="edit">hong@mail.com</div>
+                <div style="font-size:11px;margin-top:6px;">이메일</div><div class="edit">hong@example.com</div>
               </div>
               <div class="acts"><span>취소</span><span>확인</span></div>
             </div>
@@ -2036,7 +2047,7 @@ tMsg.setDuration(Toast.LENGTH_SHORT);
         <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
         <div class="appbar">사용자 정보</div>
         <div class="screen col" style="padding:10px;gap:6px;">
-          <div>사용자 이름 홍길동</div><div>이메일 hong@mail.com</div>
+          <div>사용자 이름 홍길동</div><div>이메일 hong@example.com</div>
           <div class="btn">여기를 클릭</div>
           <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:#ffd54f;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.25);">
             <span style="font-size:18px;">🤖</span><span style="font-size:12px;">취소했습니다</span>
@@ -2170,7 +2181,7 @@ public class Self0703 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.self0703_main);
-        setTitle("사용자 정보 입력");
+        setTitle("사용자 정보");   // 상단바 제목 (대화상자 제목 "사용자 정보 입력"과 다름)
 
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
@@ -2341,7 +2352,7 @@ public class Self0703 extends AppCompatActivity {
     <item android:id="@+id/itemBlue" android:title="배경색 (파랑)" />
 </menu>
   </script>
-  <script type="text/plain" data-file="res/menu/menu3.xml">
+  <script type="text/plain" data-file="res/menu/menu3.xml (7-1을 menu3.xml로 만들었다면 겹침 → 새 프로젝트에서)">
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/subRotate" android:title="버튼 45도 회전" />
@@ -2435,7 +2446,7 @@ public class Prob14 extends AppCompatActivity {
   (function () {
     var chk = document.getElementById('q3chk'), hide = document.getElementById('q3hide');
     var box = chk.querySelector('.chk'), img = document.getElementById('q3img'), toast = document.getElementById('q3toast');
-    var picked = 'r11';
+    var picked = '';   // 실제 앱처럼 처음엔 라디오가 하나도 선택 안 됨 (그래야 토스트 분기도 눌러볼 수 있음)
     chk.onclick = function () {
       var on = box.classList.toggle('on');
       hide.style.visibility = on ? 'visible' : 'hidden';
@@ -2457,7 +2468,8 @@ public class Prob14 extends AppCompatActivity {
   (function () {
     var screen = document.getElementById('q12screen'), t = document.getElementById('q12toast');
     document.getElementById('q12btn').onclick = function () {
-      var w = screen.clientWidth - t.offsetWidth, h = screen.clientHeight - t.offsetHeight;
+      t.style.display = 'block';   // 숨겨진(display:none) 상태에선 크기가 0으로 재져서 먼저 보이게 한 뒤 잼
+      var w = Math.max(0, screen.clientWidth - t.offsetWidth), h = Math.max(0, screen.clientHeight - t.offsetHeight);
       t.style.left = Math.floor(Math.random() * w) + 'px';
       t.style.top = Math.floor(Math.random() * h) + 'px';
       t.style.display = 'block';
@@ -2476,12 +2488,27 @@ public class Prob14 extends AppCompatActivity {
     var lines = s.textContent.replace(/^\n/, '').replace(/\s+$/, '').split('\n');
     var ind = Math.min.apply(null, lines.filter(function (l) { return l.trim(); }).map(function (l) { return l.match(/^ */)[0].length; }));
     pre.textContent = lines.map(function (l) { return l.slice(ind); }).join('\n');
+    btn.type = 'button';
     btn.onclick = function () {
       var t = pre.textContent;
-      // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체
-      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
-        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
-      }).finally(function () { btn.textContent = '복사됨'; setTimeout(function () { btn.textContent = '복사'; }, 1200); });
+      function done(ok) {
+        // 실패하면 코드를 선택해 두고 직접 Ctrl+C 하라고 알림 (조용히 "복사됨"이라고 속이지 않음)
+        if (!ok) { var r = document.createRange(); r.selectNodeContents(pre); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+        btn.textContent = ok ? '복사됨' : '실패: Ctrl+C';
+        setTimeout(function () { btn.textContent = '복사'; }, ok ? 1200 : 3000);
+      }
+      function fallback() {
+        // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체 (고정 위치라 스크롤이 튀지 않음)
+        var a = document.createElement('textarea'), ok = false;
+        a.value = t; a.setAttribute('readonly', '');
+        a.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+        document.body.appendChild(a); a.focus({ preventScroll: true }); a.select();
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        a.remove(); done(ok);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(function () { done(true); }, fallback);
+      } else { fallback(); }
     };
     head.appendChild(name); head.appendChild(btn); box.appendChild(head); box.appendChild(pre); s.replaceWith(box);
   });
