@@ -2009,7 +2009,13 @@ for (int i = 0; i &lt; numBtnIDs.length; i++) {
   document.querySelectorAll('.box').forEach(function (box) {
     if (box.querySelector('.copy')) return;
     var b = document.createElement('button'); b.className = 'copy'; b.textContent = '복사';
-    b.onclick = function () { navigator.clipboard.writeText(box.querySelector('pre').textContent).then(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); }); };
+    b.onclick = function () {
+      var t = box.querySelector('pre').textContent;
+      // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
+        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
+      }).finally(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); });
+    };
     box.appendChild(b);
   });
   var links = [].slice.call(document.querySelectorAll('nav a'));
