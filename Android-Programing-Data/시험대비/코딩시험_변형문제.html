@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>코딩시험 변형문제</title>
+<style>
+  :root { --bg:#f4f2f8; --card:#fff; --ink:#1d1b20; --sub:#5f5b66; --line:#e3dfea; --primary:#6750A4; --mk:#ff6b00; --ok:#1b8a4b; --bad:#c62828; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); line-height:1.55; font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 16px; }
+  header h1 { margin:28px 0 6px; font-size:24px; }
+  header p { margin:0; color:var(--sub); font-size:14px; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+  .tag { font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; color:#fff; display:inline-block; }
+  .tA { background:#1565c0; } .tB { background:#c62828; } .tC { background:#2e7d32; } .tD { background:#ef6c00; }
+  nav.toc { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0; }
+  nav.toc a { font-size:13px; padding:4px 10px; border-radius:999px; background:#fff; border:1px solid var(--line); color:var(--ink); text-decoration:none; }
+  h2.ch { margin:30px 0 8px; font-size:18px; color:var(--primary); }
+  section.q { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px; margin:14px 0; }
+  section.q h3 { margin:0 0 4px; font-size:17px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .meta { color:var(--sub); font-size:13px; margin-bottom:12px; }
+  .meta a { color:var(--primary); }
+  p, li { font-size:14px; }
+  .row { display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+  .row > .grow { flex:1; min-width:280px; }
+  pre { margin:8px 0; background:#1d1b20; color:#e6e1e5; padding:12px 14px; border-radius:10px; overflow-x:auto;
+    font:12.5px/1.6 Consolas,"D2Coding",monospace; }
+  pre .ln { color:#ffb74d; font-weight:700; }
+  pre .cm { color:#8d8a93; }
+  code { background:#f0edf6; padding:1px 5px; border-radius:4px; font-size:12.5px; font-family:Consolas,monospace; }
+  input.blank, select.blank { font:12.5px Consolas,monospace; background:#2b2930; color:#fff; border:1px dashed #d0bcff;
+    border-radius:4px; padding:1px 4px; width:var(--w,120px); }
+  select.blank { width:auto; color:#222; background:#fff; border:1px solid #bbb; }
+  .blank.ok { border:2px solid #4caf50; background:#1b3d24; }
+  select.blank.ok { background:#e8f5e9; }
+  .blank.bad { border:2px solid #ef5350; background:#4a1c1c; }
+  select.blank.bad { background:#ffebee; }
+  .btns { display:flex; gap:8px; margin:10px 0; flex-wrap:wrap; }
+  button.grade, button.opt { font:13px inherit; font-family:inherit; padding:7px 14px; border-radius:8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  button.grade { background:var(--primary); color:#fff; border:0; }
+  .result { font-size:13.5px; font-weight:700; align-self:center; }
+  details { margin-top:10px; font-size:13.5px; background:#f7f5fb; border-radius:8px; padding:8px 12px; }
+  details summary { cursor:pointer; color:var(--primary); font-weight:700; }
+  details li { font-size:13.5px; }
+  .warn { background:#fff4e5; border-left:4px solid #ff9800; padding:8px 12px; border-radius:6px; font-size:13px; margin:10px 0; }
+  table.t { border-collapse:collapse; font-size:13px; width:100%; }
+  table.t th, table.t td { border:1px solid var(--line); padding:5px 8px; text-align:left; }
+  table.t th { background:#f0edf6; }
+
+  /* 선택지 */
+  .choices { display:flex; flex-wrap:wrap; gap:14px; }
+  .choice { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; border:2px solid transparent; border-radius:14px; padding:6px; }
+  .choice:hover { border-color:var(--line); }
+  .choice.right { border-color:var(--ok); background:#e8f5e9; }
+  .choice.wrong { border-color:var(--bad); background:#ffebee; }
+  .choice .lbl { font-weight:700; font-size:13px; }
+  .txtopts { display:flex; flex-direction:column; gap:6px; }
+  .txtopts .choice { flex-direction:row; justify-content:flex-start; padding:8px 12px; border:1px solid var(--line); font-size:14px; background:#fff; }
+  .exp { display:none; margin-top:8px; font-size:13.5px; background:#f7f5fb; border-radius:8px; padding:8px 12px; }
+  .answered .exp { display:block; }
+
+  /* 폰 목업 */
+  .phone { width:200px; height:360px; border:8px solid #202124; border-radius:22px; background:#fff; overflow:hidden;
+    display:flex; flex-direction:column; position:relative; flex-shrink:0; font-size:11px; color:#222; }
+  .phone.sm { width:165px; height:290px; border-width:7px; font-size:10px; }
+  .appbar { height:30px; background:var(--primary); color:#fff; font-size:12px; padding:0 8px; display:flex; align-items:center; flex-shrink:0; }
+  .screen { flex:1; position:relative; overflow:hidden; }
+  .col { display:flex; flex-direction:column; }
+  .btn { background:var(--primary); color:#fff; border-radius:12px; padding:5px 6px; text-align:center; font-size:10.5px; }
+  .edit { border-bottom:2px solid var(--primary); padding:3px 2px; font-size:10.5px; }
+  .edit.off { color:#aaa; border-color:#ccc; }
+  .cell { display:flex; align-items:center; justify-content:center; font-size:10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>코딩시험 변형문제 (4~7장, 유형 바꾸기)</h1>
+  <p>원래 14문제와 <b>같은 개념</b>을 <b>다른 형식</b>으로 냈습니다. 시험은 Self 파일을 고치는 방식이라, 코드를 읽고 고치는 연습 위주예요. 빈칸·선택 문제는 페이지에서 바로 채점됩니다.</p>
+  <div class="legend">
+    <span class="tag tA">A 빈칸 채우기</span><span class="tag tB">B 오류 찾기</span>
+    <span class="tag tC">C 결과 예측</span><span class="tag tD">D 수정하기</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#v1">1 위젯 속성</a><a href="#v2">2 계산기</a><a href="#v3">3 체크박스</a><a href="#v4">4 gravity</a>
+  <a href="#v5">5 weight</a><a href="#v6">6 Relative</a><a href="#v7">7 Java 화면</a><a href="#v8">8 예약 앱</a>
+  <a href="#v9">9 뷰플리퍼</a><a href="#v10">10 웹뷰</a><a href="#v11">11 옵션 메뉴</a><a href="#v12">12 토스트</a>
+  <a href="#v13">13 대화상자</a><a href="#v14">14 컨텍스트 메뉴</a>
+</nav>
+
+<!-- ================= 4장 ================= -->
+<h2 class="ch">[4장] 기본 위젯</h2>
+
+<section class="q" id="v1">
+  <h3><span class="tag tC">C 결과 예측</span> 1. 이 XML을 실행하면 어떤 화면일까?</h3>
+  <div class="meta">원래 문제 1 (4-2 위젯 속성) · <a href="코딩시험_문제_시각화.html#q1">원래 문제 보기</a></div>
+<pre>&lt;LinearLayout ... android:orientation="vertical"&gt;
+    &lt;Button android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_margin="20dp" android:text="버튼 1"
+        android:rotation="<b>45</b>" /&gt;
+    &lt;TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="텍스트입니다"
+        android:gravity="<b>right</b>" /&gt;
+    &lt;EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="입력 불가"
+        android:enabled="<b>false</b>" /&gt;
+    &lt;Button android:layout_width="100dp" android:layout_height="100dp"
+        android:text="버튼 2"
+        android:layout_gravity="<b>center</b>" /&gt;
+&lt;/LinearLayout&gt;</pre>
+  <div class="choices" data-answer="a">
+    <div class="choice" data-k="a">
+      <div class="phone sm"><div class="appbar">화면</div><div class="screen col" style="padding:8px;gap:12px;">
+        <div class="btn" style="transform:rotate(45deg);margin:10px 6px;">버튼 1</div>
+        <div style="text-align:right;">텍스트입니다</div>
+        <div><span class="edit off">입력 불가</span></div>
+        <div class="btn" style="width:70px;height:70px;align-self:center;display:flex;align-items:center;justify-content:center;border-radius:8px;">버튼 2</div>
+      </div></div><span class="lbl">①</span>
+    </div>
+    <div class="choice" data-k="b">
+      <div class="phone sm"><div class="appbar">화면</div><div class="screen col" style="padding:8px;gap:12px;">
+        <div class="btn" style="transform:rotate(45deg);margin:10px 6px;">버튼 1</div>
+        <div style="text-align:center;">텍스트입니다</div>
+        <div><span class="edit off">입력 불가</span></div>
+        <div class="btn" style="width:70px;height:70px;align-self:flex-end;display:flex;align-items:center;justify-content:center;border-radius:8px;">버튼 2</div>
+      </div></div><span class="lbl">②</span>
+    </div>
+    <div class="choice" data-k="c">
+      <div class="phone sm"><div class="appbar">화면</div><div class="screen col" style="padding:8px;gap:12px;">
+        <div class="btn" style="margin:10px 6px;">버튼 1</div>
+        <div style="text-align:right;">텍스트입니다</div>
+        <div><span class="edit">입력 불가</span></div>
+        <div class="btn" style="width:70px;height:70px;align-self:center;display:flex;align-items:flex-end;justify-content:center;border-radius:8px;">버튼 2</div>
+      </div></div><span class="lbl">③</span>
+    </div>
+    <div class="exp"><b>정답 ①.</b> <code>rotation="45"</code> → 버튼 1이 45° 기울어짐 · <code>gravity="right"</code> → 텍스트뷰 <b>안 글자</b>가 오른쪽 · <code>enabled="false"</code> → 흐리고 입력 불가 · <code>layout_gravity="center"</code> → 버튼 2 <b>자체</b>가 가로 가운데.<br>② 는 gravity/layout_gravity를 바꿔 읽은 경우, ③ 은 rotation·enabled를 무시한 경우.</div>
+  </div>
+</section>
+
+<section class="q" id="v2">
+  <h3><span class="tag tB">B 오류 찾기</span> 2. 나누기 버튼 코드에서 틀린 줄을 모두 찾으세요</h3>
+  <div class="meta">원래 문제 2 (4-3 계산기) · 변수: <code>String num1, num2; Double result;</code> · <a href="코딩시험_문제_시각화.html#q2">원래 문제 보기</a></div>
+<pre>btnDiv.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View arg0) {
+        num1 = edit1.getText().toString();
+        num2 = edit2.getText().toString();
+<span class="ln">①</span>      result = Integer.parseInt(num1) / Integer.parseInt(num2);
+<span class="ln">②</span>      if (num1.trim().equals("") || num2.trim().equals("")) {
+<span class="ln">③</span>          Toast.makeText(getApplicationContext(), "입력 값이 비었습니다", Toast.LENGTH_SHORT);
+        } else {
+<span class="ln">④</span>          result = (int) result * 10 / 10.0;
+            textResult.setText("계산 결과 : " + result.toString());
+        }
+    }
+});</pre>
+  <p>힌트: 틀린 곳은 <b>4군데 + 빠진 기능 1개</b>입니다. 증상: 빌드 오류, 빈칸이면 앱 종료, 토스트 안 뜸, 소수점이 안 잘림, 0으로 나눠도 막지 않음.</p>
+  <details><summary>정답 보기</summary>
+    <ol>
+      <li><b>①</b> 정수 계산 + 위치 잘못. <code>Integer.parseInt</code>는 실수(3.5) 입력에서 앱 종료, int 결과를 <code>Double</code>에 넣으면 빌드 오류. 또 빈칸 검사보다 <b>먼저</b> 실행돼서 빈칸이면 바로 죽음 → 이 줄을 지우고 else 안에서 <code>result = Double.parseDouble(num1) / Double.parseDouble(num2);</code></li>
+      <li><b>②</b> 자체는 맞지만, ①이 위에 있어서 소용없음 (위 1번으로 해결)</li>
+      <li><b>③</b> <code>.show()</code> 빠짐 → 토스트가 안 뜸</li>
+      <li><b>④</b> 괄호 위치. <code>(int) result</code>가 먼저 잘림 → <code>(int) (result * 10) / 10.0</code></li>
+      <li><b>빠진 기능:</b> 0으로 나누기 검사. else 안에 <code>if (num2.trim().equals("0")) { Toast… "0으로 나누면 안됩니다!" … }</code></li>
+    </ol>
+  </details>
+</section>
+
+<section class="q" id="v3">
+  <h3><span class="tag tA">A 빈칸 채우기</span> 3. 체크박스 + 라디오 + 그림</h3>
+  <div class="meta">원래 문제 3 (사진 보기) · 체크하면 보이고, 해제하면 숨기고, "선택 완료"로 그림 표시 · <a href="코딩시험_문제_시각화.html#q3">원래 문제 보기</a></div>
+<pre>chkAgree.<input class="blank" style="--w:200px" data-ans="setOnCheckedChangeListener">(new CompoundButton.OnCheckedChangeListener() {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (<input class="blank" style="--w:90px" data-ans="isChecked||isChecked==true">) {
+            text2.setVisibility(View.<input class="blank" style="--w:90px" data-ans="VISIBLE">);
+            rGroup1.setVisibility(View.VISIBLE);
+        } else {
+            text2.setVisibility(View.<input class="blank" style="--w:90px" data-ans="INVISIBLE||GONE">);
+            rGroup1.setVisibility(View.INVISIBLE);
+        }
+    }
+});
+
+btnOK.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View v) {
+        int id = rGroup1.<input class="blank" style="--w:200px" data-ans="getCheckedRadioButtonId">();
+        if (id == R.id.RdoQ) {
+            imgPet.<input class="blank" style="--w:140px" data-ans="setImageResource">(R.drawable.q10);
+        } else if (id == <input class="blank" style="--w:50px" data-ans="-1">) {   <span class="cm">// 아무것도 안 골랐을 때</span>
+            Toast.makeText(getApplicationContext(), "버전을 먼저 선택하세요", Toast.LENGTH_SHORT).show();
+        }
+    }
+});</pre>
+  <div class="btns"><button class="grade">채점</button><span class="result"></span></div>
+  <details><summary>정답 보기</summary>
+    <code>setOnCheckedChangeListener</code> · <code>isChecked</code> · <code>VISIBLE</code> · <code>INVISIBLE</code> (GONE도 동작) · <code>getCheckedRadioButtonId</code> · <code>setImageResource</code> · <code>-1</code>
+  </details>
+</section>
+
+<!-- ================= 5장 ================= -->
+<h2 class="ch">[5장] 레이아웃</h2>
+
+<section class="q" id="v4">
+  <h3><span class="tag tA">A 화면 보고 속성값 고르기</span> 4. gravity / layout_gravity</h3>
+  <div class="meta">원래 문제 4 (5-1) · 세로 LinearLayout 안 버튼 4개 · <a href="코딩시험_문제_시각화.html#q4">원래 문제 보기</a></div>
+  <div class="row">
+    <div class="phone"><div class="appbar">gravity 연습</div><div class="screen col" style="gap:6px;padding:4px 0;">
+      <div class="btn" style="width:80px;height:62px;align-self:flex-end;border-radius:8px;display:flex;align-items:flex-end;justify-content:flex-start;">버튼A</div>
+      <div class="btn" style="width:80px;height:62px;align-self:center;border-radius:8px;display:flex;align-items:flex-start;justify-content:flex-end;">버튼B</div>
+      <div class="btn" style="width:80px;height:62px;align-self:flex-start;border-radius:8px;display:flex;align-items:center;justify-content:center;">버튼C</div>
+      <div class="btn" style="height:62px;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;background:#ff0000;">버튼D</div>
+    </div></div>
+    <div class="grow">
+      <table class="t">
+        <tr><th>버튼</th><th>layout_gravity (버튼 위치)</th><th>gravity (글자 위치)</th></tr>
+        <tr><td>A</td>
+          <td><select class="blank" data-ans="right"><option></option><option>left</option><option>center</option><option>right</option><option>(없음, match_parent)</option></select></td>
+          <td><select class="blank" data-ans="bottom|left"><option></option><option>top|right</option><option>top|left</option><option>center</option><option>center|right</option><option>bottom|left</option><option>bottom|right</option></select></td></tr>
+        <tr><td>B</td>
+          <td><select class="blank" data-ans="center"><option></option><option>left</option><option>center</option><option>right</option><option>(없음, match_parent)</option></select></td>
+          <td><select class="blank" data-ans="top|right"><option></option><option>top|right</option><option>top|left</option><option>center</option><option>center|right</option><option>bottom|left</option><option>bottom|right</option></select></td></tr>
+        <tr><td>C</td>
+          <td><select class="blank" data-ans="left"><option></option><option>left</option><option>center</option><option>right</option><option>(없음, match_parent)</option></select></td>
+          <td><select class="blank" data-ans="center"><option></option><option>top|right</option><option>top|left</option><option>center</option><option>center|right</option><option>bottom|left</option><option>bottom|right</option></select></td></tr>
+        <tr><td>D (빨강, 가로 꽉)</td>
+          <td><select class="blank" data-ans="(없음, match_parent)"><option></option><option>left</option><option>center</option><option>right</option><option>(없음, match_parent)</option></select></td>
+          <td><select class="blank" data-ans="center|right"><option></option><option>top|right</option><option>top|left</option><option>center</option><option>center|right</option><option>bottom|left</option><option>bottom|right</option></select></td></tr>
+      </table>
+      <div class="btns"><button class="grade">채점</button><span class="result"></span></div>
+      <p>추가 질문: 버튼 D의 빨간색을 <code>@color/red</code>로 쓰려면 어느 파일에 무엇을 넣어야 할까?</p>
+      <details><summary>정답 보기</summary>
+        A: <code>right</code> / <code>bottom|left</code> · B: <code>center</code> / <code>top|right</code> · C: <code>left</code> / <code>center</code> · D: 가로 꽉(match_parent)이라 layout_gravity 의미 없음 / <code>center|right</code><br>
+        추가: <code>res/values/colors.xml</code>에 <code>&lt;color name="red"&gt;#FFFF0000&lt;/color&gt;</code>, 버튼엔 <code>android:backgroundTint="@color/red"</code>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="q" id="v5">
+  <h3><span class="tag tD">D 수정하기</span> 5. 왼쪽(원본 5-2) 화면을 오른쪽 화면으로 바꾸려면?</h3>
+  <div class="meta">원래 문제 5 (weight 중첩) · <a href="코딩시험_문제_시각화.html#q5">원래 문제 보기</a></div>
+  <div class="row">
+    <div style="text-align:center;">
+      <div class="phone sm"><div class="appbar">원본</div><div class="screen col" style="color:#fff;">
+        <div style="flex:1;display:flex;"><div class="cell" style="flex:1;background:#f00;">빨강</div>
+          <div style="flex:1;display:flex;flex-direction:column;"><div class="cell" style="flex:1;background:#ff0;color:#000;">노랑</div><div class="cell" style="flex:1;background:#000;">검정</div></div></div>
+        <div style="flex:1;display:flex;"><div class="cell" style="flex:1;background:#ff0;color:#000;">노랑</div><div class="cell" style="flex:1;background:#000;">검정</div><div class="cell" style="flex:1;background:#f00;">빨강</div></div>
+      </div></div>
+    </div>
+    <div style="align-self:center;font-size:28px;">→</div>
+    <div style="text-align:center;">
+      <div class="phone sm"><div class="appbar">목표</div><div class="screen col" style="color:#fff;">
+        <div style="flex:2;display:flex;"><div class="cell" style="flex:2;background:#f00;">빨강</div>
+          <div style="flex:1;display:flex;flex-direction:column;"><div class="cell" style="flex:1;background:#ff0;color:#000;">노랑</div><div class="cell" style="flex:1;background:#000;">검정</div></div></div>
+        <div style="flex:1;display:flex;"><div class="cell" style="flex:1;background:#ff0;color:#000;">노랑</div><div class="cell" style="flex:1;background:#000;">검정</div><div class="cell" style="flex:1;background:#f00;">빨강</div><div class="cell" style="flex:1;background:#00f;">파랑</div></div>
+      </div></div>
+    </div>
+    <div class="grow">
+      <p><b>바뀐 점</b>을 찾고, 각각 XML의 <b>어떤 태그의 어떤 속성</b>을 고쳐야 하는지 적어보세요.</p>
+      <ul>
+        <li>윗줄 : 아랫줄 높이 비율</li>
+        <li>윗줄 안 빨강 : 오른쪽 칸 비율</li>
+        <li>아랫줄 칸 개수</li>
+      </ul>
+      <details><summary>정답 보기</summary>
+        <ol>
+          <li>윗줄 LinearLayout <code>layout_weight="2"</code>, 아랫줄은 <code>"1"</code> 그대로 → 2:1</li>
+          <li>윗줄 안 빨강 LinearLayout <code>layout_weight="2"</code>, 오른쪽(노랑/검정 묶음)은 <code>"1"</code> → 2:1</li>
+          <li>아랫줄 마지막에 <code>&lt;LinearLayout ... android:layout_weight="1" android:background="#0000ff" /&gt;</code> 추가 → 4등분</li>
+        </ol>
+        <p>노랑/검정은 그대로 1:1이라 손댈 필요 없음.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="q" id="v6">
+  <h3><span class="tag tC">C 결과 예측</span> 6. RelativeLayout 버튼 배치 맞히기</h3>
+  <div class="meta">원래 문제 6 (5-4) · <a href="코딩시험_문제_시각화.html#q6">원래 문제 보기</a></div>
+<pre>&lt;RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"&gt;
+    &lt;Button android:id="@+id/btnA" android:text="A"
+        android:layout_alignParentLeft="true" /&gt;
+    &lt;Button android:id="@+id/btnB" android:text="B"
+        android:layout_below="@id/btnA" android:layout_toRightOf="@id/btnA" /&gt;
+    &lt;Button android:id="@+id/btnC" android:text="C"
+        android:layout_below="@id/btnB" android:layout_toRightOf="@id/btnB" /&gt;
+    &lt;Button android:id="@+id/btnD" android:text="D"
+        android:layout_below="@id/btnC" android:layout_alignParentLeft="true" /&gt;
+&lt;/RelativeLayout&gt;   <span class="cm">// 버튼은 모두 wrap_content</span></pre>
+  <div class="choices" data-answer="b">
+    <div class="choice" data-k="a">
+      <div class="phone sm"><div class="appbar">배치</div><div class="screen">
+        <div class="btn" style="position:absolute;top:6px;right:4px;width:40px;">A</div>
+        <div class="btn" style="position:absolute;top:36px;right:44px;width:40px;">B</div>
+        <div class="btn" style="position:absolute;top:66px;right:84px;width:40px;">C</div>
+        <div class="btn" style="position:absolute;top:96px;left:4px;width:40px;">D</div>
+      </div></div><span class="lbl">①</span>
+    </div>
+    <div class="choice" data-k="b">
+      <div class="phone sm"><div class="appbar">배치</div><div class="screen">
+        <div class="btn" style="position:absolute;top:6px;left:4px;width:40px;">A</div>
+        <div class="btn" style="position:absolute;top:36px;left:44px;width:40px;">B</div>
+        <div class="btn" style="position:absolute;top:66px;left:84px;width:40px;">C</div>
+        <div class="btn" style="position:absolute;top:96px;left:4px;width:40px;">D</div>
+      </div></div><span class="lbl">②</span>
+    </div>
+    <div class="choice" data-k="c">
+      <div class="phone sm"><div class="appbar">배치</div><div class="screen">
+        <div class="btn" style="position:absolute;top:6px;left:4px;width:40px;">A</div>
+        <div class="btn" style="position:absolute;top:36px;left:44px;width:40px;">B</div>
+        <div class="btn" style="position:absolute;top:66px;left:84px;width:40px;">C</div>
+        <div class="btn" style="position:absolute;top:96px;left:84px;width:40px;">D</div>
+      </div></div><span class="lbl">③</span>
+    </div>
+    <div class="exp"><b>정답 ②.</b> A는 왼쪽 위 → B는 A의 아래+오른쪽 → C는 B의 아래+오른쪽 (오른쪽 아래로 내려가는 계단) → D는 C의 <b>아래</b> + <b>부모 왼쪽</b>.<br>①은 toRightOf를 toLeftOf로 읽은 경우, ③은 D의 alignParentLeft를 무시한 경우.</div>
+  </div>
+</section>
+
+<section class="q" id="v7">
+  <h3><span class="tag tA">A 빈칸 채우기</span> 7. XML 없이 Java로 초록 버튼 화면 만들기</h3>
+  <div class="meta">원래 문제 7 · 조건: 세로 LinearLayout(화면 꽉), 버튼 "버튼입니다" 초록 배경 · <a href="코딩시험_문제_시각화.html#q7">원래 문제 보기</a></div>
+<pre>protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.<input class="blank" style="--w:120px" data-ans="MATCH_PARENT">,
+            LinearLayout.LayoutParams.MATCH_PARENT);
+
+    LinearLayout baseLayout = new LinearLayout(<input class="blank" style="--w:60px" data-ans="this">);
+    baseLayout.setOrientation(LinearLayout.<input class="blank" style="--w:100px" data-ans="VERTICAL">);
+    <input class="blank" style="--w:130px" data-ans="setContentView">(baseLayout, params);
+
+    Button btn = new Button(this);
+    btn.setText("버튼입니다");
+    btn.<input class="blank" style="--w:170px" data-ans="setBackgroundColor">(Color.<input class="blank" style="--w:70px" data-ans="GREEN">);
+    baseLayout.<input class="blank" style="--w:80px" data-ans="addView">(btn);
+}</pre>
+  <div class="btns"><button class="grade">채점</button><span class="result"></span></div>
+  <details><summary>정답 보기</summary>
+    <code>MATCH_PARENT</code> · <code>this</code> · <code>VERTICAL</code> · <code>setContentView</code> · <code>setBackgroundColor</code> · <code>GREEN</code> · <code>addView</code><br>
+    <code>addView</code>를 빼면 버튼을 만들어도 화면에 안 나옵니다.
+  </details>
+</section>
+
+<!-- ================= 6장 ================= -->
+<h2 class="ch">[6장] 고급 위젯</h2>
+
+<section class="q" id="v8">
+  <h3><span class="tag tB">B 오류 찾기</span> 8. 예약 완료(하단 줄 클릭) 코드의 버그</h3>
+  <div class="meta">원래 문제 8 (6-1) · 10월 19일 15시 30분을 고르고 하단 줄을 눌렀을 때 · <a href="코딩시험_문제_시각화.html#q8">원래 문제 보기</a></div>
+<pre>layoutBottom.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View v) {
+<span class="ln">①</span>      chrono.start();
+        chrono.setTextColor(Color.BLUE);
+
+<span class="ln">②</span>      tvYear.setText(dPicker.getYear());
+<span class="ln">③</span>      tvMonth.setText(Integer.toString(dPicker.getMonth()));
+        tvDay.setText(Integer.toString(dPicker.getDayOfMonth()));
+        tvHour.setText(Integer.toString(tPicker.getHour()));
+        tvMinute.setText(Integer.toString(tPicker.getMinute()));
+
+<span class="ln">④</span>      rdoCal.setVisibility(View.VISIBLE);
+        rdoTime.setVisibility(View.INVISIBLE);
+        dPicker.setVisibility(View.INVISIBLE);
+        tPicker.setVisibility(View.INVISIBLE);
+    }
+});</pre>
+  <p>각 줄을 고치지 않으면 <b>어떤 증상</b>이 나는지도 같이 말해보세요.</p>
+  <details><summary>정답 보기</summary>
+    <ol>
+      <li><b>①</b> <code>chrono.stop()</code>이어야 함. 증상: 시간이 계속 흐름</li>
+      <li><b>②</b> <code>Integer.toString(dPicker.getYear())</code>. 증상: <b>앱 종료</b> (setText(int)는 리소스 id로 해석 → Resources$NotFoundException)</li>
+      <li><b>③</b> <code>1 + dPicker.getMonth()</code>. 증상: 10월이 "9월"로 표시</li>
+      <li><b>④</b> <code>View.INVISIBLE</code>. 증상: "날짜 설정" 라디오만 계속 보임</li>
+    </ol>
+  </details>
+</section>
+
+<section class="q" id="v9">
+  <h3><span class="tag tD">D 수정하기</span> 9. Self0602(뷰플리퍼)를 조건에 맞게 고치기</h3>
+  <div class="meta">원래 문제 9 (6-2) · 원본: 1초 간격, 사진 16장, 이전/다음 누르면 자동 넘김 멈춤 · <a href="코딩시험_문제_시각화.html#q9">원래 문제 보기</a></div>
+  <p><b>새 조건</b></p>
+  <ol>
+    <li>사진이 <b>3초</b>마다 넘어간다</li>
+    <li>사진 <code>jeju2</code>를 <b>맨 마지막</b> 장으로 추가한다</li>
+    <li>"사진보기 정지"를 누르면 멈추고 토스트 <b>"정지했습니다"</b>를 띄운다</li>
+    <li>이전/다음을 눌러도 <b>자동 넘김은 계속</b>된다</li>
+  </ol>
+  <p>각 조건마다 Java 또는 XML의 <b>어디를 어떻게</b> 바꿀지 적어보세요.</p>
+  <details><summary>정답 보기</summary>
+    <ol>
+      <li>Java <code>vFlipper.setFlipInterval(3000);</code></li>
+      <li>XML ViewFlipper 안 <b>마지막 ImageView 뒤</b>에 <code>&lt;ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:src="@drawable/jeju2" /&gt;</code> (그림 파일은 res/drawable에)</li>
+      <li>btnStop의 onClick 안, <code>vFlipper.stopFlipping();</code> 아래에 <code>Toast.makeText(getApplicationContext(), "정지했습니다", Toast.LENGTH_SHORT).show();</code></li>
+      <li>btnPrevious, btnNext의 onClick에서 <code>vFlipper.stopFlipping();</code> 줄을 <b>삭제</b></li>
+    </ol>
+  </details>
+</section>
+
+<section class="q" id="v10">
+  <h3><span class="tag tB">B 오류 찾기</span> 10. 웹 브라우저가 이상하게 동작하는 이유</h3>
+  <div class="meta">원래 문제 10 (웹뷰) · <a href="코딩시험_문제_시각화.html#q10">원래 문제 보기</a></div>
+  <div class="row">
+    <div class="grow">
+<pre><span class="cm">&lt;!-- AndroidManifest.xml --&gt;</span>
+&lt;manifest ...&gt;
+    &lt;application ...&gt;
+<span class="ln">①</span>      &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+        &lt;activity android:name=".MainActivity" ... /&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;</pre>
+<pre><span class="cm">// Java onCreate 안</span>
+web = (WebView) findViewById(R.id.webView1);
+<span class="ln">②</span><span class="cm">// (setWebViewClient 줄 없음)</span>
+WebSettings webSet = web.getSettings();
+<span class="ln">③</span>webSet.setBuiltInZoomControls(false);
+
+btnGo.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View v) {
+<span class="ln">④</span>      web.goBack();
+    }
+});</pre>
+    </div>
+    <div class="grow">
+      <p><b>증상</b> 4개를 각 번호와 짝지어 보세요.</p>
+      <table class="t">
+        <tr><th>증상</th><th>원인 번호</th></tr>
+        <tr><td>(가) 주소를 넣고 "이동"을 눌러도 아무 페이지도 안 열림</td><td><select class="blank" data-ans="④"><option></option><option>①</option><option>②</option><option>③</option><option>④</option></select></td></tr>
+        <tr><td>(나) 페이지 대신 net::ERR_CACHE_MISS 오류</td><td><select class="blank" data-ans="①"><option></option><option>①</option><option>②</option><option>③</option><option>④</option></select></td></tr>
+        <tr><td>(다) 링크를 누르면 크롬 앱이 열림</td><td><select class="blank" data-ans="②"><option></option><option>①</option><option>②</option><option>③</option><option>④</option></select></td></tr>
+        <tr><td>(라) 확대/축소 버튼이 안 보임</td><td><select class="blank" data-ans="③"><option></option><option>①</option><option>②</option><option>③</option><option>④</option></select></td></tr>
+      </table>
+      <div class="btns"><button class="grade">채점</button><span class="result"></span></div>
+      <details><summary>고치는 법</summary>
+        ① 권한을 <code>&lt;application&gt;</code> <b>바깥, 위</b>로 · ② <code>web.setWebViewClient(new MyWebViewClient());</code> 추가 · ③ <code>true</code>로 · ④ <code>web.loadUrl(edtUrl.getText().toString());</code>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7장 ================= -->
+<h2 class="ch">[7장] 메뉴 · 토스트 · 대화상자</h2>
+
+<section class="q" id="v11">
+  <h3><span class="tag tA">A 빈칸 채우기</span> 11. 옵션 메뉴 (menu1.xml + Java)</h3>
+  <div class="meta">원래 문제 11 (7-1) · 조건: 한라산/추자도 중 하나만 체크, "반으로 축소"는 0.5배 · <a href="코딩시험_문제_시각화.html#q11">원래 문제 보기</a></div>
+<pre><span class="cm">&lt;!-- res/menu/menu1.xml --&gt;</span>
+&lt;menu xmlns:android="http://schemas.android.com/apk/res/android"&gt;
+    &lt;group android:checkableBehavior="<input class="blank" style="--w:70px" data-ans="single">"&gt;
+        &lt;item android:id="@+id/item1" android:title="한라산" android:<input class="blank" style="--w:80px" data-ans="checked">="true" /&gt;
+        &lt;item android:id="@+id/item2" android:title="추자도" /&gt;
+    &lt;/group&gt;
+    &lt;item android:id="@+id/halfSize" android:title="반으로 축소" /&gt;
+&lt;/menu&gt;
+
+<span class="cm">// Java</span>
+public boolean <input class="blank" style="--w:190px" data-ans="onCreateOptionsMenu">(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    getMenuInflater().<input class="blank" style="--w:80px" data-ans="inflate">(R.menu.menu1, menu);
+    return <input class="blank" style="--w:60px" data-ans="true">;
+}
+
+public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.<input class="blank" style="--w:100px" data-ans="getItemId">() == R.id.item2) {
+        imageView1.setImageResource(R.drawable.jeju14);
+        item.<input class="blank" style="--w:100px" data-ans="setChecked">(true);
+        return true;
+    } else if (item.getItemId() == R.id.halfSize) {
+        imageView1.setScaleX(<input class="blank" style="--w:60px" data-ans="0.5f">);
+        imageView1.setScaleY(0.5f);
+        return true;
+    }
+    return false;
+}</pre>
+  <div class="btns"><button class="grade">채점</button><span class="result"></span></div>
+  <details><summary>정답 보기</summary>
+    <code>single</code> · <code>checked</code> · <code>onCreateOptionsMenu</code> · <code>inflate</code> · <code>true</code> · <code>getItemId</code> · <code>setChecked</code> · <code>0.5f</code> (<code>0.5</code>만 쓰면 double → float 변환 오류)
+  </details>
+</section>
+
+<section class="q" id="v12">
+  <h3><span class="tag tC">C 결과 예측</span> 12. 이 토스트는 어디에 뜰까?</h3>
+  <div class="meta">원래 문제 12 (7-2 수정본) · 교재 기준 (setGravity가 적용된다고 가정) · <a href="코딩시험_문제_시각화.html#q12">원래 문제 보기</a></div>
+<pre>Toast tMsg = Toast.makeText(Self0702.this, "토스트 연습", Toast.LENGTH_SHORT);
+Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+int xOffset = (int) Math.random() * display.getWidth();
+int yOffset = (int) Math.random() * display.getHeight();
+tMsg.setGravity(Gravity.TOP | Gravity.LEFT, xOffset, yOffset);
+tMsg.show();</pre>
+  <div class="choices txtopts" data-answer="b">
+    <div class="choice" data-k="a">① 누를 때마다 화면 무작위 위치</div>
+    <div class="choice" data-k="b">② 항상 화면 왼쪽 위 구석</div>
+    <div class="choice" data-k="c">③ 항상 화면 정가운데</div>
+    <div class="choice" data-k="d">④ 앱이 종료된다</div>
+    <div class="exp"><b>정답 ②.</b> 형변환 <code>(int)</code>가 <code>Math.random()</code>에만 먼저 붙어서 0.0~0.99가 <b>0</b>으로 잘림 → 0 × 폭 = 0. x, y 모두 0이라 TOP|LEFT 구석에 고정.<br>고치기: <code>(int) (Math.random() * display.getWidth())</code><br>※ 실제 프로젝트(targetSdk 30 이상)에서는 글자 토스트의 setGravity가 무시돼 아래쪽에 뜰 수 있어요.</div>
+  </div>
+</section>
+
+<section class="q" id="v13">
+  <h3><span class="tag tB">B 오류 찾기</span> 13. 대화상자가 안 뜨거나 앱이 죽는 이유</h3>
+  <div class="meta">원래 문제 13 (7-3) · <a href="코딩시험_문제_시각화.html#q13">원래 문제 보기</a></div>
+<pre>button1.setOnClickListener(new View.OnClickListener() {
+    public void onClick(View v) {
+        dialogView = (View) View.inflate(Self0703.this, R.layout.dialog1, null);
+<span class="ln">①</span>      AlertDialog.Builder dlg = new AlertDialog.Builder(this);
+        dlg.setTitle("사용자 정보 입력");
+        dlg.setView(dialogView);
+        dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+<span class="ln">②</span>              dlgEdtName = (EditText) findViewById(R.id.dlgEdt1);
+                tvName.setText(dlgEdtName.getText().toString());
+            }
+        });
+        dlg.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast toast = new Toast(Self0703.this);
+                toastView = (View) View.inflate(Self0703.this, R.layout.toast1, null);
+                toastText = (TextView) toastView.findViewById(R.id.toastText1);
+                toastText.setText("취소했습니다");
+<span class="ln">③</span>              toast.show();
+            }
+        });
+<span class="ln">④</span>  }
+});</pre>
+  <details><summary>정답 보기</summary>
+    <ol>
+      <li><b>①</b> 리스너 안의 <code>this</code>는 Activity가 아님 → 빌드 오류. <code>new AlertDialog.Builder(Self0703.this)</code></li>
+      <li><b>②</b> 대화상자 안 위젯은 메인 화면에 없음 → null → "확인" 누르면 <b>앱 종료</b>. <code>dialogView.findViewById(R.id.dlgEdt1)</code></li>
+      <li><b>③</b> 앞에 <code>toast.setView(toastView);</code>가 빠짐 → 모양 없는 토스트라 오류 (커스텀 토스트는 setView 필수)</li>
+      <li><b>④</b> <code>dlg.show();</code> 빠짐 → 버튼을 눌러도 <b>대화상자가 안 뜸</b></li>
+    </ol>
+  </details>
+</section>
+
+<section class="q" id="v14">
+  <h3><span class="tag tC">C 결과 예측</span> + <span class="tag tA">A 빈칸</span> 14. 컨텍스트 메뉴</h3>
+  <div class="meta">원래 문제 14 (7-2 원본) · <a href="코딩시험_문제_시각화.html#q14">원래 문제 보기</a></div>
+<pre>public void onCreate(Bundle savedInstanceState) {
+    ...
+    <input class="blank" style="--w:170px" data-ans="registerForContextMenu">(button1);
+    <span class="cm">// button2는 등록하지 않음</span>
+}
+
+public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    MenuInflater mInflater = getMenuInflater();
+    if (<input class="blank" style="--w:40px" data-ans="v"> == button1) {
+        menu.<input class="blank" style="--w:130px" data-ans="setHeaderTitle">("배경색 변경");
+        mInflater.inflate(R.menu.menu2, menu);
+    }
+}
+
+public boolean <input class="blank" style="--w:190px" data-ans="onContextItemSelected">(MenuItem item) {
+    if (item.getItemId() == R.id.itemRed) {
+        baseLayout.<input class="blank" style="--w:170px" data-ans="setBackgroundColor">(Color.RED);
+        return true;
+    }
+    return false;
+}</pre>
+  <div class="btns"><button class="grade">빈칸 채점</button><span class="result"></span></div>
+  <p><b>결과 예측:</b> 위 코드에서 <b>button2를 길게</b> 누르면?</p>
+  <div class="choices txtopts" data-answer="c">
+    <div class="choice" data-k="a">① "배경색 변경" 메뉴가 뜬다</div>
+    <div class="choice" data-k="b">② 빈 메뉴가 뜬다</div>
+    <div class="choice" data-k="c">③ 아무 일도 없다</div>
+    <div class="choice" data-k="d">④ 앱이 종료된다</div>
+    <div class="exp"><b>정답 ③.</b> <code>registerForContextMenu(button2)</code>를 안 했으니 길게 눌러도 onCreateContextMenu 자체가 호출되지 않아요. button1을 <b>짧게</b> 눌러도 마찬가지로 아무 일 없음 (컨텍스트 메뉴는 길게 누르기 전용).</div>
+  </div>
+  <details><summary>빈칸 정답</summary>
+    <code>registerForContextMenu</code> · <code>v</code> · <code>setHeaderTitle</code> · <code>onContextItemSelected</code> · <code>setBackgroundColor</code>
+  </details>
+</section>
+
+<div style="height:40px;"></div>
+</div>
+
+<script>
+  // 선택형: 한 번 고르면 정답/오답 표시 + 해설 열기
+  document.querySelectorAll('.choices').forEach(function (box) {
+    box.querySelectorAll('.choice').forEach(function (c) {
+      c.onclick = function () {
+        box.querySelectorAll('.choice').forEach(function (x) { x.classList.remove('right', 'wrong'); });
+        c.classList.add(c.dataset.k === box.dataset.answer ? 'right' : 'wrong');
+        box.querySelector('.choice[data-k="' + box.dataset.answer + '"]').classList.add('right');
+        box.classList.add('answered');
+      };
+    });
+  });
+
+  // 빈칸/드롭다운: 공백 무시하고 비교, 정답 여러 개는 || 로 구분
+  function norm(s) { return s.replace(/\s+/g, ''); }
+  function isRight(input) {
+    return input.dataset.ans.split('||').some(function (a) { return norm(a) === norm(input.value); });
+  }
+  document.querySelectorAll('button.grade').forEach(function (btn) {
+    btn.onclick = function () {
+      var sec = btn.closest('section'), ok = 0, all = 0;
+      sec.querySelectorAll('.blank').forEach(function (b) {
+        all++;
+        var r = isRight(b); if (r) ok++;
+        b.classList.toggle('ok', r); b.classList.toggle('bad', !r);
+      });
+      var res = btn.parentElement.querySelector('.result');
+      res.textContent = ok + ' / ' + all + (ok === all ? '  완벽해요!' : '');
+      res.style.color = ok === all ? 'var(--ok)' : 'var(--bad)';
+    };
+  });
+
+  // 채점 로직 셀프체크
+  console.assert(isRight({ dataset: { ans: 'isChecked||isChecked==true' }, value: ' isChecked == true ' }), 'norm/|| 비교 실패');
+  console.assert(!isRight({ dataset: { ans: '0.5f' }, value: '0.5' }), '0.5는 오답이어야 함');
+</script>
+</body>
+</html>

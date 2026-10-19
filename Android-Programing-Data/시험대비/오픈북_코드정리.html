@@ -1,0 +1,2024 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오픈북 전체 코드</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#1f2328; --muted:#5b6470; --card:#fff; --line:#e3e0d8; --accent:#2f6f4f; --code:#f3f1ec; --warn:#9a3b1b; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#16181b; --fg:#e6e6e3; --muted:#a3a9b1; --card:#1e2125; --line:#33373d; --accent:#7cc39b; --code:#23272c; --warn:#f0a07f; } }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 "Pretendard","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif; }
+  nav { position:fixed; top:0; left:0; bottom:0; width:190px; overflow:auto; padding:14px 12px; background:var(--card); border-right:1px solid var(--line); font-size:13.5px; }
+  nav b { display:block; margin:12px 0 4px; color:var(--muted); font-size:12px; }
+  nav a { display:block; padding:3px 6px; border-radius:5px; color:var(--fg); text-decoration:none; }
+  nav a:hover, nav a.on { background:var(--code); color:var(--accent); font-weight:700; }
+  main { margin-left:190px; padding:20px 28px 80px; max-width:1100px; }
+  h1 { font-size:21px; margin:0 0 4px; }
+  h2 { font-size:19px; margin:34px 0 6px; padding-bottom:5px; border-bottom:2px solid var(--accent); scroll-margin-top:10px; }
+  .lead { color:var(--muted); font-size:13.5px; margin:0 0 8px; }
+  .box { position:relative; background:var(--code); border:1px solid var(--line); border-radius:8px; margin:10px 0; }
+  .box .fn { font:600 12.5px Consolas,monospace; color:var(--accent); padding:7px 12px 0; }
+  pre { margin:0; padding:6px 12px 12px; overflow:auto; font:13px/1.5 Consolas,"D2Coding",monospace; }
+  .copy { position:absolute; top:6px; right:8px; font-size:12px; padding:3px 10px; border:1px solid var(--line); border-radius:6px; background:var(--card); color:var(--fg); cursor:pointer; }
+  .warn { border-left:4px solid var(--warn); background:var(--card); padding:6px 12px; margin:8px 0; font-size:13.5px; }
+  table { border-collapse:collapse; width:100%; background:var(--card); font-size:13.5px; margin:8px 0; }
+  th, td { border:1px solid var(--line); padding:5px 8px; text-align:left; vertical-align:top; }
+  th { background:var(--code); }
+  h3 { font-size:15px; margin:18px 0 6px; color:var(--accent); scroll-margin-top:10px; }
+  blockquote { margin:8px 0; padding:6px 12px; border-left:4px solid var(--warn); background:var(--card); font-size:13.5px; }
+  blockquote p { margin:0; }
+  code { font-family:Consolas,monospace; font-size:12.5px; background:var(--code); padding:1px 4px; border-radius:4px; }
+  @media (max-width:760px) { nav { position:static; width:auto; border-right:0; border-bottom:1px solid var(--line); } main { margin-left:0; padding:16px; } }
+  @media print { nav, .copy { display:none; } main { margin:0; } pre { white-space:pre-wrap; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <b>시작</b>
+  <a href="#skeleton">기본 뼈대</a>
+  <b>4장</b>
+  <a href="#s0402">4-2 위젯 속성</a>
+  <a href="#s0403">4-3 계산기</a>
+  <b>5장</b>
+  <a href="#s0501">5-1 gravity</a>
+  <a href="#s0502">5-2 weight 중첩</a>
+  <a href="#s0504">5-4 RelativeLayout</a>
+  <a href="#colors">colors.xml</a>
+  <b>6장</b>
+  <a href="#s0601">6-1 시간 예약</a>
+  <a href="#s0602">6-2 뷰플리퍼</a>
+  <b>7장</b>
+  <a href="#s0701">7-1 옵션 메뉴</a>
+  <a href="#s0702">7-2 토스트 위치</a>
+  <a href="#s0702org">7-2 원본 컨텍스트 메뉴</a>
+  <a href="#s0703">7-3 대화상자</a>
+  <b>사전</b>
+  <a href="#dict-code">코드 사전</a>
+  <a href="#dict-xml">XML 속성 사전</a>
+  <b>마지막</b>
+  <a href="#err">오류 해결</a>
+</nav>
+
+<main>
+<h1>안드로이드 오픈북 전체 코드 (4~7장 Self 파일)</h1>
+<p class="lead">생략 없는 전체 파일입니다. <b>복사</b> → 파일 내용 전체 교체. Java 파일은 <b>맨 위 package 줄만 원래 파일 것을 남기고</b> 그 아래를 붙여넣으세요.</p>
+
+<!-- ================= 4장 ================= -->
+<h2 id="skeleton">기본 뼈대 <small style="font-weight:400;color:var(--muted);font-size:13px">복사해서 시작</small></h2>
+<h3 id="java-뼈대">Java 뼈대</h3>
+<div class="box"><div class="fn">Java</div><pre><code>package com.example.chapter07;   // ← 바꾸기: 내 프로젝트 패키지명 그대로 둘 것
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;          // Button, EditText, TextView, ImageView, Toast ... 전부
+import android.graphics.Color;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0701 extends AppCompatActivity {     // ← 바꾸기: 파일 이름과 같게
+
+    // 1) 위젯 변수 선언 (클래스 안, 메서드 밖)
+    Button button1;
+    EditText edit1;
+    TextView textView1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0701_main);    // ← 바꾸기: XML 파일 이름
+        setTitle(&quot;제목&quot;);                            // ← 바꾸기: 앱 상단 제목
+
+        // 2) XML의 위젯과 연결
+        button1 = (Button) findViewById(R.id.button1);
+        edit1 = (EditText) findViewById(R.id.edit1);
+        textView1 = (TextView) findViewById(R.id.textView1);
+
+        // 3) 이벤트 처리
+        button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // 버튼 눌렀을 때 할 일
+            }
+        });
+    }
+}</code></pre></div>
+<blockquote>
+<p><code>import android.widget.*;</code> 하나로 위젯 import를 한 번에
+해결. 빨간 글씨가 뜨면 그 단어에 커서 → <strong>Alt + Enter</strong>
+(Mac: Option + Enter)</p>
+</blockquote>
+<h3 id="xml-뼈대">XML 뼈대</h3>
+<div class="box"><div class="fn">XML</div><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot; &gt;
+
+    &lt;!-- 여기에 위젯 --&gt;
+
+&lt;/LinearLayout&gt;</code></pre></div>
+<h3 id="자주-쓰는-위젯-xml-복붙용">자주 쓰는 위젯 XML (복붙용)</h3>
+<div class="box"><div class="fn">XML</div><pre><code>&lt;TextView
+    android:id=&quot;@+id/textView1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;글자&quot;
+    android:textSize=&quot;20sp&quot; /&gt;
+
+&lt;EditText
+    android:id=&quot;@+id/edit1&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:hint=&quot;입력하세요&quot; /&gt;
+
+&lt;Button
+    android:id=&quot;@+id/button1&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;버튼&quot; /&gt;
+
+&lt;ImageView
+    android:id=&quot;@+id/imageView1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:src=&quot;@drawable/jeju2&quot; /&gt;
+
+&lt;CheckBox
+    android:id=&quot;@+id/chk1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;체크&quot; /&gt;
+
+&lt;RadioGroup
+    android:id=&quot;@+id/rGroup1&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot; &gt;
+    &lt;RadioButton android:id=&quot;@+id/rdo1&quot; android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot; android:text=&quot;선택1&quot; /&gt;
+    &lt;RadioButton android:id=&quot;@+id/rdo2&quot; android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot; android:text=&quot;선택2&quot; /&gt;
+&lt;/RadioGroup&gt;</code></pre></div>
+
+<h2 id="s0402">4-2 위젯 속성</h2>
+<script type="text/plain" data-file="java / Self0402.java">
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0402 extends AppCompatActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0402_main);
+        setTitle("직접 풀어보기 4-2");
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0402_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#00ff00"
+        android:text="버튼 1"
+        android:rotation="90" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="이건 텍스트뷰입니다."
+        android:gravity="center" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#ff0000"
+        android:text="이건 에디트텍스트입니다."
+        android:enabled="false"
+        android:gravity="start" />
+
+    <Button
+        android:layout_width="137dp"
+        android:layout_height="648dp"
+        android:layout_margin="20dp"
+        android:background="#00ff00"
+        android:text="버튼 2"
+        android:layout_gravity="right" />
+
+</LinearLayout>
+</script>
+
+<h2 id="s0403">4-3 초간단 계산기</h2>
+<script type="text/plain" data-file="java / Self0403.java">
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0403 extends AppCompatActivity {
+
+    EditText edit1, edit2;
+    Button btnAdd, btnSub, btnMul, btnDiv, btnRem;
+    TextView textResult;
+    String num1, num2;
+    Double result; // 실수값으로 계산
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0403_main);
+        setTitle("초간단 계산기(수정)");
+
+        edit1 = (EditText) findViewById(R.id.Edit1);
+        edit2 = (EditText) findViewById(R.id.Edit2);
+
+        btnAdd = (Button) findViewById(R.id.BtnAdd);
+        btnSub = (Button) findViewById(R.id.BtnSub);
+        btnMul = (Button) findViewById(R.id.BtnMul);
+        btnDiv = (Button) findViewById(R.id.BtnDiv);
+        btnRem = (Button) findViewById(R.id.BtnRem);
+
+        textResult = (TextView) findViewById(R.id.TextResult);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                num1 = edit1.getText().toString();
+                num2 = edit2.getText().toString();
+                // num1이나 num2가 비어 있다면
+                if (num1.trim().equals("") || num2.trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    result = Double.parseDouble(num1) + Double.parseDouble(num2);
+                    textResult.setText("계산 결과 : " + result.toString());
+                    Toast.makeText(getApplicationContext(), result.toString(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btnSub.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                num1 = edit1.getText().toString();
+                num2 = edit2.getText().toString();
+                if (num1.trim().equals("") || num2.trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    result = Double.parseDouble(num1) - Double.parseDouble(num2);
+                    textResult.setText("계산 결과 : " + result.toString());
+                }
+            }
+        });
+
+        btnMul.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                num1 = edit1.getText().toString();
+                num2 = edit2.getText().toString();
+                if (num1.trim().equals("") || num2.trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    result = Double.parseDouble(num1) * Double.parseDouble(num2);
+                    textResult.setText("계산 결과 : " + result.toString());
+                }
+            }
+        });
+
+        btnDiv.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                num1 = edit1.getText().toString();
+                num2 = edit2.getText().toString();
+                if (num1.trim().equals("") || num2.trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // num2가 0이면 나누지 않는다.
+                    if (num2.trim().equals("0")) {
+                        Toast.makeText(getApplicationContext(), "0으로 나누면 안됩니다!",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        result = Double.parseDouble(num1) / Double.parseDouble(num2);
+                        result = (int) (result * 10) / 10.0; // 소수점 아래 1자리까지만
+                        textResult.setText("계산 결과 : " + result.toString());
+                    }
+                }
+            }
+        });
+
+        btnRem.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                num1 = edit1.getText().toString();
+                num2 = edit2.getText().toString();
+                if (num1.trim().equals("") || num2.trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if (num2.trim().equals("0")) {
+                        Toast.makeText(getApplicationContext(), "0으로 나머지 값 안됩니다!",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        result = Double.parseDouble(num1) % Double.parseDouble(num2);
+                        textResult.setText("계산 결과 : " + result.toString());
+                    }
+                }
+            }
+        });
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0403_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/Edit1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:digits="0123456789."
+        android:hint="숫자1"
+        android:textColorHint="#00FF00" />
+
+    <EditText
+        android:id="@+id/Edit2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:digits="0123456789."
+        android:hint="숫자2"
+        android:textColorHint="#FFFF00" />
+
+    <Button
+        android:id="@+id/BtnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="더하기" />
+
+    <Button
+        android:id="@+id/BtnSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="빼기" />
+
+    <Button
+        android:id="@+id/BtnMul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="곱하기" />
+
+    <Button
+        android:id="@+id/BtnDiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="나누기" />
+
+    <Button
+        android:id="@+id/BtnRem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="나머지 값" />
+
+    <TextView
+        android:id="@+id/TextResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layout_weight="1"
+        android:text="계산 결과 : "
+        android:textColor="#FF0000"
+        android:textSize="30dp" />
+
+</LinearLayout>
+</script>
+
+<!-- ================= 5장 ================= -->
+<h2 id="s0501">5-1 gravity 조합</h2>
+<script type="text/plain" data-file="java / Self0501.java (5-2는 Self0502 / self0502_main, 5-4는 Self0504 / self0504_main으로 이름만 바꿔 사용)">
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0501 extends AppCompatActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0501_main);
+        setTitle("직접 풀어보기 5-1");
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0501_main.xml  (colors.xml에 red 필요 → 아래 colors.xml)">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:gravity="top|right"
+        android:text="버튼1" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:gravity="center|left"
+        android:text="버튼2" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right"
+        android:gravity="bottom|right"
+        android:text="버튼3" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:backgroundTint="@color/red"
+        android:text="버튼4" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:gravity="top|left"
+        android:backgroundTint="@color/red"
+        android:text="버튼5" />
+
+</LinearLayout>
+</script>
+
+<h2 id="s0502">5-2 LinearLayout 중첩 + weight</h2>
+<script type="text/plain" data-file="res/layout / self0502_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ff0000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#00ff00"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#ffff00" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#000000" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ffff00" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ff0000" />
+
+    </LinearLayout>
+
+</LinearLayout>
+</script>
+
+<h2 id="s0504">5-4 LinearLayout + RelativeLayout</h2>
+<script type="text/plain" data-file="res/layout / self0504_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전화번호"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:hint="000-0000-0000" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="취소" />
+
+        <Button
+            android:id="@+id/btnOK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/btnCancel"
+            android:text="입력" />
+
+        <Button
+            android:id="@+id/btnCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnOK"
+            android:layout_toLeftOf="@id/btnOK"
+            android:text="중앙" />
+
+        <Button
+            android:id="@+id/btnBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnCenter"
+            android:layout_toRightOf="@id/btnCenter"
+            android:text="아래" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+</script>
+
+<h2 id="colors">colors.xml</h2>
+<script type="text/plain" data-file="res/values / colors.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FFFF0000</color>
+</resources>
+</script>
+
+<!-- ================= 6장 ================= -->
+<h2 id="s0601">6-1 시간 예약</h2>
+<script type="text/plain" data-file="java / Self0601.java">
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0601 extends AppCompatActivity {
+
+    Chronometer chrono;
+    Button btnStart;
+    RadioButton rdoCal, rdoTime;
+    DatePicker dPicker;
+    TimePicker tPicker;
+    TextView tvYear, tvMonth, tvDay, tvHour, tvMinute;
+    LinearLayout layoutBottom;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0601_main);
+        setTitle("시간 예약");
+
+        chrono = (Chronometer) findViewById(R.id.chronometer1);
+        btnStart = (Button) findViewById(R.id.btnStart);
+
+        rdoCal = (RadioButton) findViewById(R.id.rdoCal);
+        rdoTime = (RadioButton) findViewById(R.id.rdoTime);
+
+        dPicker = (DatePicker) findViewById(R.id.datePicker1);
+        tPicker = (TimePicker) findViewById(R.id.timePicker1);
+
+        tvYear = (TextView) findViewById(R.id.tvYear);
+        tvMonth = (TextView) findViewById(R.id.tvMonth);
+        tvDay = (TextView) findViewById(R.id.tvDay);
+        tvHour = (TextView) findViewById(R.id.tvHour);
+        tvMinute = (TextView) findViewById(R.id.tvMinute);
+
+        layoutBottom = (LinearLayout) findViewById(R.id.layoutBottom);
+
+        // 처음에는 4개를 안 보이게
+        rdoCal.setVisibility(View.INVISIBLE);
+        rdoTime.setVisibility(View.INVISIBLE);
+        tPicker.setVisibility(View.INVISIBLE);
+        dPicker.setVisibility(View.INVISIBLE);
+
+        rdoCal.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tPicker.setVisibility(View.INVISIBLE);
+                dPicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        rdoTime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tPicker.setVisibility(View.VISIBLE);
+                dPicker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // 예약 시작 버튼 -> 타이머 시작
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                chrono.setBase(SystemClock.elapsedRealtime());
+                chrono.start();
+                chrono.setTextColor(Color.RED);
+                rdoCal.setVisibility(View.VISIBLE);
+                rdoTime.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // 아래 회색 줄 클릭 -> 타이머 중지, 예약 완료
+        layoutBottom.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                chrono.stop();
+                chrono.setTextColor(Color.BLUE);
+
+                tvYear.setText(Integer.toString(dPicker.getYear()));
+                tvMonth.setText(Integer.toString(1 + dPicker.getMonth()));
+                tvDay.setText(Integer.toString(dPicker.getDayOfMonth()));
+
+                tvHour.setText(Integer.toString(tPicker.getHour()));
+                tvMinute.setText(Integer.toString(tPicker.getMinute()));
+
+                rdoCal.setVisibility(View.INVISIBLE);
+                rdoTime.setVisibility(View.INVISIBLE);
+                tPicker.setVisibility(View.INVISIBLE);
+                dPicker.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0601_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Chronometer
+            android:id="@+id/chronometer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#CCCCCC"
+            android:format=" 예약에 걸린 시간  %s "
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="예약 시작" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rdoCal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 설정" />
+
+        <RadioButton
+            android:id="@+id/rdoTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간 설정" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <DatePicker
+                android:id="@+id/datePicker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:datePickerMode="spinner" />
+
+            <TimePicker
+                android:id="@+id/timePicker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:timePickerMode="spinner" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CCCCCC"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="년" />
+
+        <TextView
+            android:id="@+id/tvMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="월" />
+
+        <TextView
+            android:id="@+id/tvDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일" />
+
+        <TextView
+            android:id="@+id/tvHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시" />
+
+        <TextView
+            android:id="@+id/tvMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="분 예약됨" />
+
+    </LinearLayout>
+
+</LinearLayout>
+</script>
+
+<h2 id="s0602">6-2 ViewFlipper 사진 넘기기</h2>
+<div class="warn">사진 16장의 파일 이름은 <b>내 res/drawable 폴더의 실제 이름</b>과 같아야 합니다. 없는 이름은 빨간 줄이 뜨니 그 줄만 지우거나 이름을 고치세요.</div>
+<script type="text/plain" data-file="java / Self0602.java">
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ViewFlipper;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0602 extends AppCompatActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0602_main);
+
+        Button btnStart, btnStop, btnPrevious, btnNext;
+
+        final ViewFlipper vFlipper;
+
+        btnStart = (Button) findViewById(R.id.btnStart);
+        btnStop = (Button) findViewById(R.id.btnStop);
+
+        btnPrevious = (Button) findViewById(R.id.btnPrevious);
+        btnNext = (Button) findViewById(R.id.btnNext);
+
+        vFlipper = (ViewFlipper) findViewById(R.id.viewFlipper1);
+
+        vFlipper.setFlipInterval(1000);
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                vFlipper.startFlipping();
+            }
+        });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+            }
+        });
+
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+                vFlipper.showPrevious();
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+                vFlipper.showNext();
+            }
+        });
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0602_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 사진보기 시작 " />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 사진보기 정지 " />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ViewFlipper
+            android:id="@+id/viewFlipper1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/cupcake" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/donut" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/eclair" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/froyo" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/gingerbread" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/honeycomb" />
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/icecream" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/jellybean" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/kitkat" />
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/lollipop" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/marshmallow" />
+
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/nougat" />
+
+            <ImageView
+                android:id="@+id/imageView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/oreo" />
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/pie" />
+
+            <ImageView
+                android:id="@+id/imageView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/q10" />
+
+            <ImageView
+                android:id="@+id/imageView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/r11" />
+
+        </ViewFlipper>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 이전화면 " />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 다음화면 " />
+
+    </LinearLayout>
+
+</LinearLayout>
+</script>
+
+<!-- ================= 7장 ================= -->
+<h2 id="s0701">7-1 옵션 메뉴 (제주도 풍경)</h2>
+<div class="warn">수업 파일의 menu1.xml은 7-2 원본용(버튼 회전/확대)입니다. 7-1을 실행하려면 menu1.xml을 아래 내용으로 바꾸거나, 아래를 <b>menu3.xml</b>로 만들고 Java의 <code>R.menu.menu1</code>을 <code>R.menu.menu3</code>으로 바꾸세요.</div>
+<script type="text/plain" data-file="java / Self0701.java">
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0701 extends AppCompatActivity {
+
+    EditText edtAngle;
+    ImageView imageView1;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0701_main);
+        setTitle("제주도 풍경");
+
+        edtAngle = (EditText) findViewById(R.id.edtAngle);
+        imageView1 = (ImageView) findViewById(R.id.imageView1);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater mInflater = getMenuInflater();
+        mInflater.inflate(R.menu.menu1, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.itemRotate) {
+            imageView1.setRotation(Float.parseFloat(edtAngle.getText().toString()));
+            return true;
+        } else if (item.getItemId() == R.id.item1) {
+            imageView1.setImageResource(R.drawable.jeju2);
+            item.setChecked(true);
+            return true;
+        } else if (item.getItemId() == R.id.item2) {
+            imageView1.setImageResource(R.drawable.jeju14);
+            item.setChecked(true);
+            return true;
+        } else if (item.getItemId() == R.id.item3) {
+            imageView1.setImageResource(R.drawable.jeju6);
+            item.setChecked(true);
+            return true;
+        } else if (item.getItemId() == R.id.subSize) {
+            imageView1.setScaleX(2);
+            imageView1.setScaleY(2);
+            return true;
+        } else if (item.getItemId() == R.id.divineSize) {
+            imageView1.setScaleX(0.2f);
+            imageView1.setScaleY(0.2f);
+            return true;
+        } else if (item.getItemId() == R.id.OrgSize) {
+            imageView1.setScaleX(1);
+            imageView1.setScaleY(1);
+            return true;
+        }
+        return false;
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0701_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/jeju2" />
+
+    <EditText
+        android:id="@+id/edtAngle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtAngle"
+        android:layout_alignParentLeft="true"
+        android:text="각도 입력"
+        android:textSize="20dp" />
+
+</RelativeLayout>
+</script>
+<script type="text/plain" data-file="res/menu / menu1.xml (7-1용)">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemRotate"
+        android:title="그림 회전" />
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item1"
+            android:checked="true"
+            android:title="한라산" />
+        <item
+            android:id="@+id/item2"
+            android:title="추자도" />
+        <item
+            android:id="@+id/item3"
+            android:title="범섬" />
+    </group>
+
+    <item android:title="크기 변경">
+        <menu>
+            <item
+                android:id="@+id/subSize"
+                android:title="2배 확대" />
+            <item
+                android:id="@+id/divineSize"
+                android:title="축소" />
+            <item
+                android:id="@+id/OrgSize"
+                android:title="원래 크기" />
+        </menu>
+    </item>
+
+</menu>
+</script>
+
+<h2 id="s0702">7-2 토스트 랜덤 위치 (수정본)</h2>
+<script type="text/plain" data-file="java / Self0702.java">
+import android.os.Bundle;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+@SuppressWarnings("deprecation")
+public class Self0702 extends AppCompatActivity {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0702_main);
+        setTitle("토스트 연습");
+
+        final Button button1 = (Button) findViewById(R.id.button1);
+
+        button1.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                Toast tMsg = Toast.makeText(Self0702.this, "토스트 연습",
+                        Toast.LENGTH_SHORT);
+
+                Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+                        .getDefaultDisplay();
+                int xOffset = (int) (Math.random() * display.getWidth());
+                int yOffset = (int) (Math.random() * display.getHeight());
+
+                tMsg.setGravity(Gravity.TOP | Gravity.LEFT, xOffset, yOffset);
+                tMsg.show();
+            }
+        });
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0702_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="메시지 출력" />
+
+</LinearLayout>
+</script>
+
+<h2 id="s0702org">7-2 원본: 컨텍스트 메뉴로 배경색 바꾸기</h2>
+<script type="text/plain" data-file="java / Self0702_org.java">
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0702_org extends AppCompatActivity {
+
+    LinearLayout baseLayout;
+    Button button1, button2;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0702_main_org);
+        setTitle("배경색 바꾸기(컨텍스트 메뉴)");
+
+        baseLayout = (LinearLayout) findViewById(R.id.baseLayout);
+        button1 = (Button) findViewById(R.id.button1);
+        registerForContextMenu(button1);
+
+        button2 = (Button) findViewById(R.id.button2);
+        registerForContextMenu(button2);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenuInfo menuInfo) {
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater mInflater = getMenuInflater();
+        if (v == button1) {
+            menu.setHeaderTitle("배경색 변경");
+            mInflater.inflate(R.menu.menu1, menu);
+        }
+        if (v == button2) {
+            mInflater.inflate(R.menu.menu2, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.itemRed) {
+            baseLayout.setBackgroundColor(Color.RED);
+            return true;
+        } else if (item.getItemId() == R.id.itemGreen) {
+            baseLayout.setBackgroundColor(Color.GREEN);
+            return true;
+        } else if (item.getItemId() == R.id.itemBlue) {
+            baseLayout.setBackgroundColor(Color.BLUE);
+            return true;
+        } else if (item.getItemId() == R.id.subRotate) {
+            button2.setRotation(45);
+            return true;
+        } else if (item.getItemId() == R.id.subSize) {
+            button2.setScaleX(2);
+            return true;
+        }
+        return false;
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0702_main_org.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="배경색 변경" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="버튼 변경" />
+
+</LinearLayout>
+</script>
+<script type="text/plain" data-file="res/menu / menu1.xml (수업 파일 그대로: 7-2 원본용)">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/subRotate"
+        android:title="버튼 45도 회전" />
+    <item
+        android:id="@+id/subSize"
+        android:title="버튼 2배 확대" />
+
+</menu>
+</script>
+<script type="text/plain" data-file="res/menu / menu2.xml (수업 파일 그대로)">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemRed"
+        android:title="배경색 (빨강)" />
+    <item
+        android:id="@+id/itemGreen"
+        android:title="배경색(초록)" />
+    <item
+        android:id="@+id/itemBlue"
+        android:title="배경색(파랑)" />
+
+</menu>
+</script>
+
+<h2 id="s0703">7-3 대화상자 + 커스텀 토스트</h2>
+<script type="text/plain" data-file="java / Self0703_org.java">
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class Self0703_org extends AppCompatActivity {
+
+    TextView tvName, tvEmail;
+    Button button1;
+    EditText dlgEdtName, dlgEdtEmail;
+    TextView toastText;
+    View dialogView, toastView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0703_main_org);
+        setTitle("사용자 정보 입력");
+
+        tvName = (TextView) findViewById(R.id.tvName);
+        tvEmail = (TextView) findViewById(R.id.tvEmail);
+        button1 = (Button) findViewById(R.id.button1);
+
+        button1.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                dialogView = (View) View.inflate(Self0703_org.this,
+                        R.layout.dialog1, null);
+
+                AlertDialog.Builder dlg = new AlertDialog.Builder(
+                        Self0703_org.this);
+                dlg.setTitle("사용자 정보 입력");
+                dlg.setIcon(R.drawable.ic_menu_allfriends);
+                dlg.setView(dialogView);
+                dlg.setPositiveButton("확인",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                dlgEdtName = (EditText) dialogView
+                                        .findViewById(R.id.dlgEdt1);
+                                dlgEdtEmail = (EditText) dialogView
+                                        .findViewById(R.id.dlgEdt2);
+
+                                tvName.setText(dlgEdtName.getText().toString());
+                                tvEmail.setText(dlgEdtEmail.getText()
+                                        .toString());
+                            }
+                        });
+
+                dlg.setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Toast toast = new Toast(Self0703_org.this);
+
+                                toastView = (View) View.inflate(
+                                        Self0703_org.this,
+                                        R.layout.toast1, null);
+                                toastText = (TextView) toastView
+                                        .findViewById(R.id.toastText1);
+                                toastText.setText("취소했습니다");
+                                toast.setView(toastView);
+                                toast.show();
+                            }
+                        });
+                dlg.show();
+            }
+        });
+    }
+}
+</script>
+<script type="text/plain" data-file="res/layout / self0703_main_org.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용자 이름"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="여기를 클릭" />
+
+</LinearLayout>
+</script>
+<script type="text/plain" data-file="res/layout / dialog1.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용자 이름"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/dlgEdt1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/dlgEdt2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+</script>
+<script type="text/plain" data-file="res/layout / toast1.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff0000"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_star_big_on" />
+
+    <TextView
+        android:id="@+id/toastText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="20dp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_star_big_on" />
+
+</LinearLayout>
+</script>
+
+<h2 id="dict-code">코드 사전 <small style="font-weight:400;color:var(--muted);font-size:13px">“이걸 하고 싶다” → 코드</small></h2>
+<h3 id="이벤트-언제-실행할지">이벤트 (언제 실행할지)</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>하고 싶은 것</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>클릭했을 때</td>
+<td><code>setOnClickListener(new View.OnClickListener() { public void onClick(View v) { } });</code></td>
+</tr>
+<tr class="even">
+<td><strong>길게 눌렀을 때 (롱클릭)</strong></td>
+<td>아래 코드 참고 — 반환형이 <strong>boolean</strong></td>
+</tr>
+<tr class="odd">
+<td>체크박스/스위치 상태 바뀔 때</td>
+<td>아래 코드 참고</td>
+</tr>
+<tr class="even">
+<td>터치했을 때</td>
+<td>아래 코드 참고</td>
+</tr>
+</tbody>
+</table>
+<div class="box"><div class="fn">Java</div><pre><code>// 롱클릭
+textView1.setOnLongClickListener(new View.OnLongClickListener() {
+    public boolean onLongClick(View v) {
+        // 할 일
+        return false;    // boolean 반환 필수
+    }
+});
+
+// 체크박스 / 스위치 / 토글버튼 체크 변경
+chk1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            // 체크됐을 때
+        } else {
+            // 해제됐을 때
+        }
+    }
+});
+
+// 터치
+button1.setOnTouchListener(new View.OnTouchListener() {
+    public boolean onTouch(View v, MotionEvent event) {
+        // 할 일
+        return false;
+    }
+});</code></pre></div>
+<h3 id="값-읽기-쓰기-변환">값 읽기 / 쓰기 / 변환</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>하고 싶은 것</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EditText 글자 읽기</td>
+<td><code>String s = edit1.getText().toString();</code></td>
+</tr>
+<tr class="even">
+<td>비어 있는지 검사</td>
+<td><code>if (s.trim().equals("")) { ... }</code></td>
+</tr>
+<tr class="odd">
+<td>글자 → 정수</td>
+<td><code>int n = Integer.parseInt(s);</code></td>
+</tr>
+<tr class="even">
+<td>글자 → 실수</td>
+<td><code>double d = Double.parseDouble(s);</code></td>
+</tr>
+<tr class="odd">
+<td>글자 → float (회전 각도 등)</td>
+<td><code>float f = Float.parseFloat(s);</code></td>
+</tr>
+<tr class="even">
+<td><strong>정수 → 글자 (setText에 넣을 때 필수!)</strong></td>
+<td><code>Integer.toString(n)</code> 또는 <code>"" + n</code></td>
+</tr>
+<tr class="odd">
+<td>실수 → 글자</td>
+<td><code>Double.toString(d)</code> / Double 객체면
+<code>result.toString()</code></td>
+</tr>
+<tr class="even">
+<td>TextView에 출력</td>
+<td><code>textView1.setText("결과 : " + result);</code></td>
+</tr>
+<tr class="odd">
+<td>EditText 비우기</td>
+<td><code>edit1.setText("");</code></td>
+</tr>
+<tr class="even">
+<td>소수점 첫째 자리까지 자르기</td>
+<td><code>result = (int)(result * 10) / 10.0;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="화면-변화">화면 변화</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>하고 싶은 것</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>보이기</td>
+<td><code>위젯.setVisibility(View.VISIBLE);</code></td>
+</tr>
+<tr class="even">
+<td>숨기기 (자리 남음)</td>
+<td><code>위젯.setVisibility(View.INVISIBLE);</code></td>
+</tr>
+<tr class="odd">
+<td>숨기기 (자리도 없앰)</td>
+<td><code>위젯.setVisibility(View.GONE);</code></td>
+</tr>
+<tr class="even">
+<td>글자색</td>
+<td><code>textView1.setTextColor(Color.RED);</code></td>
+</tr>
+<tr class="odd">
+<td>배경색</td>
+<td><code>layout1.setBackgroundColor(Color.BLUE);</code> /
+<code>Color.rgb(255,0,0)</code></td>
+</tr>
+<tr class="even">
+<td>글자 크기</td>
+<td><code>textView1.setTextSize(30);</code></td>
+</tr>
+<tr class="odd">
+<td>그림 바꾸기</td>
+<td><code>imageView1.setImageResource(R.drawable.jeju14);</code></td>
+</tr>
+<tr class="even">
+<td>회전</td>
+<td><code>imageView1.setRotation(45);</code></td>
+</tr>
+<tr class="odd">
+<td>2배 확대</td>
+<td><code>imageView1.setScaleX(2); imageView1.setScaleY(2);</code></td>
+</tr>
+<tr class="even">
+<td>2배 축소</td>
+<td><code>imageView1.setScaleX(0.5f); imageView1.setScaleY(0.5f);</code>
+← <strong>f 필수</strong></td>
+</tr>
+<tr class="odd">
+<td>원래 크기</td>
+<td><code>imageView1.setScaleX(1); imageView1.setScaleY(1);</code></td>
+</tr>
+<tr class="even">
+<td>사용 가능/불가</td>
+<td><code>button1.setEnabled(false);</code></td>
+</tr>
+<tr class="odd">
+<td>클릭 가능/불가</td>
+<td><code>button1.setClickable(false);</code></td>
+</tr>
+<tr class="even">
+<td>체크하기</td>
+<td><code>chk1.setChecked(true);</code></td>
+</tr>
+<tr class="odd">
+<td>앱 제목</td>
+<td><code>setTitle("제목");</code></td>
+</tr>
+<tr class="even">
+<td>앱 종료</td>
+<td><code>finish();</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Color 상수</strong>: <code>Color.RED</code>,
+<code>GREEN</code>, <code>BLUE</code>, <code>YELLOW</code>,
+<code>BLACK</code>, <code>WHITE</code>, <code>GRAY</code>,
+<code>CYAN</code>, <code>MAGENTA</code></p>
+<h3 id="토스트-짧은-알림-메시지">토스트 (짧은 알림 메시지)</h3>
+<div class="box"><div class="fn">Java</div><pre><code>// 기본
+Toast.makeText(getApplicationContext(), &quot;메시지&quot;, Toast.LENGTH_SHORT).show();
+
+// 익명 클래스(onClick 등) 안에서 this를 쓰고 싶으면 클래스명.this
+Toast.makeText(Self0702.this, &quot;메시지&quot;, Toast.LENGTH_LONG).show();</code></pre></div>
+<blockquote>
+<p><code>.show()</code> 빠뜨리면 아무것도 안 뜸!</p>
+</blockquote>
+<h3 id="라디오버튼-어떤-게-선택됐나">라디오버튼 어떤 게
+선택됐나</h3>
+<div class="box"><div class="fn">Java</div><pre><code>int id = rGroup1.getCheckedRadioButtonId();   // 선택 안 했으면 -1
+if (id == R.id.rdo1) {
+    // 선택1
+} else if (id == R.id.rdo2) {
+    // 선택2
+} else {
+    Toast.makeText(getApplicationContext(), &quot;먼저 선택하세요&quot;, Toast.LENGTH_SHORT).show();
+}</code></pre></div>
+<blockquote>
+<p><strong><code>switch (id) { case R.id.rdo1: }</code> 는 최신 Android
+Studio에서 오류</strong> → 항상 if-else 사용</p>
+</blockquote>
+<h3 id="같은-동작-버튼-여러-개-배열-for문">같은 동작 버튼 여러 개
+(배열 + for문)</h3>
+<div class="box"><div class="fn">Java</div><pre><code>Button[] numButtons = new Button[10];
+Integer[] numBtnIDs = { R.id.BtnNum0, R.id.BtnNum1, R.id.BtnNum2 /* ... */ };
+
+for (int i = 0; i &lt; numBtnIDs.length; i++) {
+    numButtons[i] = (Button) findViewById(numBtnIDs[i]);
+}
+for (int i = 0; i &lt; numBtnIDs.length; i++) {
+    final int index = i;              // 익명 클래스에서 쓰려면 final
+    numButtons[index].setOnClickListener(new View.OnClickListener() {
+        public void onClick(View v) {
+            edit1.setText(edit1.getText().toString()
+                    + numButtons[index].getText().toString());
+        }
+    });
+}</code></pre></div>
+<h2 id="dict-xml">XML 속성 사전 <small style="font-weight:400;color:var(--muted);font-size:13px">4장</small></h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>속성</th>
+<th>의미</th>
+<th>값 예시</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>layout_width</code> / <code>layout_height</code></td>
+<td>크기</td>
+<td><code>match_parent</code>(부모만큼),
+<code>wrap_content</code>(내용만큼), <code>100dp</code></td>
+</tr>
+<tr class="even">
+<td><code>id</code></td>
+<td>이름 (Java에서 찾을 때)</td>
+<td><code>@+id/button1</code></td>
+</tr>
+<tr class="odd">
+<td><code>text</code> / <code>hint</code></td>
+<td>글자 / 흐린 안내 글자</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>textSize</code></td>
+<td>글자 크기</td>
+<td><code>20sp</code></td>
+</tr>
+<tr class="odd">
+<td><code>textColor</code></td>
+<td>글자색</td>
+<td><code>#FF0000</code></td>
+</tr>
+<tr class="even">
+<td><code>textStyle</code></td>
+<td>굵게/기울임</td>
+<td><code>bold</code>, <code>italic</code>,
+<code>bold|italic</code></td>
+</tr>
+<tr class="odd">
+<td><code>background</code></td>
+<td>배경색 (Button은 <code>backgroundTint</code> 사용)</td>
+<td><code>#00ff00</code></td>
+</tr>
+<tr class="even">
+<td><code>layout_margin</code></td>
+<td><strong>바깥</strong> 여백</td>
+<td><code>20dp</code></td>
+</tr>
+<tr class="odd">
+<td><code>padding</code></td>
+<td><strong>안쪽</strong> 여백</td>
+<td><code>20dp</code></td>
+</tr>
+<tr class="even">
+<td><code>visibility</code></td>
+<td>보이기</td>
+<td><code>visible</code>, <code>invisible</code>, <code>gone</code></td>
+</tr>
+<tr class="odd">
+<td><code>enabled</code></td>
+<td>사용 가능</td>
+<td><code>false</code> → 비활성</td>
+</tr>
+<tr class="even">
+<td><code>clickable</code></td>
+<td>클릭 가능</td>
+<td><code>false</code></td>
+</tr>
+<tr class="odd">
+<td><code>rotation</code></td>
+<td>회전</td>
+<td><code>45</code></td>
+</tr>
+<tr class="even">
+<td><code>singleLine</code></td>
+<td>한 줄 입력</td>
+<td><code>true</code></td>
+</tr>
+<tr class="odd">
+<td><code>inputType</code></td>
+<td>입력 종류</td>
+<td><code>number</code>, <code>numberDecimal</code>, <code>phone</code>,
+<code>textPassword</code></td>
+</tr>
+<tr class="even">
+<td><code>checked</code></td>
+<td>처음부터 체크</td>
+<td><code>true</code></td>
+</tr>
+<tr class="odd">
+<td><code>src</code></td>
+<td>그림</td>
+<td><code>@drawable/jeju2</code></td>
+</tr>
+<tr class="even">
+<td><code>scaleType</code></td>
+<td>그림 크기 맞춤</td>
+<td><code>fitXY</code>, <code>fitCenter</code>, <code>center</code></td>
+</tr>
+</tbody>
+</table>
+<p>색 표기: <code>#RRGGBB</code> 또는 <code>#AARRGGBB</code> (AA =
+투명도, FF = 불투명)</p>
+
+<h2 id="err">오류 해결</h2>
+<table>
+  <tr><th>증상</th><th>해결</th></tr>
+  <tr><td>빨간 글씨 <code>Cannot resolve symbol</code></td><td><b>Alt+Enter</b> (import 자동 추가)</td></tr>
+  <tr><td><code>R.id.xxx</code> 빨간색</td><td>XML id 철자 확인 → Build → Rebuild Project</td></tr>
+  <tr><td><code>R.drawable.xxx</code> 빨간색</td><td>그림 파일이 res/drawable에 있는지, 이름이 소문자·숫자·_인지</td></tr>
+  <tr><td>실행하자마자 앱 종료</td><td><code>setContentView</code>의 XML과 id가 맞는지 / <code>setText(정수)</code> → <code>Integer.toString()</code></td></tr>
+  <tr><td>⋮ 메뉴 안 보임</td><td><code>onCreateOptionsMenu</code>에서 <code>return true</code></td></tr>
+  <tr><td>메뉴 눌러도 반응 없음 (7-1)</td><td><code>onOptionsItemSelected</code> 주석(//) 풀기</td></tr>
+  <tr><td>다른 화면이 실행됨</td><td>Manifest에서 <code>&lt;intent-filter&gt;</code>를 실행할 Activity로 옮기기</td></tr>
+  <tr><td>화면 위쪽이 상단바에 가려짐</td><td>build.gradle <code>targetSdk = 34</code> → Sync Now</td></tr>
+</table>
+
+</main>
+
+<script>
+  // <script type="text/plain"> 안의 코드를 그대로 <pre>로 (XML의 < 를 escape하지 않으려고)
+  document.querySelectorAll('script[type="text/plain"]').forEach(function (s) {
+    var box = document.createElement('div'); box.className = 'box';
+    var fn = document.createElement('div'); fn.className = 'fn'; fn.textContent = s.dataset.file;
+    var pre = document.createElement('pre'); pre.textContent = s.textContent.replace(/^\n/, '').replace(/\s+$/, '');
+    var b = document.createElement('button'); b.className = 'copy'; b.textContent = '복사';
+    b.onclick = function () {
+      var t = pre.textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
+        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
+      }).finally(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); });
+    };
+    box.appendChild(fn); box.appendChild(pre); box.appendChild(b); s.replaceWith(box);
+  });
+  document.querySelectorAll('.box').forEach(function (box) {
+    if (box.querySelector('.copy')) return;
+    var b = document.createElement('button'); b.className = 'copy'; b.textContent = '복사';
+    b.onclick = function () { navigator.clipboard.writeText(box.querySelector('pre').textContent).then(function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '복사'; }, 1200); }); };
+    box.appendChild(b);
+  });
+  var links = [].slice.call(document.querySelectorAll('nav a'));
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id); });
+    });
+  }, { rootMargin: '0px 0px -75% 0px' });
+  document.querySelectorAll('h2[id]').forEach(function (h) { io.observe(h); });
+</script>
+</body>
+</html>
