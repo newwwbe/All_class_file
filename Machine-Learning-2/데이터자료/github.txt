@@ -1,0 +1,14 @@
+github
+폴더 2개 만들기
+수업자료 / test.md
+code->code
+add file->upload file
+수업코드 / 
+두번째 체크 ->  install
+
+p value 값이 0.05% 이하 일때 귀무가설을 기각한다
+
+chi square 적합성? 독립성 검정
+분산분석
+(ANOVA)
+
