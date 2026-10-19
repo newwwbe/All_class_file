@@ -1,0 +1,2494 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>문제 + 해설</title>
+<style>
+  :root {
+    --bg: #f4f2f8; --card: #fff; --ink: #1d1b20; --sub: #5f5b66; --line: #e3dfea;
+    --primary: #6750A4; --mk: #ff6b00;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; line-height: 1.55; }
+  header.top { padding: 28px 16px 8px; max-width: 1100px; margin: 0 auto; }
+  header.top h1 { margin: 0 0 6px; font-size: 24px; }
+  header.top p { margin: 0; color: var(--sub); font-size: 14px; }
+  nav.toc { max-width: 1100px; margin: 12px auto; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+  nav.toc a { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--line);
+    color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { border-color: var(--primary); }
+  h2.ch { max-width: 1100px; margin: 32px auto 8px; padding: 0 16px; font-size: 18px; color: var(--primary); }
+  section.q { max-width: 1100px; margin: 14px auto; background: var(--card); border: 1px solid var(--line);
+    border-radius: 16px; padding: 20px; margin-left: 16px; margin-right: 16px; }
+  @media (min-width: 1132px) { section.q { margin-left: auto; margin-right: auto; } }
+  section.q h3 { margin: 0 0 4px; font-size: 18px; }
+  .meta { color: var(--sub); font-size: 13px; margin-bottom: 14px; }
+  .star { color: #e8a100; }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .shots { display: flex; flex-wrap: wrap; gap: 18px; }
+  .shot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .shot .cap { font-size: 12px; color: var(--sub); text-align: center; max-width: 240px; }
+  .desc { flex: 1; min-width: 260px; font-size: 14px; }
+  .desc ol, .desc ul { padding-left: 20px; margin: 6px 0; }
+  .desc li { margin: 3px 0; }
+  .warn { background: #fff4e5; border-left: 4px solid #ff9800; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin: 10px 0; }
+  details { margin-top: 10px; font-size: 13px; }
+  details summary { cursor: pointer; color: var(--primary); font-weight: 600; }
+  code { background: #f0edf6; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  /* ---------- phone mockup ---------- */
+  .phone { width: 240px; height: 470px; border: 9px solid #202124; border-radius: 26px; background: #fff;
+    overflow: hidden; display: flex; flex-direction: column; position: relative; flex-shrink: 0;
+    font-size: 12px; color: #222; }
+  .phone.tall { height: 520px; }
+  .status { height: 16px; background: #4f378b; color: #fff; font-size: 9px; padding: 0 8px; display: flex; justify-content: space-between; align-items: center; }
+  .appbar { height: 36px; background: var(--primary); color: #fff; font-size: 14px; padding: 0 10px;
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .screen { flex: 1; position: relative; overflow: hidden; }
+  .col { display: flex; flex-direction: column; }
+  .btn { background: var(--primary); color: #fff; border-radius: 18px; padding: 7px 8px; text-align: center; font-size: 11.5px;
+    position: relative; user-select: none; }
+  .btn.click { cursor: pointer; }
+  .edit { border-bottom: 2px solid var(--primary); padding: 5px 2px; color: #222; font-size: 12px; position: relative; }
+  .edit.hint { color: #999; }
+  .tv { position: relative; }
+  .img { background: linear-gradient(135deg, #7fc8a9, #3b8ea5); color: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; border-radius: 4px; position: relative; }
+  .toast { position: absolute; background: rgba(50,50,50,.92); color: #fff; border-radius: 16px; padding: 6px 12px;
+    font-size: 11px; white-space: nowrap; z-index: 5; }
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,.45); z-index: 4; display: flex; align-items: center; justify-content: center; }
+  .dialog { background: #fff; border-radius: 14px; width: 86%; padding: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+  .dialog .t { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .dialog .acts { display: flex; justify-content: flex-end; gap: 14px; margin-top: 10px; color: var(--primary); font-weight: 700; font-size: 12px; }
+  .radio { display: inline-block; width: 12px; height: 12px; border: 2px solid #666; border-radius: 50%; vertical-align: -2px; margin-right: 5px; position: relative; }
+  .radio.on { border-color: var(--primary); }
+  .radio.on::after { content: ""; position: absolute; inset: 2px; border-radius: 50%; background: var(--primary); }
+  .chk { display: inline-block; width: 12px; height: 12px; border: 2px solid #666; border-radius: 2px; vertical-align: -2px; margin-right: 5px; }
+  .chk.on { background: var(--primary); border-color: var(--primary); }
+  .menu { position: absolute; top: 4px; right: 4px; background: #fff; width: 150px; box-shadow: 0 4px 14px rgba(0,0,0,.3);
+    border-radius: 6px; z-index: 6; font-size: 12px; padding: 4px 0; }
+  .menu div { padding: 7px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .menu .grp { background: #f6f3fb; }
+  /* 번호 마커: 설명 목록의 번호와 연결 */
+  .mk { position: absolute; top: -7px; left: -7px; width: 16px; height: 16px; border-radius: 50%; background: var(--mk);
+    color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; z-index: 9;
+    box-shadow: 0 0 0 2px #fff; }
+  .n { display: inline-flex; width: 17px; height: 17px; border-radius: 50%; background: var(--mk); color: #fff; font-size: 10.5px;
+    font-weight: 700; align-items: center; justify-content: center; margin-right: 4px; vertical-align: 1px; }
+  .dash { outline: 1.5px dashed #ff6b00; outline-offset: 2px; }
+  .ghost { opacity: .35; }
+  .picker { display: flex; justify-content: center; gap: 14px; padding: 10px 0; }
+  .picker div { text-align: center; line-height: 1.9; }
+  .picker .f { color: #bbb; font-size: 11px; }
+  .picker .c { font-size: 15px; font-weight: 700; border-top: 1px solid var(--primary); border-bottom: 1px solid var(--primary); }
+  .meta a.sol { display: inline-block; margin-left: 6px; padding: 2px 10px; border-radius: 999px; background: var(--primary); color: #fff; text-decoration: none; font-weight: 600; }
+  .meta a.sol:hover { opacity: .85; }
+  details.ans { margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 10px; font-size: 14px; }
+  details.ans.common { border-top: 0; margin-top: 10px; }
+  details.ans > summary { display: inline-block; cursor: pointer; padding: 5px 14px; border-radius: 999px; background: var(--primary); color: #fff; font-weight: 600; font-size: 13px; list-style: none; }
+  details.ans > summary::-webkit-details-marker { display: none; }
+  details.ans[open] > summary { background: #4f378b; }
+  details.ans h4 { margin: 14px 0 6px; font-size: 14.5px; }
+  .file { margin: 10px 0; border-radius: 10px; overflow: hidden; border: 1px solid #2b2930; }
+  .fname { background: #2b2930; color: #d0bcff; font-size: 12px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-family: Consolas, monospace; gap: 8px; }
+  .fname button { background: #49454f; color: #fff; border: 0; border-radius: 6px; font-size: 11px; padding: 3px 9px; cursor: pointer; flex-shrink: 0; }
+  .file pre { margin: 0; background: #1d1b20; color: #e6e1e5; padding: 12px 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.5; font-family: Consolas, "D2Coding", monospace; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>안드로이드 코딩 실기 예상문제, 화면 미리보기 (4~7장)</h1>
+  <p>각 문제를 실행했을 때 <b>이렇게 보이면 정답</b>인 화면을 그렸습니다. 주황색 <span class="n">1</span> 번호는 오른쪽 조건 번호와 연결돼요. 크기는 대략적인 비율입니다. 문제 3·12는 목업을 직접 눌러볼 수 있어요. 각 문제 아래 <b>정답·해설 보기</b>를 누르면 해설이 펼쳐집니다.</p>
+  <details class="ans common"><summary>모든 문제 공통 주의</summary>
+<div class="note">
+  <h4 style="margin-top:0;">모든 문제 공통</h4>
+  <ul>
+    <li><b>package와 import는 생략</b>했습니다. Android Studio에서 빨간 글자 위에 <code>Alt+Enter</code>를 누르면 import가 자동 추가돼요.</li>
+    <li><b>AlertDialog는 <code>androidx.appcompat.app.AlertDialog</code></b>를 import하세요. (android.app 쪽도 동작은 하지만 수업 기준은 androidx)</li>
+    <li>새 Activity를 만들었다면 <b>AndroidManifest.xml에 등록</b>돼야 실행됩니다. 실행할 Activity에 <code>&lt;intent-filter&gt;</code>(MAIN + LAUNCHER)를 옮기세요.</li>
+    <li><b><code>switch (v.getId())</code> + <code>case R.id.xxx:</code>는 쓰지 마세요.</b> 최신 Android Studio(AGP 8 이상)에서는 R.id 값이 상수가 아니라서 "Constant expression required" 오류가 납니다. 그래서 이 해설은 전부 <code>if / else if</code>로 썼습니다.</li>
+    <li>리스너 안(익명 클래스)에서 <code>this</code>는 Activity가 아니라 리스너 자신입니다. Context가 필요하면 <code>MainActivity.this</code>처럼 <b>클래스명.this</b> 또는 <code>getApplicationContext()</code>를 쓰세요.</li>
+  </ul>
+</div>
+  </details>
+</header>
+
+<nav class="toc">
+  <a href="#q1">1 위젯 속성</a><a href="#q2">2 계산기</a><a href="#q3">3 사진 보기</a>
+  <a href="#q4">4 gravity</a><a href="#q5">5 weight</a><a href="#q6">6 Relative</a><a href="#q7">7 Java 화면</a>
+  <a href="#q8">8 예약 앱</a><a href="#q9">9 뷰플리퍼</a><a href="#q10">10 웹브라우저</a>
+  <a href="#q11">11 옵션 메뉴</a><a href="#q12">12 토스트</a><a href="#q13">13 대화상자</a><a href="#q14">14 컨텍스트 메뉴</a>
+</nav>
+
+<!-- ===================== 4장 ===================== -->
+<h2 class="ch">[4장] 기본 위젯</h2>
+
+<section class="q" id="q1">
+  <h3>문제 1. 위젯 속성으로 화면 꾸미기 <span class="star">★</span></h3>
+  <div class="meta">직접 풀어보기 4-2 변형 · 파일: self0401_main.xml · 레이아웃: 세로 LinearLayout <a class="sol" href="#q1-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">문제1</div>
+          <div class="screen col">
+            <!-- 회전 버튼: 원래 자리 중심으로 90도 돌아 세로 막대처럼 보이고 아래 위젯과 겹침 -->
+            <div style="margin:14px; height:32px; position:relative;">
+              <div class="btn" style="background:#00ff00;color:#000;border-radius:2px;position:absolute;inset:0;transform:rotate(90deg);display:flex;align-items:center;justify-content:center;">버튼 1</div>
+              <span class="mk" style="left:90px;">1</span>
+            </div>
+            <div class="tv" style="margin:14px;text-align:center;font-size:15px;position:relative;z-index:2;">이건 텍스트뷰입니다.<span class="mk">2</span></div>
+            <div style="margin:14px;position:relative;z-index:2;"><span class="edit" style="display:inline-block;background:#ff0000;color:#fff;border:none;padding:6px 8px;opacity:.85;">수정할 수 없어요</span><span class="mk">3</span></div>
+            <div style="margin:14px;align-self:flex-end;position:relative;z-index:2;">
+              <div class="btn" style="width:99px;height:144px;border-radius:12px;display:flex;align-items:center;justify-content:center;">버튼 2</div><span class="mk">4</span>
+            </div>
+          </div>
+        </div>
+        <div class="cap">버튼 1은 회전 때문에 <b>세로 막대처럼 다른 위젯과 겹쳐 보이는 게 정상</b></div>
+      </div>
+    </div>
+    <div class="desc">
+      <ol style="list-style:none;padding:0;">
+        <li><span class="n">1</span><b>Button</b> 가로 전체(match_parent), margin 20dp, 배경 #00ff00, "버튼 1", <b>90도 회전</b></li>
+        <li><span class="n">2</span><b>TextView</b> 가로 전체, margin 20dp, "이건 텍스트뷰입니다.", 글자 가운데 정렬, 20sp</li>
+        <li><span class="n">3</span><b>EditText</b> wrap_content, margin 20dp, 배경 #ff0000, "수정할 수 없어요", <b>비활성화</b>(눌러도 키보드 안 뜸, 글자 흐릿)</li>
+        <li><span class="n">4</span><b>Button</b> 가로 137dp × 세로 200dp, margin 20dp, "버튼 2", <b>화면 오른쪽</b></li>
+      </ol>
+      <p>Java는 <code>setContentView(R.layout.self0401_main)</code> + <code>setTitle("문제1")</code>만. 상단바 제목이 "문제1"로 바뀌면 됩니다.</p>
+      <div class="warn">Material 테마에서는 버튼의 <code>android:background</code> 색이 안 먹고 보라색으로 남을 수 있어요. 그럴 땐 <code>android:backgroundTint</code>를 쓰거나 테마를 확인하세요.</div>
+      <details><summary>속성 힌트 (스포일러)</summary>
+        <code>android:rotation="90"</code> · <code>android:gravity="center"</code> · <code>android:textSize="20sp"</code> · <code>android:enabled="false"</code> · <code>android:layout_gravity="right"</code> · <code>android:layout_margin="20dp"</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q1-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>rotation</code>: 위젯을 <b>자기 중심 기준</b>으로 돌림. 자리는 그대로라 다른 위젯과 겹쳐 보여도 정상.</li>
+    <li><code>gravity</code> = <b>내 안의 내용</b>(글자) 위치 / <code>layout_gravity</code> = <b>부모 안에서 나</b>의 위치.</li>
+    <li><code>enabled="false"</code>: 클릭·입력 자체가 안 됨(글자도 흐려짐). "입력 불가"의 정답.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/self0401_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#00ff00"
+        android:rotation="90"
+        android:text="버튼 1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:text="이건 텍스트뷰입니다."
+        android:textSize="20sp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#ff0000"
+        android:enabled="false"
+        android:text="수정할 수 없어요" />
+
+    <Button
+        android:layout_width="137dp"
+        android:layout_height="200dp"
+        android:layout_gravity="right"
+        android:layout_margin="20dp"
+        android:text="버튼 2" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Self0401.java">
+public class Self0401 extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0401_main);
+        setTitle("문제1");
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · TextView "가운데 정렬"을 <code>layout_gravity</code>로 쓰면 오답. 가로가 match_parent라 위젯은 이미 꽉 차 있고, <b>글자</b>를 옮겨야 하니 <code>gravity</code>.<br>
+    · 버튼 배경색이 안 바뀌고 보라색이면 Material 테마 때문. <code>android:backgroundTint="#00ff00"</code>로 바꾸면 됩니다.</div>
+  </details>
+</section>
+
+<section class="q" id="q2">
+  <h3>문제 2. 초간단 계산기 <span class="star">★★</span></h3>
+  <div class="meta">직접 풀어보기 4-3 · Self0402.java <a class="sol" href="#q2-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">초간단 계산기</div>
+          <div class="screen col" style="padding:4px 0;">
+            <div class="edit" style="margin:4px 8px;">10<span class="mk">1</span></div>
+            <div class="edit" style="margin:4px 8px 6px;">3</div>
+            <div class="btn" style="margin:7px;">더하기<span class="mk">2</span></div>
+            <div class="btn" style="margin:7px;">빼기</div>
+            <div class="btn" style="margin:7px;">곱하기</div>
+            <div class="btn" style="margin:7px;">나누기</div>
+            <div class="btn" style="margin:7px;">나머지</div>
+            <div class="tv" style="margin:6px 8px;color:#ff0000;font-size:21px;">계산 결과 : 3.3<span class="mk">3</span></div>
+          </div>
+        </div>
+        <div class="cap">10, 3 입력 후 <b>나누기</b>를 눌렀을 때</div>
+      </div>
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">초간단 계산기</div>
+          <div class="screen col" style="padding:4px 0;">
+            <div class="edit hint" style="margin:4px 8px;">숫자1</div>
+            <div class="edit" style="margin:4px 8px 6px;">5</div>
+            <div class="btn" style="margin:7px;">더하기</div><div class="btn" style="margin:7px;">빼기</div>
+            <div class="btn" style="margin:7px;">곱하기</div><div class="btn" style="margin:7px;">나누기</div>
+            <div class="btn" style="margin:7px;">나머지</div>
+            <div class="tv" style="margin:6px 8px;color:#ff0000;font-size:21px;">계산 결과 : </div>
+            <div class="toast" style="bottom:22px;left:50%;transform:translateX(-50%);">입력 값이 비었습니다</div>
+          </div>
+        </div>
+        <div class="cap">하나라도 비어 있으면 토스트, 계산 안 함<br>(두 번째 수가 0이면 "0으로 나누면 안됩니다!")</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ul style="list-style:none;padding:0;">
+        <li><span class="n">1</span><b>EditText 2개</b> <code>Edit1</code>, <code>Edit2</code>, 비었을 때 hint "숫자1"/"숫자2" 회색 표시. <b>숫자 키패드만</b> 떠야 함</li>
+        <li><span class="n">2</span><b>Button 5개</b> <code>BtnAdd · BtnSub · BtnMul · BtnDiv · BtnRem</code>, 가로 전체, margin 10dp</li>
+        <li><span class="n">3</span><b>TextView</b> <code>TextResult</code>, 30sp, 빨간 글자</li>
+      </ul>
+      <p><b>동작 체크 예시</b></p>
+      <ul>
+        <li>10 + 3 → <code>계산 결과 : 13.0</code> (Double이라 .0 붙음)</li>
+        <li>10 / 3 → <code>계산 결과 : 3.3</code> (소수 첫째 자리까지)</li>
+        <li>10 % 3 → <code>계산 결과 : 1.0</code></li>
+        <li>10 / 0 또는 10 % 0 → 토스트 "0으로 나누면 안됩니다!"</li>
+      </ul>
+      <details><summary>속성/코드 힌트 (스포일러)</summary>
+        <code>android:inputType="numberDecimal"</code> · <code>Double.parseDouble()</code> · <code>getText().toString().trim().isEmpty()</code> · <code>String.format("%.1f", 값)</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q2-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>inputType="numberDecimal"</code>: 숫자 키패드 + 소수점만 입력 가능.</li>
+    <li>EditText 값은 <code>getText().toString()</code>으로 문자열 → <code>Double.parseDouble()</code>로 실수 변환.</li>
+    <li>버튼 5개가 <b>리스너 하나를 공유</b>하고 <code>v == btnAdd</code>처럼 어떤 버튼인지 구분하면 코드가 짧아집니다.</li>
+    <li><b>왜 0 검사가 필요한가:</b> double은 0으로 나눠도 앱이 안 죽고 <code>Infinity</code>, <code>NaN</code>이 찍혀요. 그래서 직접 막아야 합니다.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/self0402_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/Edit1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="숫자1"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/Edit2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="숫자2"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/BtnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="더하기" />
+
+    <Button
+        android:id="@+id/BtnSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="빼기" />
+
+    <Button
+        android:id="@+id/BtnMul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="곱하기" />
+
+    <Button
+        android:id="@+id/BtnDiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="나누기" />
+
+    <Button
+        android:id="@+id/BtnRem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="나머지" />
+
+    <TextView
+        android:id="@+id/TextResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="계산 결과 : "
+        android:textColor="#FF0000"
+        android:textSize="30sp" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Self0402.java">
+public class Self0402 extends AppCompatActivity {
+    EditText edit1, edit2;
+    Button btnAdd, btnSub, btnMul, btnDiv, btnRem;
+    TextView textResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0402_main);
+        setTitle("초간단 계산기");
+
+        edit1 = findViewById(R.id.Edit1);
+        edit2 = findViewById(R.id.Edit2);
+        btnAdd = findViewById(R.id.BtnAdd);
+        btnSub = findViewById(R.id.BtnSub);
+        btnMul = findViewById(R.id.BtnMul);
+        btnDiv = findViewById(R.id.BtnDiv);
+        btnRem = findViewById(R.id.BtnRem);
+        textResult = findViewById(R.id.TextResult);
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s1 = edit1.getText().toString().trim();
+                String s2 = edit2.getText().toString().trim();
+
+                if (s1.isEmpty() || s2.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "입력 값이 비었습니다",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double num1 = Double.parseDouble(s1);
+                double num2 = Double.parseDouble(s2);
+
+                if ((v == btnDiv || v == btnRem) && num2 == 0) {
+                    Toast.makeText(getApplicationContext(), "0으로 나누면 안됩니다!",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String result;
+                if (v == btnAdd) {
+                    result = String.valueOf(num1 + num2);
+                } else if (v == btnSub) {
+                    result = String.valueOf(num1 - num2);
+                } else if (v == btnMul) {
+                    result = String.valueOf(num1 * num2);
+                } else if (v == btnDiv) {
+                    result = String.format("%.1f", num1 / num2);   // 10/3 -> 3.3
+                } else {
+                    result = String.valueOf(num1 % num2);
+                }
+                textResult.setText("계산 결과 : " + result);
+            }
+        };
+
+        btnAdd.setOnClickListener(listener);
+        btnSub.setOnClickListener(listener);
+        btnMul.setOnClickListener(listener);
+        btnDiv.setOnClickListener(listener);
+        btnRem.setOnClickListener(listener);
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>Integer.parseInt()</code>를 쓰면 "실수 계산" 조건 위반이고, 3.5 같은 값에서 앱이 죽습니다.<br>
+    · 빈 칸 검사를 <b>parseDouble보다 먼저</b> 해야 합니다. 순서가 바뀌면 빈 문자열 변환에서 앱이 죽어요.<br>
+    · <code>String.format("%.1f")</code>는 반올림합니다(2/3 → 0.7). 같은 결과를 <code>Math.round(x * 10) / 10.0</code>으로도 낼 수 있어요.<br>
+    · 교재처럼 버튼마다 리스너를 따로 만들어도 정답입니다. 단, 계산식만 다르고 검사 코드는 5번 반복돼요.</div>
+  </details>
+</section>
+
+<section class="q" id="q3">
+  <h3>문제 3. 좋아하는 안드로이드 사진 보기 <span class="star">★★★</span></h3>
+  <div class="meta">교재 4장 예제 변형 · 오른쪽 목업은 직접 눌러볼 수 있어요 <a class="sol" href="#q3-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">안드로이드 사진 보기</div>
+          <div class="screen col" style="padding:10px;gap:8px;">
+            <div>선택을 시작하겠습니까?</div>
+            <div><span class="chk"></span>시작함</div>
+            <div style="flex:1;border:1.5px dashed #ccc;border-radius:6px;color:#aaa;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;">아래 위젯들은 있지만<br>invisible이라 빈 공간</div>
+          </div>
+        </div>
+        <div class="cap">① 처음 실행: 체크 안 됨</div>
+      </div>
+      <div class="shot">
+        <div class="phone" id="q3phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">안드로이드 사진 보기</div>
+          <div class="screen col" style="padding:10px;gap:6px;">
+            <div>선택을 시작하겠습니까?</div>
+            <div class="click" style="cursor:pointer;position:relative;" id="q3chk"><span class="chk on"></span>시작함<span class="mk">1</span></div>
+            <div id="q3hide" class="col" style="gap:6px;">
+              <div>좋아하는 안드로이드 버전은?</div>
+              <div class="q3r" data-img="q10" style="cursor:pointer;"><span class="radio"></span>Q 10</div>
+              <div class="q3r" data-img="r11" style="cursor:pointer;"><span class="radio on"></span>R 11</div>
+              <div class="q3r" data-img="s12" style="cursor:pointer;"><span class="radio"></span>S 12</div>
+              <div class="btn click" id="q3ok" style="align-self:flex-start;padding:7px 14px;">선택 완료<span class="mk">2</span></div>
+              <div class="img" id="q3img" style="width:150px;height:150px;">(그림: r11)</div>
+              <div class="toast" id="q3toast" style="display:none;bottom:12px;left:50%;transform:translateX(-50%);">버전을 먼저 선택하세요</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">② 체크 후 R 선택 → 선택 완료<br><b>눌러보기:</b> 체크박스, 라디오, 버튼</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ol style="list-style:none;padding:0;">
+        <li><span class="n">1</span><b>CheckBox</b> <code>chkAgree</code> 체크 → 아래 위젯 전부 보임 / 해제 → 전부 사라짐 (<code>setOnCheckedChangeListener</code>)</li>
+        <li><span class="n">2</span><b>"선택 완료"</b> → 고른 라디오에 맞는 그림 <code>q10 / r11 / s12</code>를 ImageView(300×300dp)에 표시. 아무것도 안 골랐으면 토스트 "버전을 먼저 선택하세요"</li>
+      </ol>
+      <p>숨겨지는 위젯: <code>text2</code>, <code>Rgroup1</code>(RdoQ·RdoR·RdoS), <code>BtnOK</code>, <code>ImgPet</code></p>
+      <div class="warn">그림 파일 <code>q10, r11, s12</code>를 <code>res/drawable</code>에 넣어야 합니다. 파일명은 소문자·숫자·밑줄만 가능.</div>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>android:visibility="invisible"</code> · <code>setVisibility(View.VISIBLE)</code> · <code>getCheckedRadioButtonId()</code> (선택 없으면 -1) · <code>setImageResource(R.drawable.q10)</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q3-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>visibility</code> 3가지: <code>visible</code> 보임 / <code>invisible</code> 안 보이지만 <b>자리는 차지</b> / <code>gone</code> 자리까지 없앰.</li>
+    <li>체크 상태가 바뀔 때 = <code>setOnCheckedChangeListener</code>, 두 번째 인자 <code>isChecked</code>가 true/false.</li>
+    <li><code>getCheckedRadioButtonId()</code>: 선택된 라디오버튼 id, <b>아무것도 안 골랐으면 -1</b>.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob03_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="선택을 시작하겠습니까?" />
+
+    <CheckBox
+        android:id="@+id/chkAgree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="시작함" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="좋아하는 안드로이드 버전은?"
+        android:visibility="invisible" />
+
+    <RadioGroup
+        android:id="@+id/Rgroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+
+        <RadioButton
+            android:id="@+id/RdoQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Q 10" />
+
+        <RadioButton
+            android:id="@+id/RdoR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="R 11" />
+
+        <RadioButton
+            android:id="@+id/RdoS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S 12" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/BtnOK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="선택 완료"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/ImgPet"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:visibility="invisible" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Prob03.java">
+public class Prob03 extends AppCompatActivity {
+    CheckBox chkAgree;
+    TextView text2;
+    RadioGroup rGroup1;
+    Button btnOK;
+    ImageView imgPet;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob03_main);
+        setTitle("안드로이드 사진 보기");
+
+        chkAgree = findViewById(R.id.chkAgree);
+        text2 = findViewById(R.id.text2);
+        rGroup1 = findViewById(R.id.Rgroup1);
+        btnOK = findViewById(R.id.BtnOK);
+        imgPet = findViewById(R.id.ImgPet);
+
+        chkAgree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int vis = isChecked ? View.VISIBLE : View.INVISIBLE;
+                text2.setVisibility(vis);
+                rGroup1.setVisibility(vis);
+                btnOK.setVisibility(vis);
+                imgPet.setVisibility(vis);
+            }
+        });
+
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = rGroup1.getCheckedRadioButtonId();
+                if (id == R.id.RdoQ) {
+                    imgPet.setImageResource(R.drawable.q10);
+                } else if (id == R.id.RdoR) {
+                    imgPet.setImageResource(R.drawable.r11);
+                } else if (id == R.id.RdoS) {
+                    imgPet.setImageResource(R.drawable.s12);
+                } else {
+                    Toast.makeText(getApplicationContext(), "버전을 먼저 선택하세요",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · 체크 해제 때 <code>View.GONE</code>을 써도 사라지긴 하지만, 문제 조건이 invisible이니 <code>View.INVISIBLE</code>이 안전합니다.<br>
+    · 그림 파일 <code>q10.png, r11.png, s12.png</code>가 <code>res/drawable</code>에 없으면 <code>R.drawable.q10</code>이 빨간 글자로 뜹니다. 파일명은 소문자로 시작해야 해요.<br>
+    · 라디오버튼은 반드시 <b>RadioGroup 안에</b> 있어야 하나만 선택됩니다.</div>
+  </details>
+</section>
+
+<!-- ===================== 5장 ===================== -->
+<h2 class="ch">[5장] 레이아웃</h2>
+
+<section class="q" id="q4">
+  <h3>문제 4. gravity와 layout_gravity <span class="star">★</span></h3>
+  <div class="meta">직접 풀어보기 5-1 · 버튼 모두 세로 100dp <a class="sol" href="#q4-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone tall">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">gravity 연습</div>
+          <div class="screen col" style="gap:0;">
+            <div class="btn" style="width:79px;height:72px;align-self:center;border-radius:10px;display:flex;align-items:flex-start;justify-content:flex-end;margin:2px 0;">버튼1<span class="mk">1</span></div>
+            <div class="btn" style="width:79px;height:72px;align-self:flex-start;border-radius:10px;display:flex;align-items:center;justify-content:flex-start;margin:2px 0;">버튼2<span class="mk">2</span></div>
+            <div class="btn" style="width:79px;height:72px;align-self:flex-end;border-radius:10px;display:flex;align-items:flex-end;justify-content:flex-end;margin:2px 0;">버튼3<span class="mk">3</span></div>
+            <div class="btn" style="height:72px;background:#ff0000;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:2px 0;">버튼4<span class="mk">4</span></div>
+            <div class="btn" style="width:144px;height:72px;background:#ff0000;align-self:flex-start;border-radius:10px;display:flex;align-items:flex-start;justify-content:flex-start;margin:2px 0;">버튼5<span class="mk">5</span></div>
+          </div>
+        </div>
+        <div class="cap">버튼 자체 위치 = layout_gravity<br>버튼 안 글자 위치 = gravity</div>
+      </div>
+    </div>
+    <div class="desc">
+      <table style="border-collapse:collapse;font-size:13px;width:100%;">
+        <tr style="background:#f0edf6;"><th style="padding:5px;text-align:left;">버튼</th><th style="text-align:left;">가로</th><th style="text-align:left;">버튼 위치</th><th style="text-align:left;">글자 위치</th><th style="text-align:left;">색</th></tr>
+        <tr><td style="padding:4px;"><span class="n">1</span></td><td>110dp</td><td>가운데</td><td>오른쪽 위</td><td>기본</td></tr>
+        <tr><td style="padding:4px;"><span class="n">2</span></td><td>110dp</td><td>왼쪽</td><td>왼쪽 가운데</td><td>기본</td></tr>
+        <tr><td style="padding:4px;"><span class="n">3</span></td><td>110dp</td><td>오른쪽</td><td>오른쪽 아래</td><td>기본</td></tr>
+        <tr><td style="padding:4px;"><span class="n">4</span></td><td>전체</td><td>가운데</td><td>가운데</td><td style="color:#f00;">빨강</td></tr>
+        <tr><td style="padding:4px;"><span class="n">5</span></td><td>200dp</td><td>왼쪽</td><td>왼쪽 위</td><td style="color:#f00;">빨강</td></tr>
+      </table>
+      <p>빨간색은 <code>res/values/colors.xml</code>에 <code>&lt;color name="red"&gt;#FF0000&lt;/color&gt;</code> 등록 후 <code>@color/red</code>로 사용.</p>
+      <details><summary>속성 힌트 (스포일러)</summary>
+        <code>android:layout_gravity="center | left | right"</code> · <code>android:gravity="right|top"</code>, <code>"left|center_vertical"</code>, <code>"right|bottom"</code>, <code>"center"</code>, <code>"left|top"</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q4-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>표의 "버튼 위치" 열 = <code>layout_gravity</code>, "글자 위치" 열 = <code>gravity</code>. 이 문제는 이 구분 하나만 묻습니다.</li>
+    <li>두 방향을 합칠 땐 <code>|</code>: <code>"right|top"</code> = 오른쪽 위.</li>
+    <li>세로 LinearLayout 안에서 layout_gravity는 <b>가로 위치만</b> 의미 있어요 (세로는 순서대로 쌓이니까).</li>
+  </ul>
+  <script type="text/plain" data-file="res/values/colors.xml (기존 파일에 한 줄 추가)">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 기존 color들은 그대로 두고 아래 줄만 추가 -->
+    <color name="red">#FF0000</color>
+</resources>
+  </script>
+  <script type="text/plain" data-file="res/layout/prob04_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:gravity="right|top"
+        android:text="버튼1" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:gravity="left|center_vertical"
+        android:text="버튼2" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="100dp"
+        android:layout_gravity="right"
+        android:gravity="right|bottom"
+        android:text="버튼3" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@color/red"
+        android:text="버튼4" />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:gravity="left|top"
+        android:background="@color/red"
+        android:text="버튼5" />
+</LinearLayout>
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>center_vertical</code>(세로 가운데)과 <code>center</code>(가로+세로 가운데)는 다릅니다. 버튼2는 "왼쪽 가운데"라 <code>left|center_vertical</code>.<br>
+    · 빨간색을 <code>#FF0000</code>으로 직접 쓰면 "colors.xml 등록" 조건 위반.<br>
+    · 빨간 배경이 안 보이면 문제 1과 같은 Material 테마 문제 → <code>android:backgroundTint="@color/red"</code>.</div>
+  </details>
+</section>
+
+<section class="q" id="q5">
+  <h3>문제 5. 중첩 LinearLayout과 weight <span class="star">★★</span></h3>
+  <div class="meta">직접 풀어보기 5-2 · LinearLayout만 사용 <a class="sol" href="#q5-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">weight 연습</div>
+          <div class="screen col" style="color:#fff;font-size:11px;">
+            <div style="flex:1;display:flex;">
+              <div style="flex:1;background:#ff0000;display:flex;align-items:center;justify-content:center;">빨강</div>
+              <div style="flex:1;display:flex;flex-direction:column;">
+                <div style="flex:1;background:#ffff00;color:#000;display:flex;align-items:center;justify-content:center;">노랑</div>
+                <div style="flex:1;background:#000;display:flex;align-items:center;justify-content:center;">검정</div>
+              </div>
+            </div>
+            <div style="flex:1;display:flex;">
+              <div style="flex:1;background:#ffff00;color:#000;display:flex;align-items:center;justify-content:center;">노랑</div>
+              <div style="flex:1;background:#000;display:flex;align-items:center;justify-content:center;">검정</div>
+              <div style="flex:1;background:#ff0000;display:flex;align-items:center;justify-content:center;">빨강</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">화면 꽉 차게, 칸 사이 여백 없음</div>
+      </div>
+      <div class="shot">
+        <div style="width:240px;font-size:12px;font-family:Consolas,monospace;background:#f7f5fb;border-radius:10px;padding:10px;line-height:1.6;">
+          LinearLayout <b>vertical</b><br>
+          ├ LinearLayout <b>horizontal</b> (w1)<br>
+          │ ├ 빨강 (w1)<br>
+          │ └ LinearLayout <b>vertical</b> (w1)<br>
+          │ &nbsp;&nbsp;├ 노랑 (w1)<br>
+          │ &nbsp;&nbsp;└ 검정 (w1)<br>
+          └ LinearLayout <b>horizontal</b> (w1)<br>
+          &nbsp;&nbsp;├ 노랑 (w1)<br>
+          &nbsp;&nbsp;├ 검정 (w1)<br>
+          &nbsp;&nbsp;└ 빨강 (w1)
+        </div>
+        <div class="cap">레이아웃 나무 구조 (w1 = layout_weight="1")</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ul>
+        <li>화면 <b>위/아래 1:1</b></li>
+        <li>위쪽은 <b>좌/우 1:1</b>, 오른쪽 칸은 다시 <b>위/아래 1:1</b></li>
+        <li>아래쪽은 가로 <b>1:1:1</b></li>
+        <li>색 칸은 LinearLayout(또는 TextView 등)에 배경색만 주면 됨</li>
+      </ul>
+      <details><summary>속성 힌트 (스포일러)</summary>
+        weight로 나눌 방향의 크기를 <code>0dp</code>로: 세로로 나누면 <code>layout_height="0dp"</code>, 가로로 나누면 <code>layout_width="0dp"</code> + <code>layout_weight="1"</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q5-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>layout_weight</code>: 남은 공간을 비율로 나눔. 모두 1이면 똑같이.</li>
+    <li><b>나누는 방향의 크기를 0dp로</b>: 세로로 나누면 <code>layout_height="0dp"</code>, 가로로 나누면 <code>layout_width="0dp"</code>. 이렇게 해야 정확히 같은 비율이 됩니다.</li>
+    <li>"세로 안에 가로, 가로 안에 세로"로 상자를 쪼개 나간다고 생각하면 쉬워요.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob05_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 위쪽 절반: 좌/우 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FF0000" />
+
+        <!-- 오른쪽 칸: 다시 위/아래 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#FFFF00" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#000000" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 아래쪽 절반: 가로 1:1:1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFF00" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FF0000" />
+    </LinearLayout>
+</LinearLayout>
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · 바깥 레이아웃에 <code>orientation</code>을 빼먹으면 기본값이 <b>horizontal</b>이라 위/아래가 아니라 좌/우로 나뉩니다.<br>
+    · 0dp 대신 match_parent에 weight를 주면 비율이 거꾸로 나오는 등 이상해질 수 있어요.<br>
+    · Java는 <code>setContentView(R.layout.prob05_main)</code>만 있으면 됩니다.</div>
+  </details>
+</section>
+
+<section class="q" id="q6">
+  <h3>문제 6. RelativeLayout 버튼 배치 <span class="star">★★</span></h3>
+  <div class="meta">직접 풀어보기 5-4 · 바깥은 세로 LinearLayout <a class="sol" href="#q6-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">전화번호 입력</div>
+          <div class="screen col">
+            <div style="display:flex;align-items:center;gap:6px;padding:8px;position:relative;">
+              <span style="font-size:18px;">전화번호</span>
+              <div class="edit hint" style="flex:1;">000-0000-0000</div>
+              <span class="mk">1</span>
+            </div>
+            <div class="dash" style="position:relative;height:130px;margin:4px;">
+              <span style="position:absolute;left:4px;bottom:2px;font-size:9px;color:#ff6b00;">RelativeLayout</span>
+              <div class="btn" style="position:absolute;top:0;left:162px;width:66px;">취소<span class="mk">a</span></div>
+              <div class="btn" style="position:absolute;top:0;left:96px;width:66px;">입력<span class="mk">b</span></div>
+              <div class="btn" style="position:absolute;top:36px;left:30px;width:66px;">중앙<span class="mk">c</span></div>
+              <div class="btn" style="position:absolute;top:72px;left:96px;width:66px;">아래<span class="mk">d</span></div>
+            </div>
+            <div class="toast" style="bottom:20px;left:50%;transform:translateX(-50%);">010-1234-5678</div>
+          </div>
+        </div>
+        <div class="cap">계단처럼 지그재그로 놓이면 정답<br>"입력" 누르면 번호가 토스트로</div>
+      </div>
+    </div>
+    <div class="desc">
+      <p><span class="n">1</span>가로 LinearLayout: TextView "전화번호"(25sp) + EditText(hint "000-0000-0000", 남은 가로 전부)</p>
+      <ul style="list-style:none;padding:0;">
+        <li><span class="n">a</span><code>btnCancel</code> "취소": 부모 <b>오른쪽 끝</b></li>
+        <li><span class="n">b</span><code>btnOK</code> "입력": 취소의 <b>왼쪽</b></li>
+        <li><span class="n">c</span><code>btnCenter</code> "중앙": 입력의 <b>아래</b> + 입력의 <b>왼쪽</b></li>
+        <li><span class="n">d</span><code>btnBottom</code> "아래": 중앙의 <b>아래</b> + 중앙의 <b>오른쪽</b> (결과적으로 입력 버튼 바로 밑)</li>
+      </ul>
+      <p><b>Java:</b> 입력 → EditText 내용을 토스트 / 취소 → EditText 비우기(<code>setText("")</code>)</p>
+      <details><summary>속성 힌트 (스포일러)</summary>
+        <code>layout_alignParentRight="true"</code> · <code>layout_toLeftOf="@id/btnCancel"</code> · <code>layout_below</code> · <code>layout_toRightOf</code> · EditText는 <code>layout_width="0dp" layout_weight="1"</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q6-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>RelativeLayout은 <b>다른 위젯 기준</b>으로 위치를 정함: <code>layout_toLeftOf</code>(~의 왼쪽), <code>layout_toRightOf</code>(~의 오른쪽), <code>layout_below</code>(~의 아래).</li>
+    <li>부모 기준은 <code>layout_alignParentRight="true"</code> 같은 형태.</li>
+    <li>"아래 + 왼쪽"처럼 두 조건을 같이 주면 대각선 계단 모양이 됩니다.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob06_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전화번호"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/edtPhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="000-0000-0000"
+            android:inputType="phone" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="취소" />
+
+        <Button
+            android:id="@+id/btnOK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/btnCancel"
+            android:text="입력" />
+
+        <Button
+            android:id="@+id/btnCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnOK"
+            android:layout_toLeftOf="@id/btnOK"
+            android:text="중앙" />
+
+        <Button
+            android:id="@+id/btnBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnCenter"
+            android:layout_toRightOf="@id/btnCenter"
+            android:text="아래" />
+    </RelativeLayout>
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Prob06.java">
+public class Prob06 extends AppCompatActivity {
+    EditText edtPhone;
+    Button btnOK, btnCancel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob06_main);
+        setTitle("전화번호 입력");
+
+        edtPhone = findViewById(R.id.edtPhone);
+        btnOK = findViewById(R.id.btnOK);
+        btnCancel = findViewById(R.id.btnCancel);
+
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), edtPhone.getText().toString(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edtPhone.setText("");
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>@id/btnCancel</code>은 <b>이미 위에서 선언된 id</b>를 참조할 때. 아직 선언 전인 id를 참조하려면 <code>@+id/</code>를 써야 합니다.<br>
+    · <code>layout_below</code>만 쓰면 왼쪽 끝으로 붙어버려요. 가로 기준(<code>toLeftOf/toRightOf</code>)도 꼭 같이.<br>
+    · <code>layout_alignParentRight</code>, <code>layout_toLeftOf</code>는 RelativeLayout 안에서만 동작합니다. LinearLayout 안에 쓰면 무시돼요.</div>
+  </details>
+</section>
+
+<section class="q" id="q7">
+  <h3>문제 7. XML 없이 Java 코드로 화면 만들기 <span class="star">★★★</span></h3>
+  <div class="meta">교재 5장 예제 변형 · layout XML 파일 사용 금지 <a class="sol" href="#q7-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">Java로 만든 화면</div>
+          <div class="screen col" style="padding:4px;">
+            <div class="edit" style="margin:4px;">안녕하세요<span class="mk">1</span></div>
+            <div class="btn" style="background:#ffff00;color:#000;border-radius:2px;margin:4px;">버튼을 누르세요<span class="mk">2</span></div>
+            <div class="tv" style="color:#ff0000;font-size:15px;margin:4px;">안녕하세요<span class="mk">3</span></div>
+          </div>
+        </div>
+        <div class="cap">"안녕하세요" 입력 후 버튼 누른 상태</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ol>
+        <li>세로 LinearLayout을 코드로 만들고 <code>setContentView(레이아웃, 파라미터)</code> (match_parent)</li>
+        <li>순서대로 추가: <span class="n">1</span>EditText → <span class="n">2</span>Button "버튼을 누르세요" → <span class="n">3</span>TextView</li>
+        <li>버튼 배경 <code>Color.YELLOW</code>, TextView 글자 크기 20, 빨간 글자</li>
+        <li>버튼 누르면 EditText 내용이 TextView에 출력</li>
+      </ol>
+      <p>겉보기엔 평범한 화면이지만 <b>res/layout에 이 화면용 XML이 없어야</b> 합니다.</p>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>new LinearLayout(this)</code> · <code>setOrientation(LinearLayout.VERTICAL)</code> · <code>new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)</code> · <code>addView()</code> · <code>setBackgroundColor(Color.YELLOW)</code> · <code>setTextSize(20)</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q7-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>XML 태그 하나 = Java의 <code>new 위젯(this)</code> 하나. XML 속성 = <code>setXxx()</code> 메서드.</li>
+    <li>크기는 <code>LayoutParams</code> 객체로 전달, 자식 추가는 <code>addView()</code>.</li>
+    <li><code>setContentView(레이아웃, params)</code>: R.layout 대신 <b>직접 만든 레이아웃 객체</b>를 넘김.</li>
+  </ul>
+  <script type="text/plain" data-file="java/Prob07.java (XML 파일 없음)">
+public class Prob07 extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        LinearLayout baseLayout = new LinearLayout(this);
+        baseLayout.setOrientation(LinearLayout.VERTICAL);
+        setContentView(baseLayout, params);
+
+        final EditText edt = new EditText(this);
+        baseLayout.addView(edt);
+
+        Button btn = new Button(this);
+        btn.setText("버튼을 누르세요");
+        btn.setBackgroundColor(Color.YELLOW);
+        baseLayout.addView(btn);
+
+        final TextView tv = new TextView(this);
+        tv.setTextSize(20);
+        tv.setTextColor(Color.RED);
+        baseLayout.addView(tv);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv.setText(edt.getText().toString());
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>setContentView(R.layout.xxx)</code>를 쓰면 바로 오답. 이 문제는 XML 금지예요.<br>
+    · <code>addView()</code>를 빼먹으면 위젯을 만들어도 화면에 안 나옵니다. 추가한 <b>순서대로</b> 위에서 아래로 쌓여요.<br>
+    · 리스너 안에서 쓰는 지역변수(<code>edt</code>, <code>tv</code>)는 <code>final</code>이어야 합니다 (값을 다시 안 바꾸면 생략해도 됨).<br>
+    · <code>setTextSize(20)</code>의 단위는 기본 sp입니다.</div>
+  </details>
+</section>
+
+<!-- ===================== 6장 ===================== -->
+<h2 class="ch">[6장] 고급 위젯</h2>
+
+<section class="q" id="q8">
+  <h3>문제 8. 날짜/시간 예약 앱 <span class="star">★★★</span></h3>
+  <div class="meta">직접 풀어보기 6-1, 수업 변형판 · Self0601.java · 화면이 3단계로 바뀝니다 <a class="sol" href="#q8-ans">정답·해설 보기 ↓</a></div>
+  <div class="shots">
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">시간 예약</div>
+        <div class="screen col">
+          <div style="display:flex;align-items:center;gap:4px;padding:6px;">
+            <div style="flex:1;background:#ccc;text-align:center;font-size:13px;padding:4px 0;position:relative;">예약에 걸린 시간 00:00<span class="mk">1</span></div>
+            <div class="btn" style="padding:6px;">예약 시작</div>
+          </div>
+          <div style="flex:1;border:1.5px dashed #ddd;margin:6px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:11px;text-align:center;">라디오·DatePicker·TimePicker<br>모두 안 보임</div>
+          <div style="background:#ccc;padding:8px 4px;font-size:11px;text-align:center;position:relative;">0000년 00월 00일 00시 00분 예약됨<span class="mk">4</span></div>
+        </div>
+      </div>
+      <div class="cap">① 처음 실행</div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">시간 예약</div>
+        <div class="screen col">
+          <div style="display:flex;align-items:center;gap:4px;padding:6px;">
+            <div style="flex:1;background:#ccc;text-align:center;font-size:13px;padding:4px 0;color:#ff0000;">예약에 걸린 시간 00:07</div>
+            <div class="btn" style="padding:6px;">예약 시작</div>
+          </div>
+          <div style="padding:2px 8px;position:relative;"><span class="radio on"></span>날짜 설정 &nbsp; <span class="radio"></span>시간 설정<span class="mk">2</span></div>
+          <div style="flex:1;position:relative;" class="dash">
+            <span style="position:absolute;right:4px;top:2px;font-size:9px;color:#ff6b00;">FrameLayout</span>
+            <div class="picker" style="margin-top:22px;">
+              <div><div class="f">2025</div><div class="c">2026</div><div class="f">2027</div></div>
+              <div><div class="f">9월</div><div class="c">10월</div><div class="f">11월</div></div>
+              <div><div class="f">18</div><div class="c">19</div><div class="f">20</div></div>
+            </div>
+            <span class="mk" style="top:20px;left:6px;">3</span>
+          </div>
+          <div style="background:#ccc;padding:8px 4px;font-size:11px;text-align:center;">0000년 00월 00일 00시 00분 예약됨</div>
+        </div>
+      </div>
+      <div class="cap">② "예약 시작" → 크로노미터 <b style="color:#f00;">빨강</b>, 라디오 보임<br>"날짜 설정" 선택 → DatePicker만 보임</div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">시간 예약</div>
+        <div class="screen col">
+          <div style="display:flex;align-items:center;gap:4px;padding:6px;">
+            <div style="flex:1;background:#ccc;text-align:center;font-size:13px;padding:4px 0;color:#0000ff;">예약에 걸린 시간 00:21</div>
+            <div class="btn" style="padding:6px;">예약 시작</div>
+          </div>
+          <div style="flex:1;border:1.5px dashed #ddd;margin:6px;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:11px;text-align:center;">다시 모두 사라짐</div>
+          <div style="background:#ccc;padding:8px 4px;font-size:11px;text-align:center;outline:2px solid #ff6b00;">2026년 10월 19일 15시 30분 예약됨</div>
+        </div>
+      </div>
+      <div class="cap">③ 하단 회색 줄 클릭 → 크로노미터 멈춤 <b style="color:#00f;">파랑</b>, 날짜·시간 표시</div>
+    </div>
+  </div>
+  <div class="desc" style="margin-top:14px;">
+    <ul style="list-style:none;padding:0;">
+      <li><span class="n">1</span><code>chronometer1</code> format <code>" 예약에 걸린 시간  %s "</code>, 가운데 정렬, 배경 #CCCCCC, 20dp + <code>btnStart</code></li>
+      <li><span class="n">2</span>RadioGroup: <code>rdoCal</code> "날짜 설정", <code>rdoTime</code> "시간 설정"</li>
+      <li><span class="n">3</span><b>FrameLayout</b>(남은 공간 전부) 안에 <code>datePicker1</code>, <code>timePicker1</code>(둘 다 spinner 모드)를 <b>같은 자리에 겹쳐</b> 둠. 시간 설정을 누르면 같은 자리에 <code>오후 | 3 | 30</code> 모양의 TimePicker가 대신 나옴</li>
+      <li><span class="n">4</span><code>layoutBottom</code>(배경 #CCCCCC) 안 TextView들: 숫자 부분 id <code>tvYear · tvMonth · tvDay · tvHour · tvMinute</code>, 나머지 "년 월 일 시 분 예약됨"은 별도 TextView</li>
+    </ul>
+    <div class="warn"><b>월은 +1</b>: DatePicker의 <code>getMonth()</code>는 0부터 시작해서 10월이면 9가 나옵니다.</div>
+    <details><summary>코드 힌트 (스포일러)</summary>
+      <code>android:datePickerMode="spinner"</code> · <code>android:timePickerMode="spinner"</code> · <code>setBase(SystemClock.elapsedRealtime())</code> · <code>start()/stop()</code> · <code>setTextColor(Color.RED)</code> · <code>layoutBottom.setOnClickListener</code> · <code>getYear() getMonth()+1 getDayOfMonth()</code> · <code>getCurrentHour() getCurrentMinute()</code>
+    </details>
+  </div>
+  <details class="ans" id="q8-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><b>FrameLayout</b>: 자식들을 같은 자리에 겹쳐 놓음. 하나만 VISIBLE로 바꿔서 "갈아 끼우는" 효과.</li>
+    <li>크로노미터를 <b>0부터</b> 시작: <code>setBase(SystemClock.elapsedRealtime())</code>로 기준점을 "지금"으로 맞춘 뒤 <code>start()</code>.</li>
+    <li>LinearLayout도 <code>setOnClickListener</code>가 됩니다. 하단 줄 클릭 = <code>layoutBottom</code>에 리스너.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/self0601_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Chronometer
+            android:id="@+id/chronometer1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#CCCCCC"
+            android:format=" 예약에 걸린 시간  %s "
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="예약 시작" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rdoCal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 설정" />
+
+        <RadioButton
+            android:id="@+id/rdoTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시간 설정" />
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <DatePicker
+            android:id="@+id/datePicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner" />
+
+        <TimePicker
+            android:id="@+id/timePicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:timePickerMode="spinner" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CCCCCC"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView android:id="@+id/tvYear" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="0000" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="년 " />
+        <TextView android:id="@+id/tvMonth" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="00" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="월 " />
+        <TextView android:id="@+id/tvDay" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="00" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="일 " />
+        <TextView android:id="@+id/tvHour" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="00" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="시 " />
+        <TextView android:id="@+id/tvMinute" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="00" />
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="분 예약됨" />
+    </LinearLayout>
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Self0601.java">
+public class Self0601 extends AppCompatActivity {
+    Chronometer chrono;
+    Button btnStart;
+    RadioButton rdoCal, rdoTime;
+    DatePicker dPicker;
+    TimePicker tPicker;
+    LinearLayout layoutBottom;
+    TextView tvYear, tvMonth, tvDay, tvHour, tvMinute;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0601_main);
+        setTitle("시간 예약");
+
+        chrono = findViewById(R.id.chronometer1);
+        btnStart = findViewById(R.id.btnStart);
+        rdoCal = findViewById(R.id.rdoCal);
+        rdoTime = findViewById(R.id.rdoTime);
+        dPicker = findViewById(R.id.datePicker1);
+        tPicker = findViewById(R.id.timePicker1);
+        layoutBottom = findViewById(R.id.layoutBottom);
+        tvYear = findViewById(R.id.tvYear);
+        tvMonth = findViewById(R.id.tvMonth);
+        tvDay = findViewById(R.id.tvDay);
+        tvHour = findViewById(R.id.tvHour);
+        tvMinute = findViewById(R.id.tvMinute);
+
+        // 1. 처음에는 라디오버튼 2개와 피커 2개를 숨김
+        rdoCal.setVisibility(View.INVISIBLE);
+        rdoTime.setVisibility(View.INVISIBLE);
+        dPicker.setVisibility(View.INVISIBLE);
+        tPicker.setVisibility(View.INVISIBLE);
+
+        // 2. 예약 시작
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chrono.setBase(SystemClock.elapsedRealtime());
+                chrono.start();
+                chrono.setTextColor(Color.RED);
+                rdoCal.setVisibility(View.VISIBLE);
+                rdoTime.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // 3. 날짜 / 시간 설정
+        rdoCal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dPicker.setVisibility(View.VISIBLE);
+                tPicker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        rdoTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dPicker.setVisibility(View.INVISIBLE);
+                tPicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // 4. 하단 줄 클릭 -> 예약 완료
+        layoutBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chrono.stop();
+                chrono.setTextColor(Color.BLUE);
+
+                tvYear.setText(Integer.toString(dPicker.getYear()));
+                tvMonth.setText(Integer.toString(dPicker.getMonth() + 1));
+                tvDay.setText(Integer.toString(dPicker.getDayOfMonth()));
+                tvHour.setText(Integer.toString(tPicker.getCurrentHour()));
+                tvMinute.setText(Integer.toString(tPicker.getCurrentMinute()));
+
+                rdoCal.setVisibility(View.INVISIBLE);
+                rdoTime.setVisibility(View.INVISIBLE);
+                dPicker.setVisibility(View.INVISIBLE);
+                tPicker.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <b>월 +1</b>: <code>getMonth()</code>는 1월이 0입니다. 안 더하면 10월이 "9월"로 찍혀요.<br>
+    · <code>setText(dPicker.getYear())</code>처럼 <b>int를 바로 넣으면 앱이 죽습니다</b>. setText(int)는 "리소스 id"로 해석되기 때문. 꼭 <code>Integer.toString()</code>으로 문자열 변환.<br>
+    · <code>setBase</code> 없이 <code>start()</code>만 하면 0부터 시작하지 않아요.<br>
+    · <code>getCurrentHour()</code>에 줄이 그어져도(deprecated) 동작합니다. 최신 방식은 <code>getHour()</code>, <code>getMinute()</code>.<br>
+    · spinner 모드인데 달력이 같이 나오면 <code>android:calendarViewShown="false"</code>를 추가하세요.</div>
+  </details>
+</section>
+
+<section class="q" id="q9">
+  <h3>문제 9. 뷰플리퍼 사진 넘기기 <span class="star">★★</span></h3>
+  <div class="meta">직접 풀어보기 6-2 <a class="sol" href="#q9-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">뷰플리퍼</div>
+          <div class="screen col">
+            <div style="display:flex;gap:3px;padding:5px;position:relative;">
+              <div class="btn" style="flex:1;font-size:9.5px;padding:6px 2px;border-radius:8px;">사진보기<br>시작</div>
+              <div class="btn" style="flex:1;font-size:9.5px;padding:6px 2px;border-radius:8px;">사진보기<br>정지</div>
+              <div class="btn" style="flex:1;font-size:9.5px;padding:6px 2px;border-radius:8px;">이전<br>화면</div>
+              <div class="btn" style="flex:1;font-size:9.5px;padding:6px 2px;border-radius:8px;">다음<br>화면</div>
+              <span class="mk">1</span>
+            </div>
+            <div class="img" style="flex:1;margin:5px;font-size:14px;">jeju1<span class="mk">2</span></div>
+          </div>
+        </div>
+        <div class="cap">버튼 4개가 <b>같은 너비</b>로 한 줄</div>
+      </div>
+      <div class="shot">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:120px;">
+          <div class="img" style="width:60px;height:80px;">jeju1</div>→
+          <div class="img" style="width:60px;height:80px;background:linear-gradient(135deg,#f6c56f,#e07a5f);">jeju2</div>→
+          <div class="img" style="width:60px;height:80px;background:linear-gradient(135deg,#a3b8f0,#5a67d8);">jeju3</div>
+        </div>
+        <div class="cap" style="margin-top:6px;">시작 누르면 <b>1초마다</b> 자동으로 넘어감, 끝나면 처음으로</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ul style="list-style:none;padding:0;">
+        <li><span class="n">1</span>가로 LinearLayout: <code>btnStart · btnStop · btnPrevious · btnNext</code> 가로 <b>1:1:1:1</b></li>
+        <li><span class="n">2</span><code>viewFlipper1</code> 안에 ImageView 3개 이상 (drawable의 jeju 사진)</li>
+      </ul>
+      <ul>
+        <li>시작 → 1초 간격 자동 넘김</li>
+        <li>정지 → 자동 넘김 멈춤</li>
+        <li>이전/다음 → <b>자동 넘김 멈춘 뒤</b> 한 장씩 이동</li>
+      </ul>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>setFlipInterval(1000)</code> · <code>startFlipping()</code> · <code>stopFlipping()</code> · <code>showPrevious()</code> · <code>showNext()</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q9-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>ViewFlipper: 안에 넣은 자식 뷰를 <b>한 번에 하나씩</b> 보여줌.</li>
+    <li>간격 <code>setFlipInterval(ms)</code>, 자동 시작/정지 <code>startFlipping()/stopFlipping()</code>, 수동 <code>showPrevious()/showNext()</code>.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob09_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="사진보기 시작" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="사진보기 정지" />
+
+        <Button
+            android:id="@+id/btnPrevious"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="이전화면" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="다음화면" />
+    </LinearLayout>
+
+    <ViewFlipper
+        android:id="@+id/viewFlipper1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 본인 drawable에 있는 jeju 사진 이름으로 바꾸세요 -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/jeju2" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/jeju6" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/jeju14" />
+    </ViewFlipper>
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Prob09.java">
+public class Prob09 extends AppCompatActivity {
+    Button btnStart, btnStop, btnPrevious, btnNext;
+    ViewFlipper vFlipper;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob09_main);
+        setTitle("뷰플리퍼");
+
+        btnStart = findViewById(R.id.btnStart);
+        btnStop = findViewById(R.id.btnStop);
+        btnPrevious = findViewById(R.id.btnPrevious);
+        btnNext = findViewById(R.id.btnNext);
+        vFlipper = findViewById(R.id.viewFlipper1);
+
+        vFlipper.setFlipInterval(1000);   // 1초
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vFlipper.startFlipping();
+            }
+        });
+
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+            }
+        });
+
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+                vFlipper.showPrevious();
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vFlipper.stopFlipping();
+                vFlipper.showNext();
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · 이전/다음에서 <code>stopFlipping()</code>을 빼면 수동으로 넘긴 직후 또 자동으로 넘어갑니다. 조건 3 위반.<br>
+    · 1초는 <code>1000</code>(밀리초). <code>1</code>로 쓰면 미친 듯이 넘어가요.<br>
+    · 버튼 글자가 길어서 4개가 좁으면 두 줄로 꺾이는데, 정상입니다.</div>
+  </details>
+</section>
+
+<section class="q" id="q10">
+  <h3>문제 10. 간단 웹 브라우저 <span class="star">★★★</span></h3>
+  <div class="meta">교재 6장 예제 <a class="sol" href="#q10-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">간단 웹브라우저</div>
+          <div class="screen col">
+            <div style="display:flex;gap:4px;align-items:center;padding:5px;position:relative;">
+              <div class="edit" style="flex:1;font-size:11px;white-space:nowrap;overflow:hidden;">m.naver.com</div>
+              <div class="btn" style="padding:6px 8px;">이동</div>
+              <div class="btn" style="padding:6px 8px;">이전</div>
+              <span class="mk">1</span>
+            </div>
+            <div style="flex:1;margin:4px;border:1px solid #ddd;position:relative;background:#fafafa;">
+              <div style="background:#03c75a;color:#fff;padding:8px;font-weight:700;">NAVER</div>
+              <div style="margin:8px;height:10px;background:#e5e5e5;border-radius:3px;"></div>
+              <div style="margin:8px;height:10px;width:70%;background:#e5e5e5;border-radius:3px;"></div>
+              <div style="margin:8px;height:60px;background:#eee;border-radius:3px;"></div>
+              <div style="margin:8px;height:10px;width:85%;background:#e5e5e5;border-radius:3px;"></div>
+              <div style="position:absolute;right:6px;bottom:6px;display:flex;gap:2px;">
+                <div style="width:24px;height:24px;background:#333;color:#fff;border-radius:4px;text-align:center;line-height:24px;">−</div>
+                <div style="width:24px;height:24px;background:#333;color:#fff;border-radius:4px;text-align:center;line-height:24px;">+</div>
+              </div>
+              <span class="mk">2</span>
+            </div>
+          </div>
+        </div>
+        <div class="cap">웹페이지가 <b>앱 안에서</b> 열려야 함 (크롬으로 튀어나가면 오답)</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ul style="list-style:none;padding:0;">
+        <li><span class="n">1</span>가로 LinearLayout: <code>edtUrl</code>(weight 1, hint "URL을 입력하세요", 한 줄) + <code>btnGo</code> "이동" + <code>btnBack</code> "이전"</li>
+        <li><span class="n">2</span><code>webView1</code> 남은 화면 전체, 확대/축소 버튼 사용 가능</li>
+      </ul>
+      <ol>
+        <li>AndroidManifest.xml에 인터넷 권한 추가</li>
+        <li><code>WebViewClient</code>를 상속한 내부 클래스 <code>MyWebViewClient</code>를 만들어 지정</li>
+        <li>이동 → EditText 주소로 / 이전 → 이전 페이지로</li>
+      </ol>
+      <div class="warn">권한이 빠지면 화면에 "net::ERR_CACHE_MISS" 같은 오류 페이지가 뜹니다. 주소는 <code>http://</code> 또는 <code>https://</code>를 붙여 입력하세요.</div>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>&lt;uses-permission android:name="android.permission.INTERNET"/&gt;</code> · <code>android:singleLine="true"</code> · <code>setWebViewClient(new MyWebViewClient())</code> · <code>getSettings().setBuiltInZoomControls(true)</code> · <code>loadUrl()</code> · <code>goBack()</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q10-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>인터넷을 쓰는 앱은 <b>Manifest에 권한</b>을 선언해야 함.</li>
+    <li>WebView에 <code>WebViewClient</code>를 지정하지 않으면 링크를 누를 때 <b>외부 크롬 앱</b>이 열립니다. 지정하면 앱 안에서 열려요.</li>
+    <li>확대/축소: <code>getSettings().setBuiltInZoomControls(true)</code>.</li>
+  </ul>
+  <script type="text/plain" data-file="AndroidManifest.xml (추가할 부분)">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" ...>
+
+    <!-- <application> 태그 바깥, 위쪽에 추가 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        ...
+        android:usesCleartextTraffic="true">   <!-- http:// 주소도 열고 싶을 때만 -->
+        ...
+    </application>
+</manifest>
+  </script>
+  <script type="text/plain" data-file="res/layout/prob10_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtUrl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="URL을 입력하세요"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이동" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이전" />
+    </LinearLayout>
+
+    <WebView
+        android:id="@+id/webView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Prob10.java">
+public class Prob10 extends AppCompatActivity {
+    EditText edtUrl;
+    Button btnGo, btnBack;
+    WebView web;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob10_main);
+        setTitle("간단 웹브라우저");
+
+        edtUrl = findViewById(R.id.edtUrl);
+        btnGo = findViewById(R.id.btnGo);
+        btnBack = findViewById(R.id.btnBack);
+        web = findViewById(R.id.webView1);
+
+        web.setWebViewClient(new MyWebViewClient());
+
+        WebSettings webSet = web.getSettings();
+        webSet.setBuiltInZoomControls(true);
+
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                web.loadUrl(edtUrl.getText().toString());
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                web.goBack();
+            }
+        });
+    }
+
+    class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · 권한을 <code>&lt;application&gt;</code> <b>안에</b> 넣으면 안 됩니다. 바깥이에요.<br>
+    · 주소에 <code>https://</code>를 빼고 "naver.com"만 넣으면 안 열려요. 시험 중엔 <code>https://m.naver.com</code>처럼 전체 주소로 테스트하세요.<br>
+    · <code>http://</code>(s 없음) 사이트가 "ERR_CLEARTEXT_NOT_PERMITTED"로 막히면 위 Manifest의 <code>usesCleartextTraffic</code>를 추가.<br>
+    · 페이지가 하얗게 일부만 나오면 <code>webSet.setJavaScriptEnabled(true);</code>를 추가하면 대부분 해결돼요(문제 조건은 아님).</div>
+  </details>
+</section>
+
+<!-- ===================== 7장 ===================== -->
+<h2 class="ch">[7장] 메뉴 · 토스트 · 대화상자</h2>
+
+<section class="q" id="q11">
+  <h3>문제 11. 옵션 메뉴로 그림 조작 <span class="star">★★★</span></h3>
+  <div class="meta">직접 풀어보기 7-1 · self0701_main.xml (RelativeLayout) + res/menu/menu1.xml <a class="sol" href="#q11-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar"><span>제주도 풍경</span><span style="font-size:18px;position:relative;">⋮<span class="mk" style="left:12px;top:-2px;">1</span></span></div>
+          <div class="screen">
+            <div style="position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:6px;">
+              <span style="font-size:15px;">각도 입력</span><span class="edit" style="width:50px;">45</span>
+            </div>
+            <div class="img" style="position:absolute;top:50%;left:50%;width:110px;height:80px;transform:translate(-50%,-50%) rotate(45deg);">jeju2</div>
+          </div>
+        </div>
+        <div class="cap">45 입력 → "그림 회전" 후, 그림이 화면 정가운데에서 45° 회전</div>
+      </div>
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar"><span>제주도 풍경</span><span style="font-size:18px;">⋮</span></div>
+          <div class="screen">
+            <div style="position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:6px;">
+              <span style="font-size:15px;">각도 입력</span><span class="edit" style="width:50px;">0</span>
+            </div>
+            <div class="img" style="position:absolute;top:50%;left:50%;width:110px;height:80px;transform:translate(-50%,-50%);">jeju2</div>
+            <div class="menu">
+              <div>그림 회전</div>
+              <div class="grp">한라산 <span class="radio on"></span></div>
+              <div class="grp">추자도 <span class="radio"></span></div>
+              <div class="grp">범섬 <span class="radio"></span></div>
+              <div>2배 확대</div>
+              <div>2배 축소</div>
+              <div>원본 크기</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">⋮ 를 눌렀을 때 메뉴. 가운데 3개는 <b>하나만 체크</b>되는 그룹</div>
+      </div>
+    </div>
+    <div class="desc">
+      <p><b>XML:</b> 왼쪽 위 <code>textView1</code> "각도 입력"(20dp) → 그 오른쪽 <code>edtAngle</code>(기본 "0") / 화면 정가운데 <code>imageView1</code>(jeju2)</p>
+      <table style="border-collapse:collapse;font-size:13px;width:100%;">
+        <tr style="background:#f0edf6;"><th style="padding:5px;text-align:left;">메뉴 (id)</th><th style="text-align:left;">누르면</th></tr>
+        <tr><td style="padding:4px;">그림 회전 <code>itemRotate</code></td><td>EditText 각도만큼 회전</td></tr>
+        <tr><td style="padding:4px;">한라산 <code>item1</code> / 추자도 <code>item2</code> / 범섬 <code>item3</code></td><td>jeju2 / jeju14 / jeju6 로 변경 + 체크</td></tr>
+        <tr><td style="padding:4px;">2배 확대 <code>subSize</code> / 2배 축소 <code>divineSize</code> / 원본 <code>OrgSize</code></td><td>크기 2배 / 0.5배 / 1배</td></tr>
+      </table>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>&lt;group android:checkableBehavior="single"&gt;</code> · <code>android:checked="true"</code> · <code>onCreateOptionsMenu</code> + <code>getMenuInflater().inflate()</code> · <code>onOptionsItemSelected</code> · <code>item.setChecked(true)</code> · <code>setRotation()</code> · <code>setScaleX()/setScaleY()</code> · <code>layout_centerInParent</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q11-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>옵션 메뉴(⋮) = <code>onCreateOptionsMenu</code>에서 메뉴 XML을 inflate, 클릭 처리는 <code>onOptionsItemSelected</code>.</li>
+    <li><code>&lt;group android:checkableBehavior="single"&gt;</code>: 그룹 안에서 <b>하나만</b> 체크(라디오처럼).</li>
+    <li>회전 <code>setRotation(각도)</code>, 크기 <code>setScaleX/Y(배율)</code>. 배율은 <b>원본 기준</b>이라 2를 두 번 눌러도 2배 그대로.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/self0701_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="각도 입력"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/edtAngle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/textView1"
+        android:inputType="numberSigned|numberDecimal"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/jeju2" />
+</RelativeLayout>
+  </script>
+  <script type="text/plain" data-file="res/menu/menu1.xml  (res 우클릭 → New → Android Resource File → Resource type: Menu)">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemRotate"
+        android:title="그림 회전" />
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item1"
+            android:checked="true"
+            android:title="한라산" />
+        <item
+            android:id="@+id/item2"
+            android:title="추자도" />
+        <item
+            android:id="@+id/item3"
+            android:title="범섬" />
+    </group>
+
+    <item
+        android:id="@+id/subSize"
+        android:title="2배 확대" />
+    <item
+        android:id="@+id/divineSize"
+        android:title="2배 축소" />
+    <item
+        android:id="@+id/OrgSize"
+        android:title="원본 크기" />
+</menu>
+  </script>
+  <script type="text/plain" data-file="java/Self0701.java">
+public class Self0701 extends AppCompatActivity {
+    EditText edtAngle;
+    ImageView imageView1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0701_main);
+        setTitle("제주도 풍경");
+
+        edtAngle = findViewById(R.id.edtAngle);
+        imageView1 = findViewById(R.id.imageView1);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater mInflater = getMenuInflater();
+        mInflater.inflate(R.menu.menu1, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.itemRotate) {
+            String angle = edtAngle.getText().toString();
+            if (!angle.isEmpty()) {
+                imageView1.setRotation(Float.parseFloat(angle));
+            }
+        } else if (id == R.id.item1) {
+            imageView1.setImageResource(R.drawable.jeju2);
+            item.setChecked(true);
+        } else if (id == R.id.item2) {
+            imageView1.setImageResource(R.drawable.jeju14);
+            item.setChecked(true);
+        } else if (id == R.id.item3) {
+            imageView1.setImageResource(R.drawable.jeju6);
+            item.setChecked(true);
+        } else if (id == R.id.subSize) {
+            imageView1.setScaleX(2);
+            imageView1.setScaleY(2);
+        } else if (id == R.id.divineSize) {
+            imageView1.setScaleX(0.5f);
+            imageView1.setScaleY(0.5f);
+        } else if (id == R.id.OrgSize) {
+            imageView1.setScaleX(1);
+            imageView1.setScaleY(1);
+        }
+        return true;
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>item.setChecked(true)</code>를 빼면 다른 항목을 눌러도 체크 표시가 "한라산"에 그대로 남아요. single 그룹은 <b>체크 표시를 자동으로 옮겨주지 않습니다</b>.<br>
+    · <code>0.5</code>만 쓰면 double이라 오류. float 자리엔 <code>0.5f</code>.<br>
+    · ⋮ 버튼 자체가 안 보이면 테마가 <code>NoActionBar</code>인지 확인하세요. 상단바가 없으면 옵션 메뉴도 없어요.<br>
+    · EditText가 비었을 때 <code>Float.parseFloat("")</code>은 앱을 죽입니다. 그래서 위 코드는 빈 값이면 회전을 건너뜁니다.</div>
+  </details>
+</section>
+
+<section class="q" id="q12">
+  <h3>문제 12. 무작위 위치 토스트 <span class="star">★★</span></h3>
+  <div class="meta">직접 풀어보기 7-2 · 목업의 버튼을 눌러보세요 <a class="sol" href="#q12-ans">정답·해설 보기 ↓</a></div>
+  <div class="row">
+    <div class="shots">
+      <div class="shot">
+        <div class="phone">
+          <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+          <div class="appbar">토스트 연습</div>
+          <div class="screen" id="q12screen">
+            <div class="btn click" id="q12btn" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:8px 14px;">메시지 출력</div>
+            <div class="toast ghost" style="top:30px;left:20px;">토스트 연습</div>
+            <div class="toast ghost" style="top:280px;left:110px;">토스트 연습</div>
+            <div class="toast" id="q12toast" style="top:120px;left:60px;">토스트 연습</div>
+          </div>
+        </div>
+        <div class="cap">누를 때마다 다른 자리에 짧게 나타남<br>(흐린 건 이전에 떴던 위치 예시)</div>
+      </div>
+    </div>
+    <div class="desc">
+      <ul>
+        <li>화면 <b>정가운데</b>에 버튼 "메시지 출력" 하나</li>
+        <li>누를 때마다 "토스트 연습"이 <b>화면 무작위 위치</b>에 <code>LENGTH_SHORT</code>로</li>
+      </ul>
+      <div class="warn"><b>Android 11(API 30) 이상</b>을 타깃으로 하면 글자만 있는 토스트에서 <code>setGravity()</code>가 무시돼서 항상 아래쪽에 뜹니다. 위치가 안 바뀌면 코드가 틀린 게 아니라 이것 때문일 수 있어요. 에뮬레이터를 API 29 이하로 쓰거나, 수업에서 안내한 방식을 따르세요.</div>
+      <details><summary>코드 힌트 (스포일러)</summary>
+        <code>getWindowManager().getDefaultDisplay()</code>로 가로/세로 크기 · <code>(int)(Math.random() * 가로)</code> · <code>toast.setGravity(Gravity.TOP | Gravity.LEFT, x, y)</code> · <code>layout_gravity="center"</code> 또는 <code>gravity="center"</code>
+      </details>
+    </div>
+  </div>
+  <details class="ans" id="q12-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>setGravity(기준, x, y)</code>: 기준점(<code>Gravity.TOP | Gravity.LEFT</code> = 왼쪽 위)에서 x, y만큼 떨어진 곳에 토스트 표시.</li>
+    <li><code>Math.random()</code>은 0 이상 1 미만 → 화면 가로/세로를 곱하면 화면 안의 무작위 좌표.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob12_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="메시지 출력" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Prob12.java">
+public class Prob12 extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob12_main);
+        setTitle("토스트 연습");
+
+        Button button1 = findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast tMsg = Toast.makeText(getApplicationContext(), "토스트 연습",
+                        Toast.LENGTH_SHORT);
+
+                Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+                        .getDefaultDisplay();
+                int xOffset = (int) (Math.random() * display.getWidth());
+                int yOffset = (int) (Math.random() * display.getHeight());
+
+                tMsg.setGravity(Gravity.TOP | Gravity.LEFT, xOffset, yOffset);
+                tMsg.show();
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>Android 11(API 30) 이상에서는 위치가 안 바뀝니다</b><br>
+    targetSdk가 30 이상이면 <b>글자만 있는 토스트</b>에 <code>setGravity()</code>가 무시돼요. 코드가 맞아도 항상 아래에 뜹니다. 실제로 움직이는 걸 보고 싶다면 토스트에 직접 만든 뷰를 넣으면 됩니다:
+  </div>
+  <script type="text/plain" data-file="대안: onClick 안의 토스트 생성 부분만 교체">
+Toast tMsg = new Toast(getApplicationContext());
+TextView tv = new TextView(Prob12.this);
+tv.setText("토스트 연습");
+tv.setTextColor(Color.WHITE);
+tv.setBackgroundColor(Color.DKGRAY);
+tv.setPadding(30, 20, 30, 20);
+tMsg.setView(tv);                       // 사용자 정의 뷰 토스트는 setGravity가 적용됨
+tMsg.setDuration(Toast.LENGTH_SHORT);
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>(int)</code> 형변환 위치: <code>(int) Math.random() * w</code>는 random이 먼저 0으로 잘려서 <b>항상 0</b>이 됩니다. 괄호로 <code>(int) (Math.random() * w)</code>.<br>
+    · <code>getWidth()</code>에 줄이 그어져도(deprecated) 동작합니다.</div>
+  </details>
+</section>
+
+<section class="q" id="q13">
+  <h3>문제 13. 사용자 정보 입력 대화상자 <span class="star">★★★</span></h3>
+  <div class="meta">직접 풀어보기 7-3 · XML 3개: self0703_main.xml, dialog1.xml, toast1.xml <a class="sol" href="#q13-ans">정답·해설 보기 ↓</a></div>
+  <div class="shots">
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">사용자 정보</div>
+        <div class="screen col" style="padding:10px;gap:6px;">
+          <div style="display:flex;gap:8px;"><span>사용자 이름</span><b>홍길동</b></div>
+          <div style="display:flex;gap:8px;"><span>이메일</span><b>hong@mail.com</b></div>
+          <div class="btn" style="margin-top:6px;">여기를 클릭</div>
+        </div>
+      </div>
+      <div class="cap">① 메인 (self0703_main.xml)<br><code>tvName</code>, <code>tvEmail</code>, <code>button1</code></div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">사용자 정보</div>
+        <div class="screen col" style="padding:10px;gap:6px;">
+          <div>사용자 이름 홍길동</div><div>이메일 hong@mail.com</div>
+          <div class="btn">여기를 클릭</div>
+          <div class="dim">
+            <div class="dialog">
+              <div class="t">ⓘ 사용자 정보 입력</div>
+              <div class="dash" style="padding:4px;">
+                <div style="font-size:11px;">사용자 이름</div><div class="edit">홍길동</div>
+                <div style="font-size:11px;margin-top:6px;">이메일</div><div class="edit">hong@mail.com</div>
+              </div>
+              <div class="acts"><span>취소</span><span>확인</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap">② 버튼 클릭 → 대화상자<br>점선 안 = dialog1.xml, 값이 <b>미리 채워짐</b></div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">사용자 정보</div>
+        <div class="screen col" style="padding:10px;gap:6px;">
+          <div>사용자 이름 홍길동</div><div>이메일 hong@mail.com</div>
+          <div class="btn">여기를 클릭</div>
+          <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:#ffd54f;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.25);">
+            <span style="font-size:18px;">🤖</span><span style="font-size:12px;">취소했습니다</span>
+          </div>
+        </div>
+      </div>
+      <div class="cap">③ "취소" → <b>사용자 정의 토스트</b> (toast1.xml)<br>배경색 + 아이콘 + <code>toastText1</code></div>
+    </div>
+  </div>
+  <div class="desc" style="margin-top:14px;">
+    <ol>
+      <li>버튼 → 제목 "사용자 정보 입력" 대화상자, 안에 <code>dialog1.xml</code>(<code>dlgEdt1</code>, <code>dlgEdt2</code>)</li>
+      <li>열 때 메인 화면의 이름/이메일이 EditText에 <b>미리 채워짐</b></li>
+      <li>"확인" → 입력값이 메인 <code>tvName</code>, <code>tvEmail</code>에 반영</li>
+      <li>"취소" → <code>toast1.xml</code> 모양 토스트로 "취소했습니다" (일반 회색 토스트면 오답)</li>
+    </ol>
+    <details><summary>코드 힌트 (스포일러)</summary>
+      <code>View.inflate(this, R.layout.dialog1, null)</code> · <code>AlertDialog.Builder</code> · <code>setTitle / setIcon / setView</code> · <code>setPositiveButton("확인", ...)</code> · <code>setNegativeButton("취소", ...)</code> · <code>toast.setView(toastView)</code> · 대화상자 안 위젯은 <code>dialogView.findViewById()</code>
+    </details>
+  </div>
+  <details class="ans" id="q13-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li><code>View.inflate(context, R.layout.dialog1, null)</code>: XML 파일을 <b>View 객체로</b> 만듦. 이걸 대화상자 <code>setView()</code>, 토스트 <code>setView()</code>에 넣습니다.</li>
+    <li>대화상자 안 EditText는 <code>findViewById()</code>가 아니라 <b><code>dialogView.findViewById()</code></b>로 찾아야 함. 메인 화면엔 그 위젯이 없으니까요.</li>
+    <li>확인/취소 = <code>setPositiveButton</code> / <code>setNegativeButton</code>.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/self0703_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용자 이름 : " />
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이메일 : " />
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="여기를 클릭" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="res/layout/dialog1.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사용자 이름" />
+    <EditText
+        android:id="@+id/dlgEdt1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일" />
+    <EditText
+        android:id="@+id/dlgEdt2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="res/layout/toast1.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFD54F"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/toastText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="java/Self0703.java">
+public class Self0703 extends AppCompatActivity {
+    TextView tvName, tvEmail;
+    Button button1;
+    EditText dlgEdtName, dlgEdtEmail;
+    View dialogView, toastView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.self0703_main);
+        setTitle("사용자 정보 입력");
+
+        tvName = findViewById(R.id.tvName);
+        tvEmail = findViewById(R.id.tvEmail);
+        button1 = findViewById(R.id.button1);
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogView = View.inflate(Self0703.this, R.layout.dialog1, null);
+
+                // 대화상자 안의 EditText는 dialogView에서 찾는다
+                dlgEdtName = dialogView.findViewById(R.id.dlgEdt1);
+                dlgEdtEmail = dialogView.findViewById(R.id.dlgEdt2);
+
+                // 2. 메인 화면 값을 미리 채움
+                dlgEdtName.setText(tvName.getText().toString());
+                dlgEdtEmail.setText(tvEmail.getText().toString());
+
+                AlertDialog.Builder dlg = new AlertDialog.Builder(Self0703.this);
+                dlg.setTitle("사용자 정보 입력");
+                dlg.setIcon(R.mipmap.ic_launcher);
+                dlg.setView(dialogView);
+
+                // 3. 확인
+                dlg.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tvName.setText(dlgEdtName.getText().toString());
+                        tvEmail.setText(dlgEdtEmail.getText().toString());
+                    }
+                });
+
+                // 4. 취소 -> 사용자 정의 토스트
+                dlg.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast toast = new Toast(Self0703.this);
+                        toastView = View.inflate(Self0703.this, R.layout.toast1, null);
+                        TextView toastText = toastView.findViewById(R.id.toastText1);
+                        toastText.setText("취소했습니다");
+                        toast.setView(toastView);
+                        toast.setDuration(Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+
+                dlg.show();
+            }
+        });
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>findViewById(R.id.dlgEdt1)</code>(앞에 dialogView. 없이)는 <b>null</b>을 돌려줘서 앱이 죽습니다. 이 문제에서 가장 많이 틀리는 부분이에요.<br>
+    · 리스너 안에서 <code>new AlertDialog.Builder(this)</code>는 오류. <code>Self0703.this</code>로.<br>
+    · 미리 채우기는 <code>dlg.show()</code> <b>전에</b> 해야 합니다.<br>
+    · <code>Toast.makeText()</code>로 만들면 일반 회색 토스트라 조건 4 위반. <code>new Toast()</code> + <code>setView()</code>가 정답.</div>
+  </details>
+</section>
+
+<section class="q" id="q14">
+  <h3>문제 14. 컨텍스트 메뉴 + 선택 대화상자 <span class="star">★★★</span></h3>
+  <div class="meta">교재 7장 예제 종합 · 메뉴 XML: res/menu/menu2.xml, menu3.xml <a class="sol" href="#q14-ans">정답·해설 보기 ↓</a></div>
+  <div class="shots">
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">컨텍스트 메뉴</div>
+        <div class="screen col" style="padding:8px;gap:6px;background:#c8e6c9;">
+          <div class="btn">배경색 변경</div>
+          <div class="btn" style="transform:rotate(45deg) scale(1);margin:30px 0 20px;">버튼 변경</div>
+          <div class="btn">R</div>
+          <div style="font-size:10px;color:#555;margin-top:auto;">배경 = baseLayout (초록 선택 후)</div>
+        </div>
+      </div>
+      <div class="cap">초록 선택 + 버튼 45° 회전 + 버전 R 고른 뒤</div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">컨텍스트 메뉴</div>
+        <div class="screen col" style="padding:8px;gap:6px;">
+          <div class="btn">배경색 변경</div><div class="btn">버튼 변경</div><div class="btn">버전 선택</div>
+          <div class="dim">
+            <div class="dialog" style="padding:0;">
+              <div class="t" style="padding:12px 14px 6px;">배경색 변경</div>
+              <div style="padding:9px 14px;">배경색 (빨강)</div>
+              <div style="padding:9px 14px;">배경색 (초록)</div>
+              <div style="padding:9px 14px 12px;">배경색 (파랑)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap"><b>button1 길게 누르기</b> → 컨텍스트 메뉴<br>(button2는 "버튼 45도 회전 / 버튼 2배 확대")</div>
+    </div>
+    <div class="shot">
+      <div class="phone">
+        <div class="status"><span>12:00</span><span>▮▮ 100%</span></div>
+        <div class="appbar">컨텍스트 메뉴</div>
+        <div class="screen col" style="padding:8px;gap:6px;">
+          <div class="btn">배경색 변경</div><div class="btn">버튼 변경</div><div class="btn">버전 선택</div>
+          <div class="dim">
+            <div class="dialog">
+              <div class="t">좋아하는 버전은?</div>
+              <div style="padding:5px 0;"><span class="radio"></span>Q</div>
+              <div style="padding:5px 0;"><span class="radio on"></span>R</div>
+              <div style="padding:5px 0;"><span class="radio"></span>S</div>
+              <div style="padding:5px 0;"><span class="radio"></span>T</div>
+              <div class="acts"><span>닫기</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cap"><b>button3 그냥 누르기</b> → 라디오 목록 대화상자<br>고르는 즉시 button3 글자가 "R"로</div>
+    </div>
+  </div>
+  <div class="desc" style="margin-top:14px;">
+    <ol>
+      <li><code>button1</code> <b>길게</b> → 컨텍스트 메뉴(제목 "배경색 변경") 빨강/초록/파랑 → <code>baseLayout</code> 배경색 변경 (menu2.xml)</li>
+      <li><code>button2</code> <b>길게</b> → 다른 컨텍스트 메뉴(제목 "버튼 변경") "버튼 45도 회전" / "버튼 2배 확대" → button2가 회전/확대 (menu3.xml)</li>
+      <li><code>button3</code> <b>클릭</b> → "좋아하는 버전은?" 라디오 목록(Q, R, S, T), 고르면 button3 글자 변경, "닫기"로 닫음</li>
+    </ol>
+    <div class="warn">짧게 누르면 컨텍스트 메뉴가 안 뜨는 게 정상입니다. 에뮬레이터에선 마우스를 꾹 누르고 있어야 해요.</div>
+    <details><summary>코드 힌트 (스포일러)</summary>
+      <code>registerForContextMenu(button1)</code> · <code>onCreateContextMenu</code>에서 <code>v == button1</code>로 구분 + <code>menu.setHeaderTitle()</code> · <code>onContextItemSelected</code> · <code>setSingleChoiceItems(배열, 기본선택, 리스너)</code> · <code>setPositiveButton("닫기", null)</code>
+    </details>
+  </div>
+  <details class="ans" id="q14-ans"><summary>정답·해설 보기</summary>
+
+  <h4>핵심 개념</h4>
+  <ul>
+    <li>컨텍스트 메뉴(길게 누르기) 3단계: <code>registerForContextMenu(위젯)</code> 등록 → <code>onCreateContextMenu</code>에서 메뉴 만들기 → <code>onContextItemSelected</code>에서 처리.</li>
+    <li>위젯마다 다른 메뉴: <code>onCreateContextMenu</code>의 <code>v</code>가 길게 눌린 위젯이라 <code>v == button1</code>으로 구분.</li>
+    <li>라디오 목록 대화상자: <code>setSingleChoiceItems(배열, 처음 선택 위치, 리스너)</code>, <code>which</code>가 고른 번호.</li>
+  </ul>
+  <script type="text/plain" data-file="res/layout/prob14_main.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="배경색 변경" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="버튼 변경" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="버전 선택" />
+</LinearLayout>
+  </script>
+  <script type="text/plain" data-file="res/menu/menu2.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/itemRed" android:title="배경색 (빨강)" />
+    <item android:id="@+id/itemGreen" android:title="배경색 (초록)" />
+    <item android:id="@+id/itemBlue" android:title="배경색 (파랑)" />
+</menu>
+  </script>
+  <script type="text/plain" data-file="res/menu/menu3.xml">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/subRotate" android:title="버튼 45도 회전" />
+    <item android:id="@+id/subZoom" android:title="버튼 2배 확대" />
+</menu>
+  </script>
+  <script type="text/plain" data-file="java/Prob14.java">
+public class Prob14 extends AppCompatActivity {
+    LinearLayout baseLayout;
+    Button button1, button2, button3;
+    final String[] versionArray = {"Q", "R", "S", "T"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.prob14_main);
+        setTitle("컨텍스트 메뉴");
+
+        baseLayout = findViewById(R.id.baseLayout);
+        button1 = findViewById(R.id.button1);
+        button2 = findViewById(R.id.button2);
+        button3 = findViewById(R.id.button3);
+
+        registerForContextMenu(button1);
+        registerForContextMenu(button2);
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(Prob14.this);
+                dlg.setTitle("좋아하는 버전은?");
+                dlg.setSingleChoiceItems(versionArray, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        button3.setText(versionArray[which]);
+                    }
+                });
+                dlg.setPositiveButton("닫기", null);
+                dlg.show();
+            }
+        });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater mInflater = getMenuInflater();
+
+        if (v == button1) {
+            menu.setHeaderTitle("배경색 변경");
+            mInflater.inflate(R.menu.menu2, menu);
+        } else if (v == button2) {
+            menu.setHeaderTitle("버튼 변경");
+            mInflater.inflate(R.menu.menu3, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.itemRed) {
+            baseLayout.setBackgroundColor(Color.RED);
+        } else if (id == R.id.itemGreen) {
+            baseLayout.setBackgroundColor(Color.GREEN);
+        } else if (id == R.id.itemBlue) {
+            baseLayout.setBackgroundColor(Color.BLUE);
+        } else if (id == R.id.subRotate) {
+            button2.setRotation(45);
+        } else if (id == R.id.subZoom) {
+            button2.setScaleX(2);
+        }
+        return true;
+    }
+}
+  </script>
+  <div class="warn"><b>자주 틀리는 점</b><br>
+    · <code>registerForContextMenu()</code>를 빼면 길게 눌러도 아무 일도 안 일어납니다.<br>
+    · <code>onCreateContextMenu</code>, <code>onContextItemSelected</code>는 onCreate <b>바깥</b>, 클래스 안에 따로 씁니다(오버라이드 메서드). Android Studio에서 <code>Ctrl+O</code>로 넣으면 편해요.<br>
+    · <code>setSingleChoiceItems</code>의 두 번째 인자 <code>0</code>은 "Q가 처음부터 선택됨". 아무것도 선택 안 된 상태로 열려면 <code>-1</code>.<br>
+    · "2배 확대"는 교재처럼 <code>setScaleX(2)</code>(가로만)로 썼습니다. 세로도 키우려면 <code>setScaleY(2)</code> 추가.<br>
+    · menu2/menu3의 id를 문제 11 menu1과 같은 이름(<code>subSize</code> 등)으로 지으면 한 프로젝트 안에서 헷갈리니 다른 이름을 쓰세요.</div>
+  </details>
+</section>
+
+<div style="height:40px;"></div>
+
+<script>
+  // 문제 3: 체크박스 / 라디오 / 선택 완료
+  (function () {
+    var chk = document.getElementById('q3chk'), hide = document.getElementById('q3hide');
+    var box = chk.querySelector('.chk'), img = document.getElementById('q3img'), toast = document.getElementById('q3toast');
+    var picked = 'r11';
+    chk.onclick = function () {
+      var on = box.classList.toggle('on');
+      hide.style.visibility = on ? 'visible' : 'hidden';
+    };
+    document.querySelectorAll('.q3r').forEach(function (r) {
+      r.onclick = function () {
+        document.querySelectorAll('.q3r .radio').forEach(function (x) { x.classList.remove('on'); });
+        r.querySelector('.radio').classList.add('on');
+        picked = r.dataset.img;
+      };
+    });
+    document.getElementById('q3ok').onclick = function () {
+      if (!picked) { toast.style.display = 'block'; setTimeout(function () { toast.style.display = 'none'; }, 1500); return; }
+      img.textContent = '(그림: ' + picked + ')';
+    };
+  })();
+
+  // 문제 12: 버튼 누르면 화면 안 무작위 위치에 토스트
+  (function () {
+    var screen = document.getElementById('q12screen'), t = document.getElementById('q12toast');
+    document.getElementById('q12btn').onclick = function () {
+      var w = screen.clientWidth - t.offsetWidth, h = screen.clientHeight - t.offsetHeight;
+      t.style.left = Math.floor(Math.random() * w) + 'px';
+      t.style.top = Math.floor(Math.random() * h) + 'px';
+      t.style.display = 'block';
+      clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, 2000);
+    };
+  })();
+</script>
+<script>
+  // 해설 코드: <script type="text/plain"> -> 파일 카드 + <pre> (XML을 escape하지 않으려고)
+  document.querySelectorAll('script[type="text/plain"]').forEach(function (s) {
+    var box = document.createElement('div'); box.className = 'file';
+    var head = document.createElement('div'); head.className = 'fname';
+    var name = document.createElement('span'); name.textContent = s.dataset.file;
+    var btn = document.createElement('button'); btn.textContent = '복사';
+    var pre = document.createElement('pre');
+    var lines = s.textContent.replace(/^\n/, '').replace(/\s+$/, '').split('\n');
+    var ind = Math.min.apply(null, lines.filter(function (l) { return l.trim(); }).map(function (l) { return l.match(/^ */)[0].length; }));
+    pre.textContent = lines.map(function (l) { return l.slice(ind); }).join('\n');
+    btn.onclick = function () {
+      var t = pre.textContent;
+      // file://로 열면 navigator.clipboard가 없을 수 있어서 textarea 복사로 대체
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
+        var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove();
+      }).finally(function () { btn.textContent = '복사됨'; setTimeout(function () { btn.textContent = '복사'; }, 1200); });
+    };
+    head.appendChild(name); head.appendChild(btn); box.appendChild(head); box.appendChild(pre); s.replaceWith(box);
+  });
+  // 위쪽 "정답·해설 보기 ↓"를 누르면 해당 해설을 펼치고 이동
+  document.querySelectorAll('a.sol').forEach(function (a) {
+    a.onclick = function (e) { var d = document.querySelector(a.getAttribute('href')); if (d) { e.preventDefault(); d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } };
+  });
+</script>
+</body>
+</html>
