@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>머신러닝2 회귀분석 노트</title>
+<style>body{margin:0}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: a lab notebook on faint graph paper — narrow reading column, left contents rail on wide screens, formulas and R output set as "specimens". */
+:root{
+  --paper:#f6f8f9; --grid:#e3e9ec; --ink:#16232b; --muted:#56656e;
+  --accent:#1d5f86; --accent-soft:#dcebf3; --mark:#f3d65a; --mark-ink:#3d3200;
+  --card:#ffffff; --line:#cfd9de; --code-bg:#eef3f5; --ok:#2f7a4a; --warn:#a2562a;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101619; --grid:#1a2328; --ink:#e3eaee; --muted:#93a3ac;
+  --accent:#7cc0e6; --accent-soft:#1b3242; --mark:#6b5a12; --mark-ink:#fff4c2;
+  --card:#162026; --line:#2a3840; --code-bg:#0c1215; --ok:#7fcf9b; --warn:#e6a47c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#101619; --grid:#1a2328; --ink:#e3eaee; --muted:#93a3ac;
+  --accent:#7cc0e6; --accent-soft:#1b3242; --mark:#6b5a12; --mark-ink:#fff4c2;
+  --card:#162026; --line:#2a3840; --code-bg:#0c1215; --ok:#7fcf9b; --warn:#e6a47c; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;grid-template-columns:210px minmax(0,1fr);gap:48px}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);gap:24px}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:14px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:t}
+nav.toc a{display:block;padding:4px 10px;border-radius:4px;color:var(--muted);text-decoration:none;border-left:2px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);outline:none}
+nav.toc .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px 10px}
+@media (max-width:860px){nav.toc{position:static}nav.toc ol{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+main{min-width:0;display:grid;gap:56px}
+header.hero{display:grid;gap:12px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin:0;text-wrap:balance;font-weight:700}
+h1 .fit{font-family:var(--f-mono);font-weight:500;font-size:.62em;color:var(--accent);display:block;margin-top:6px}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;font-size:13px}
+.chip{font-family:var(--f-mono);font-size:12px;padding:2px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted)}
+section{display:grid;gap:16px;scroll-margin-top:24px}
+h2{font-size:24px;margin:0;line-height:1.3;text-wrap:balance;display:flex;gap:12px;align-items:baseline}
+h2 .n{font-family:var(--f-mono);font-size:14px;color:var(--accent);font-weight:500}
+h3{font-size:17px;margin:8px 0 0;text-wrap:balance}
+p{margin:0;max-width:68ch}
+ul,ol{margin:0;padding-left:1.3em;max-width:68ch}
+li+li{margin-top:4px}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 3px;border-radius:2px}
+code,.mono{font-family:var(--f-mono);font-size:.9em}
+:not(pre)>code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+a{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px;display:grid;gap:10px;min-width:0}
+.exam{border:2px solid var(--ink);background:var(--card);border-radius:6px;padding:20px 22px;display:grid;gap:12px}
+.exam .tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:2px 8px;border-radius:3px;justify-self:start}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.formula{font-family:var(--f-mono);font-size:15px;background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;white-space:nowrap;line-height:1.9}
+.formula .c{color:var(--muted);font-size:13px}
+.formula b{color:var(--accent);font-weight:500}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.04em;color:var(--muted);font-weight:500;background:var(--code-bg)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--f-mono)}
+.yes{color:var(--ok);font-weight:500}.no{color:var(--warn);font-weight:500}
+pre{margin:0;font-family:var(--f-mono);font-size:13px;line-height:1.6;background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto}
+pre .cm{color:var(--muted)}
+pre .hl{background:var(--mark);color:var(--mark-ink)}
+.annot{display:grid;gap:8px;counter-reset:a}
+.annot li{list-style:none;position:relative;padding-left:30px}
+.annot li::before{counter-increment:a;content:counter(a);position:absolute;left:0;top:3px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--paper);font:500 12px/20px var(--f-mono);text-align:center}
+.steps{display:grid;gap:0;counter-reset:s;padding:0;max-width:none}
+.steps>li{list-style:none;display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px dashed var(--line)}
+.steps>li::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:var(--f-mono);color:var(--accent);font-size:14px;padding-top:2px}
+.steps>li>div{display:grid;gap:6px;min-width:0}
+.steps>li+li{margin-top:0}
+.note{font-size:14px;color:var(--muted)}
+.warnbox{border-left:3px solid var(--warn);padding:8px 14px;background:var(--card);font-size:14px;border-radius:0 6px 6px 0}
+.quiz-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button{font:inherit;font-size:14px;padding:6px 14px;border-radius:4px;border:1px solid var(--accent);background:var(--card);color:var(--accent);cursor:pointer}
+button:hover{background:var(--accent-soft)}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+details.q{background:var(--card);border:1px solid var(--line);border-radius:6px}
+details.q summary{cursor:pointer;padding:12px 16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;list-style:none}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary .qn{font-family:var(--f-mono);font-size:13px;color:var(--accent);padding-top:2px}
+details.q[open] summary{border-bottom:1px dashed var(--line)}
+details.q .a{padding:12px 16px 14px 16px;display:grid;gap:8px}
+details.q .a::before{content:"답";font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--ok)}
+.qtype{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-left:6px}
+.qlist{display:grid;gap:8px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;display:grid;gap:4px}
+@media (prefers-reduced-motion:no-preference){nav.toc a{transition:background .15s,color .15s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<nav class="toc" aria-label="목차">
+  <p class="lbl">Contents</p>
+  <ol>
+    <li><a href="#exam">시험 범위 (교수님)</a></li>
+    <li><a href="#ml">추론통계 vs 기계학습</a></li>
+    <li><a href="#model">회귀모형의 구조</a></li>
+    <li><a href="#error">오차 · 잔차 · OLS</a></li>
+    <li><a href="#corr">상관분석</a></li>
+    <li><a href="#r2">R² · 평가지표</a></li>
+    <li><a href="#summary">summary() 읽기</a></li>
+    <li><a href="#multi">다중회귀 절차</a></li>
+    <li><a href="#assume">가정 검정 5가지</a></li>
+    <li><a href="#outlier">이상치 · 다중공선성</a></li>
+    <li><a href="#aic">AIC 변수선택</a></li>
+    <li><a href="#rehearsal">실전 리허설</a></li>
+    <li><a href="#rcheat">R 함수 정리</a></li>
+    <li><a href="#quiz">셀프 퀴즈</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <span class="eyebrow">강원대 첨단AI공학과 · 머신러닝2</span>
+  <h1>회귀분석 시험 정리<span class="fit">y = β₀ + β₁x₁ + … + βₖxₖ + ε</span></h1>
+  <p class="lede">강의자료 두 개(단순회귀 75쪽, 다중회귀 37쪽)와 4주차 R 실습 코드, 수업 메모를 한 페이지로 묶었습니다. 개념 → 공식 → R 출력 해석 → 퀴즈 순서로 보면 됩니다.</p>
+  <div class="meta">
+    <span class="chip">1. 단순회귀분석.pdf</span>
+    <span class="chip">2. 다중회귀분석.pdf</span>
+    <span class="chip">단순·다중회귀 실습.R</span>
+    <span class="chip">Auto R.R</span>
+    <span class="chip">수업 메모 .txt</span>
+  </div>
+</header>
+
+<section id="exam">
+  <h2><span class="n">00</span>교수님이 시험 전주에 짚어 준 범위</h2>
+  <div class="exam">
+    <span class="tag">시험 전주 수업 · 직접 말씀하신 내용</span>
+    <p><b>채점 방식:</b> 토씨 하나 안 틀리고 외워 쓰는 걸 싫어하심. <mark>머릿속에 떠오르는 의미를 자기 말로 적으면</mark>, 이해했다고 보이면 점수. 그러니 아래 서술형은 정의를 외우기보다 "왜 그런지"를 한두 문장으로 말할 수 있게 연습하세요. <a href="#essay">서술형 연습</a>에 예시 답안이 있습니다.</p>
+    <ol class="steps">
+      <li><div><b>단순회귀분석을 어떤 목적으로 하는가</b> + 회귀식 이야기 (β₀, β₁, y, x, ε 각각의 의미) → <a href="#model">02</a></div></li>
+      <li><div><b>회귀분석의 구조 그림</b> (데이터 → 함수=모델 → 결과) 과 <b>오차항</b> 부분 → <a href="#model">02</a>, <a href="#error">03</a></div></li>
+      <li><div><b>추론통계 vs 머신러닝</b> → <a href="#ml">01</a></div></li>
+      <li><div><b>단순회귀 실습 출력 해석</b>: 상수의 귀무가설, 모델 전체 p-value, R² 값을 보고 모델이 괜찮은지 판단. <mark>설명력 · 모델 p-value · 상수 · 귀무가설을 다 적고 판단해야 점수</mark> → <a href="#summary">06</a></div></li>
+      <li><div><b>다중회귀를 왜 하는가</b> + <b>다중회귀 코드 절차를 그대로 진행</b> (변수 제거 → 1을 넣은 모델과 ANOVA → 회귀 → 유의하지 않은 변수 빼고 다시 → 가정 검정 → 이상치 제거 후 재분석 → 저장 → 불러와서 예측 → RMSE) → <a href="#multi">07</a>, <a href="#rehearsal">실전 리허설</a></div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="ml">
+  <h2><span class="n">01</span>추론통계 vs 기계학습</h2>
+  <p>둘 다 표본 데이터를 쓰지만 <mark>목표가 다릅니다</mark>. 추론통계는 표본으로 <b>모집단을 이해</b>하려 하고, 기계학습은 표본으로 <b>새 데이터를 정확히 예측</b>하려 합니다.</p>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>추론통계</th><th>기계학습</th></tr></thead>
+    <tbody>
+      <tr><td>목적</td><td>표본으로 모집단 매개변수(평균, 표준편차) 추정·가설검정</td><td>보지 못한 새 데이터를 예측·분류하는 모델 개발 (일반화)</td></tr>
+      <tr><td>방법</td><td>신뢰구간, 가설검정</td><td>훈련 세트로 학습 → 별도 테스트 세트로 성능 평가</td></tr>
+      <tr><td>결과</td><td>불확실성을 정량화 ("95% 확신")</td><td>예측값과 예측 오차 (RMSE 등)</td></tr>
+      <tr><td>주의점</td><td>주로 범주형 독립변수 (예: 분산분석, 3개 이상 그룹 평균 비교)</td><td><b>과대적합</b>: 훈련 데이터의 노이즈·이상치까지 학습해 새 데이터 성능이 떨어짐</td></tr>
+      <tr><td>자동차 대여 예시</td><td>"대여 시간과 가격은 상관관계가 있다, 대여 시간이 가격에 영향을 준다"</td><td>"대여 시간이 2시간이니 가격은 20,000원이다"</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><h3>기계학습의 종류</h3>
+      <ul>
+        <li><b>지도학습</b>: 정답(Label) 있음 → 분류, 정확한 결과 예측. <span class="note">회귀(회귀분석·신경망·SVR)와 분류</span></li>
+        <li><b>비지도학습</b>: Label 없음 → 데이터의 패턴·구조로 분류</li>
+        <li><b>강화학습</b>: 행동에 보상, 누적 보상을 최적화하는 의사결정</li>
+      </ul>
+    </div>
+    <div class="card"><h3>변수의 종류</h3>
+      <ul>
+        <li><b>양적 변수</b>: 연속형(키, 몸무게) · 이산형(성공횟수, 교통사고 건수)</li>
+        <li><b>질적 변수</b>: 순위형(학년, 선호도) · 명목형(성별, 혈액형)</li>
+      </ul>
+      <p class="note">회귀분석의 종속변수·독립변수는 <b>연속형</b>이어야 합니다. 종속변수 = 독립변수에 의해 설명·예측되는 변수, 독립변수 = 예측(설명) 변수.</p>
+    </div>
+  </div>
+</section>
+
+<section id="model">
+  <h2><span class="n">02</span>회귀모형의 구조</h2>
+  <p>회귀분석은 하나의 종속변수와 하나 이상의 독립변수 사이의 함수 관계를 수학적 모형으로 가정하고, 데이터로 <b>미지의 회귀계수를 추정</b>해서 현상을 설명·예측하는 방법입니다. 한 줄로: <mark>하나의 선으로 잔차가 최소인 모델</mark>.</p>
+  <div class="card">
+    <h3>단순회귀분석의 목적</h3>
+    <p>두 변수가 <b>관련이 있는지</b>, 있다면 그 관계를 <b>수학적 함수(직선)로 나타낼 수 있는지</b>, 그 함수로 <b>새 값을 예측할 수 있는지</b>를 보는 것. 화석 예시로 말하면, 대퇴부와 상박부가 어떤 관계인지 기존 데이터로 학습해 함수를 만들고, 대퇴부만 남은 화석이 나오면 상박부 길이를 예측합니다.</p>
+    <p class="note">슬라이드 6쪽의 세 질문: (1) 키와 몸무게는 관련이 있는가? (2) 관계를 수학적 함수로 나타낼 수 있는가? (3) 그 함수로 키에서 몸무게를 예측할 수 있는가?</p>
+  </div>
+  <h3>회귀분석의 구조 그림 (슬라이드 13쪽)</h3>
+  <div class="tbl" style="background:transparent;border:0">
+  <svg viewBox="0 0 720 210" role="img" aria-label="학습 데이터가 함수(모델)를 거쳐 결과가 되고, 새로운 데이터(검증 데이터)를 같은 모델에 넣어 결과를 얻는 구조" style="display:block;width:100%;min-width:560px;max-width:720px;font-family:var(--f-body)">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>
+    <rect x="10" y="20" width="170" height="70" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <text x="95" y="50" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="700">데이터</text>
+    <text x="95" y="72" text-anchor="middle" fill="var(--muted)" font-size="13">학습 데이터 (Training)</text>
+    <rect x="275" y="20" width="170" height="70" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+    <text x="360" y="50" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="700">함수 = 모델</text>
+    <text x="360" y="72" text-anchor="middle" fill="var(--accent)" font-size="14" font-family="var(--f-mono)">y = ax + b</text>
+    <rect x="540" y="20" width="170" height="70" rx="6" fill="var(--card)" stroke="var(--line)"/>
+    <text x="625" y="50" text-anchor="middle" fill="var(--ink)" font-size="16" font-weight="700">결과</text>
+    <text x="625" y="72" text-anchor="middle" fill="var(--muted)" font-size="13">검증 데이터에 대한 결과</text>
+    <line x1="180" y1="55" x2="272" y2="55" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+    <line x1="445" y1="55" x2="537" y2="55" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+    <rect x="275" y="140" width="170" height="56" rx="6" fill="var(--card)" stroke="var(--line)" stroke-dasharray="4 3"/>
+    <text x="360" y="164" text-anchor="middle" fill="var(--ink)" font-size="15" font-weight="700">새로운 데이터</text>
+    <text x="360" y="184" text-anchor="middle" fill="var(--muted)" font-size="13">검증 데이터 (Test)</text>
+    <line x1="360" y1="138" x2="360" y2="93" stroke="var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="226" y="45" text-anchor="middle" fill="var(--muted)" font-size="12">학습</text>
+    <text x="491" y="45" text-anchor="middle" fill="var(--muted)" font-size="12">예측</text>
+  </svg></div>
+  <p class="note">설명할 때: 학습 데이터로 함수(=모델)를 만들고, 그 모델에 새로운 데이터(검증 데이터)를 넣어 결과를 낸다. 실습의 <code>lm()</code>이 "함수 만들기", <code>predict(newdata=)</code>가 "새 데이터 넣기", RMSE가 "결과 확인"에 해당합니다.</p>
+  <div class="formula">
+    y = <b>β₀</b> + <b>β₁</b>x + ε<br>
+    <span class="c">β₀ 상수(절편) · β₁ 회귀계수(기울기) · x 독립변수 · y 종속변수 · ε 오차항</span><br>
+    β̂₁ = Σ(Xᵢ − X̄)(Yᵢ − Ȳ) / Σ(Xᵢ − X̄)²<br>
+    β̂₀ = Ȳ − β̂₁X̄ <span class="c">← 회귀선은 항상 (X̄, Ȳ)를 지난다</span>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>β₁ (회귀계수)</h3>
+      <p>x가 <b>1단위 증가할 때 y의 평균 변화량</b>. 양수면 x↑ → y↑, 음수면 x↑ → y↓.</p></div>
+    <div class="card"><h3>β₀ (절편, 상수)</h3>
+      <p>모든 독립변수가 0일 때 종속변수의 기준 수준. <code>lm(y ~ 0 + x)</code>로 절편을 0에 고정할 수 있습니다.</p></div>
+  </div>
+  <h3>회귀분석 프로세스 (4단계)</h3>
+  <ol class="steps">
+    <li><div><b>산점도</b>를 그린다 (독립변수 vs 종속변수)</div></li>
+    <li><div>산점도를 보고 적절한 <b>회귀모형을 선택</b>한다 (직선? 곡선?)</div></li>
+    <li><div>자료로 <b>회귀계수를 추정</b>한다 (최소제곱법)</div></li>
+    <li><div>회귀모형의 <b>적용이 옳은지 판단</b>한다 (p-value, R², 가정 검정)</div></li>
+  </ol>
+  <h3>회귀의 종류</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>종류</th><th>설명</th><th>모형</th></tr></thead>
+    <tbody>
+      <tr><td>단순회귀</td><td>독립변수 1개, 직선 관계</td><td class="mono">y = β₀ + β₁x + ε</td></tr>
+      <tr><td>다중회귀</td><td>독립변수 2개 이상, 1차 선형</td><td class="mono">y = β₀ + β₁x₁ + … + βₖxₖ + ε</td></tr>
+      <tr><td>곡선회귀</td><td>독립변수 1개, 2차 이상 곡선</td><td class="mono">y = β₀ + β₁x + β₂x² + … + βₖxᵏ + ε</td></tr>
+      <tr><td>다항회귀</td><td>다중회귀 + 곡선회귀</td><td class="mono">β₃x₁x₂ + β₄x₁² + β₅x₂² …</td></tr>
+      <tr><td>비선형회귀</td><td>회귀계수가 선형으로 표현되지 않음</td><td class="mono">y = β₀β₁ˣ + ε</td></tr>
+    </tbody>
+  </table></div>
+  <div class="card">
+    <h3>예제: 시조새 화석 (대퇴부 → 상박부)</h3>
+    <p>상박부 = −3.66 + 1.197 × 대퇴부. 대퇴부가 50 cm이면 상박부 = −3.66 + 1.197×50 = <b>56.2 cm</b>. 상관계수 r = 0.99.</p>
+    <p class="note">"회귀(regression)"는 Francis Galton이 처음 사용. 키 큰 아버지의 아들은 평균보다는 크지만 아버지보다는 작은 경향 → <b>평균으로의 회귀</b>.</p>
+  </div>
+</section>
+
+<section id="error">
+  <h2><span class="n">03</span>오차 · 잔차 · 최소제곱법</h2>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>오차 (Error, ε)</th><th>잔차 (Residual, e)</th></tr></thead>
+    <tbody>
+      <tr><td>정의</td><td>데이터가 만들어질 때 섞이는 본질적 잡음</td><td>관찰값 − 모델 예측값</td></tr>
+      <tr><td>관찰</td><td class="no">관찰 불가능 (이론적 개념)</td><td class="yes">계산 가능</td></tr>
+      <tr><td>출퇴근 예시</td><td>예상치 못한 도로 폐쇄처럼 모델에 없는 요인</td><td>예측 30분, 실제 35분 → e = +5분 / 실제 28분 → e = −2분</td></tr>
+    </tbody>
+  </table></div>
+  <div class="formula">잔차 = 순수 오차 + 모형화 오차(모델의 미스매치)<br>
+    <span class="c">가정: εᵢ ~ iid N(0, σ²) — 서로 독립, 평균 0, 분산 일정한 정규분포</span></div>
+  <div class="card">
+    <h3>오차항의 특징 (4가지)</h3>
+    <ul>
+      <li><b>완전성</b>: 모델이 모든 것을 포착하지 못한다</li>
+      <li><b>복잡성</b>: 데이터 제한·알 수 없는 요인 때문에 모든 변수를 넣을 수 없다</li>
+      <li><b>유연성</b>: 설명 못 하는 부분은 두고, 체계적 관계 포착에 집중한다</li>
+      <li><b>통찰력</b>: 누락된 부분을 보고 추가할 변수를 찾을 수 있다</li>
+    </ul>
+    <p class="note">오차항 예 (집값): 위치, 관리 상태, 시장 동향.</p>
+  </div>
+  <div class="formula">최소제곱법(OLS): SSE = Σ(Yᵢ − Ŷᵢ)² 를 <b>최소</b>로 하는 β₀, β₁ 을 찾는다</div>
+</section>
+
+<section id="corr">
+  <h2><span class="n">04</span>상관분석 (Pearson)</h2>
+  <div class="formula">
+    Cov(X,Y) = Σ(Xᵢ − X̄)(Yᵢ − Ȳ) / (n − 1) <span class="c">← 같이 움직이는 방향 (부호 있는 면적의 평균)</span><br>
+    r = Cov(X,Y) / √(Var X · Var Y) = Σ(X−X̄)(Y−Ȳ) / √(Σ(X−X̄)² · Σ(Y−Ȳ)²)<br>
+    <span class="c">공분산을 두 변수의 표준편차로 나눠 정규화 → −1 ≤ r ≤ 1</span>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>성질</h3>
+      <ul>
+        <li>0 &lt; r ≤ 1: 양의 직선적 상관 / −1 ≤ r &lt; 0: 음의 상관</li>
+        <li>r = 0: <b>직선적</b> 상관관계 없음</li>
+        <li>독립이면 Cov = 0, 하지만 <mark>Cov = 0이라고 반드시 독립은 아님</mark></li>
+        <li>극단값(이상치)에 영향을 많이 받음</li>
+        <li>Pearson = 선형 관계, <b>Spearman 순위 상관</b> = 비선형 관계</li>
+      </ul></div>
+    <div class="card"><h3>가설</h3>
+      <ul>
+        <li>H₀: ρ = 0 (상관관계 없음)</li>
+        <li>H₁: ρ ≠ 0 (양측) 또는 ρ &gt; 0, ρ &lt; 0 (단측)</li>
+      </ul>
+      <pre>library(psych)
+r &lt;- corr.test(heights, weights, method="pearson")
+r$p  <span class="cm"># p-value</span>
+r$r  <span class="cm"># 상관계수</span></pre></div>
+  </div>
+  <h3>손계산 예제 (공부시간 vs 점수, 슬라이드 55쪽)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>학생</th><th class="num">X 시간</th><th class="num">Y 점수</th><th class="num">X − X̄</th><th class="num">Y − Ȳ</th><th class="num">곱</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td class="num">2</td><td class="num">55</td><td class="num">−3.5</td><td class="num">−15</td><td class="num">+52.5</td></tr>
+      <tr><td>B</td><td class="num">3</td><td class="num">75</td><td class="num">−2.5</td><td class="num">+5</td><td class="num">−12.5</td></tr>
+      <tr><td>C</td><td class="num">5</td><td class="num">60</td><td class="num">−0.5</td><td class="num">−10</td><td class="num">+5</td></tr>
+      <tr><td>D</td><td class="num">6</td><td class="num">70</td><td class="num">+0.5</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td>E</td><td class="num">8</td><td class="num">80</td><td class="num">+2.5</td><td class="num">+10</td><td class="num">+25</td></tr>
+      <tr><td>F</td><td class="num">9</td><td class="num">80</td><td class="num">+3.5</td><td class="num">+10</td><td class="num">+35</td></tr>
+      <tr><td><b>합</b></td><td class="num">33</td><td class="num">420</td><td class="num">0</td><td class="num">0</td><td class="num"><b>+105</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="formula">X̄ = 5.5, Ȳ = 70 · Σ(X−X̄)² = 37.5 · Σ(Y−Ȳ)² = 550<br>
+    r = 105 / √(37.5 × 550) = 105 / 143.61 = <b>0.731</b> <span class="c">← 편차의 합은 항상 0이라 "곱"을 더해야 정보가 남는다</span></div>
+</section>
+
+<section id="r2">
+  <h2><span class="n">05</span>R² (결정계수)와 평가지표</h2>
+  <div class="formula">
+    SST = Σ(yᵢ − ȳ)² <span class="c">총 변동</span><br>
+    SSE = Σ(yᵢ − ŷᵢ)² <span class="c">잔차 제곱합 (설명 못 한 변동)</span><br>
+    SSR = Σ(ŷᵢ − ȳ)² <span class="c">회귀로 설명된 변동</span>  · SST = SSR + SSE<br>
+    R² = SSR / SST = <b>1 − SSE / SST</b> <span class="c">단순회귀에서는 R² = r²</span><br>
+    Adjusted R² = 1 − [SSE / (n − k − 1)] / [SST / (n − 1)] <span class="c">n 표본수, k 독립변수 수</span>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>R² 해석</h3>
+      <ul>
+        <li>독립변수가 종속변수를 얼마나 잘 <b>설명</b>하는가 = 설명력. "평균으로 찍는 것보다 얼마나 나은가"</li>
+        <li>0 근처: 거의 설명 못 함 · 0.3~0.5: 사회과학에서 쓸 만함 · 0.7↑: 강함 · 0.9↑: 매우 강함</li>
+        <li>독립변수를 추가하면 <b>무조건 올라감</b> → 그래서 Adjusted R²(자유도 반영) 사용</li>
+        <li>절편 없는 모델이나 잘못된 예측에서는 <b>음수</b>도 가능</li>
+        <li>비율이라 절대 오차 크기는 모름 → RMSE 등이 필요</li>
+      </ul></div>
+    <div class="card"><h3>R² vs RMSE</h3>
+      <ul>
+        <li><b>R²</b> = 설명력: 종속변수 분산 중 독립변수가 설명한 비율</li>
+        <li><b>RMSE</b> = 예측력(모형의 안정성): 예측값과 실제값의 차이 크기, y와 같은 단위</li>
+      </ul></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>지표</th><th>공식</th><th>잔차 처리</th><th>이상치에 강한가</th><th>특징</th></tr></thead>
+    <tbody>
+      <tr><td>MAE</td><td class="mono">Σ|y − ŷ| / n</td><td>절대값</td><td class="yes">Yes</td><td>과대/과소 방향 모름</td></tr>
+      <tr><td>MSE</td><td class="mono">Σ(y − ŷ)² / n</td><td>제곱</td><td class="no">No</td><td>특이값에 민감</td></tr>
+      <tr><td>RMSE</td><td class="mono">√(Σ(y − ŷ)² / n)</td><td>제곱</td><td class="no">No</td><td>실제값과 같은 단위로 해석 쉬움</td></tr>
+      <tr><td>MAPE</td><td class="mono">Σ|(y − ŷ)/y| / n × 100%</td><td>절대값</td><td class="yes">Yes</td><td>얼마나 틀렸나 (%)</td></tr>
+      <tr><td>MPE</td><td class="mono">Σ(y − ŷ)/y / n × 100%</td><td>—</td><td class="yes">Yes</td><td>어느 쪽으로 틀렸나 (부호 유지)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="summary">
+  <h2><span class="n">06</span><code>summary(model)</code> 출력 읽기</h2>
+  <p>단순회귀 실습(<code>simple_train_data.csv</code>, n = 1000) 결과입니다. 시험에서 출력 화면을 주고 해석하라고 할 가능성이 큽니다.</p>
+<pre>Call: lm(formula = upper_arm ~ thigh, data = train_data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-4.4069 -0.9916 -0.0375  0.9879  4.6095
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+<span class="hl">(Intercept) 5.784231   0.324304   17.84   &lt;2e-16 ***</span>   ①
+<span class="hl">thigh       0.388886   0.005374   72.36   &lt;2e-16 ***</span>   ②
+---
+Residual standard error: 1.489 on 998 degrees of freedom   ③
+<span class="hl">Multiple R-squared:  0.8399,  Adjusted R-squared:  0.8398</span>   ④
+<span class="hl">F-statistic:  5237 on 1 and 998 DF,  p-value: &lt; 2.2e-16</span>   ⑤</pre>
+  <ol class="annot">
+    <li><b>절편</b> 5.78. H₀: 상수가 0이다 → p &lt; 0.05라 기각.</li>
+    <li><b>기울기</b> 0.389: 대퇴부가 1 cm 늘면 상박부가 평균 0.389 cm 늘어남. H₀: x와 y는 선형 관련이 없다 → 기각, 유의함.</li>
+    <li>잔차 표준오차 1.489, 자유도 998 = n − k − 1 = 1000 − 1 − 1.</li>
+    <li>R² 0.84 → 상박부 변동의 약 84%를 대퇴부가 설명. 강한 설명력.</li>
+    <li>F검정: H₀: 독립변수는 종속변수를 유의미하게 설명하지 않는다 → p &lt; 0.05라 기각, <b>모형 전체가 유의</b>.</li>
+  </ol>
+  <div class="exam">
+    <span class="tag">답안 템플릿 · 이 네 가지를 다 적고 판단</span>
+    <ol class="steps">
+      <li><div><b>상수(절편)와 귀무가설</b>: 절편 5.784, H₀ "상수가 0이다" → p &lt; 2e-16 &lt; 0.05 이므로 기각.</div></li>
+      <li><div><b>회귀계수와 귀무가설</b>: thigh 0.389, H₀ "x와 y는 선형 관련이 없다" → p &lt; 0.05 기각. 대퇴부가 1 cm 늘면 상박부가 평균 0.389 cm 늘어난다.</div></li>
+      <li><div><b>모델 전체 p-value</b>: F = 5237, H₀ "독립변수는 종속변수를 유의미하게 설명하지 않는다" → p &lt; 2.2e-16 &lt; 0.05 기각, 모델이 유의하다.</div></li>
+      <li><div><b>설명력 R²</b>: 0.8399 → 상박부 변동의 약 84%를 대퇴부로 설명. 0.7 이상이라 설명력이 강하다.</div></li>
+      <li><div><b>판단</b>: 회귀식 <code>상박부 = 5.784 + 0.389 × 대퇴부</code>. 계수와 모델 모두 유의하고 설명력도 높으므로 괜찮은 모델이다.</div></li>
+    </ol>
+    <p class="note">반대 사례도 알아 두세요. 당뇨 데이터 다중회귀는 모델 p-value가 1.5e-09로 유의하지만 R²가 0.056(설명력 5.6%)밖에 안 됩니다. "유의하지만 설명력은 매우 낮다"고 둘 다 적어야 합니다. → <a href="#rehearsal">실전 리허설</a></p>
+  </div>
+  <p class="warnbox">판단 기준은 p-value <b>0.05</b> (5%)입니다. 메모에 "0.05%"라고 적힌 부분은 0.05의 오기입니다.</p>
+</section>
+
+<section id="multi">
+  <h2><span class="n">07</span>다중회귀와 분석 절차</h2>
+  <p><b>왜 다중회귀를 하나?</b> 종속변수에 영향을 주는 요인은 보통 여러 개입니다. 예금 유치액을 홍보비용 하나로만 설명하는 것보다 직원 수, 지점 크기까지 넣으면 더 정확한 정보를 얻습니다. 독립변수가 2개면 회귀선 대신 <b>회귀평면(초평면)</b>을 추정합니다.</p>
+  <div class="formula">
+    단순: ŷ = 10 + 2.0·홍보비용<br>
+    다중: ŷ = <b>9.23 + 1.95·홍보비용 + 0.15·직원수</b> <span class="c">(예금 유치액, 지점 10곳)</span><br>
+    <span class="c">각 계수 = 다른 변수를 고정했을 때 그 변수 1단위 증가에 따른 y의 변화</span>
+  </div>
+  <h3>교수님이 말씀하신 순서 그대로 (당뇨 데이터, 종속변수 <code>Diabetes</code>)</h3>
+  <p class="note">"그대로 진행해 주시면 됩니다." 아래 순서를 지키는 게 핵심입니다. <span class="chip">문제에서 요구하면</span> 표시된 단계는 문제에 "~를 도출하시오", "~를 빼시오"가 있을 때만 하면 됩니다.</p>
+  <ol class="steps">
+    <li><div><b>데이터 불러오기</b><pre>df &lt;- read.csv("diabetes.csv", header=TRUE, stringsAsFactors=TRUE)
+skim(df)</pre></div></li>
+    <li><div><b>1차 변수 제거</b>: 회귀분석을 하려면 독립변수가 <b>연속형</b>이어야 하므로, 연속형이 아닌 것을 먼저 뺀다.<pre>df &lt;- na.omit(df)
+df &lt;- dplyr::select(df, -c(Outcome))   <span class="cm"># Outcome은 0/1 범주형</span></pre></div></li>
+    <li><div><b>"1을 넣은 모델"과 ANOVA</b>: 그냥 회귀만 하는 게 아니라, 평균만으로 예측하는 <code>~ 1</code> 모델과 비교한다. <mark>차이가 있어야(p &lt; 0.05) 의미가 있다.</mark><pre>result  &lt;- lm(Diabetes ~ ., data=df)
+result1 &lt;- lm(Diabetes ~ 1, data=df)
+anova(result1, result)</pre></div></li>
+    <li><div><b>회귀모델 확인</b>: <code>summary(result)</code>에서 종속변수를 설명하지 못하는(p &gt; 0.05) 독립변수를 찾는다.</div></li>
+    <li><div><b>2단계 변수 제거로 돌아가서</b> 그 변수를 빼고 <b>다중회귀를 다시</b> 실시한다. 회귀식만 적고 끝내면 안 됨. <mark>이때 ANOVA는 다시 안 해도 된다</mark> (이미 차이가 있음을 알기 때문).<pre>df &lt;- dplyr::select(df, -c(Pregnancies, BloodPressure, BMI, Age))
+result &lt;- lm(Diabetes ~ ., data=df)
+summary(result)</pre></div></li>
+    <li><div><b>바로 저장하지 말고 → 모형의 타당성·신뢰성 검정</b> <span class="chip">문제에서 요구하면</span><br>"회귀분석을 하시오"만 있으면 안 해도 되고, "~를 도출하시오"가 붙으면 한다. 선형성·등분산성·독립성·정규성·다중공선성 → <a href="#assume">08</a><pre>bptest(result); durbinWatsonTest(result)
+shapiro_test(result$residuals); vif(result)</pre></div></li>
+    <li><div><b>문제에서 빼라는 변수가 있으면 빼고 다시</b> <span class="chip">문제에서 요구하면</span><br>후진소거법 등을 하라고 하면 그것도 한다 → <a href="#aic">10</a></div></li>
+    <li><div><b>이상치 검정 → 값을 빼고 다시 돌리고 → 다시 이상치 검정</b>. 그냥 한 번 보고 끝이 아니라 제거 후 재분석까지.<pre>cand &lt;- influencePlot(result, id=list(n=3))
+df2 &lt;- df[!rownames(df) %in% c("229","446"), ]
+result2 &lt;- lm(Diabetes ~ ., data=df2)
+influencePlot(result2, id=list(n=3)); max(cooks.distance(result2))</pre></div></li>
+    <li><div><b>최종 회귀모델 저장</b><pre>saveRDS(result2, "regression_model.rds")</pre></div></li>
+    <li><div><b>불러와서 새 데이터를 넣고 실제값과 예측값을 출력</b><pre>loaded_model &lt;- readRDS("regression_model.rds")
+new_data  &lt;- read.csv("diabetes_test.csv")
+predicted &lt;- predict(loaded_model, newdata=new_data)
+results   &lt;- data.frame(new_data, Predicted=predicted)</pre></div></li>
+    <li><div><b>RMSE 계산</b> → 어떤 값이 나오는지 적고 해석<pre>rmse &lt;- sqrt(mean((results$Diabetes - results$Predicted)^2))
+print(paste("RMSE:", round(rmse, 3)))</pre></div></li>
+  </ol>
+  <p class="warnbox">실습 주의: 슬라이드 14쪽 <code>saveRDS(model, …)</code>은 <code>result</code>가 맞습니다. <code>MASS</code>를 <code>library()</code>로 불러오면 <code>select</code>가 충돌하므로 <code>dplyr::select</code>, <code>MASS::stepAIC</code>처럼 패키지명을 붙여 씁니다. Auto 데이터는 <code>horsepower</code>에 "?"가 있어 <code>as.numeric(as.character())</code> 후 <code>na.omit</code>이 필요합니다.</p>
+</section>
+
+<section id="assume">
+  <h2><span class="n">08</span>모형의 타당성·신뢰성 검정 5가지</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>가정</th><th>의미</th><th>그래프</th><th>R 검정</th><th>만족 조건</th></tr></thead>
+    <tbody>
+      <tr><td><b>1 선형성</b></td><td>y와 x가 선형 관계</td><td>Residuals vs Fitted: 잔차 평균이 0 부근에서 평평</td><td>—</td><td>패턴 없음</td></tr>
+      <tr><td><b>2 등분산성</b></td><td>잔차의 분산이 일정 (다트: 같은 폭으로 흩어짐 / 무거울수록 오차↑ = 이분산)</td><td>Scale-Location</td><td class="mono">bptest(result)</td><td>p &gt; 0.05</td></tr>
+      <tr><td><b>3 독립성</b></td><td>잔차끼리 상관 없음 (버스 연쇄 지연 = 위반)</td><td>—</td><td class="mono">durbinWatsonTest(result)</td><td>p &gt; 0.05, DW 1.5~2.5</td></tr>
+      <tr><td><b>4 정규성</b></td><td>잔차가 평균 0인 정규분포</td><td>Q-Q plot (점이 대각선 위)</td><td class="mono">shapiro_test(result$residuals)</td><td>p &gt; 0.05</td></tr>
+      <tr><td><b>5 다중공선성</b></td><td>독립변수끼리 높은 상관이 없어야 함</td><td>산점도 행렬</td><td class="mono">vif(result)</td><td>VIF &lt; 10</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card"><h3>p &gt; 0.05가 "좋은" 이유</h3>
+      <p>가정 검정은 H₀가 "가정을 만족한다"(예: 잔차가 정규분포를 따른다)입니다. 그래서 <mark>p &gt; 0.05 → H₀ 채택 → 가정 만족</mark>. 회귀계수 검정(p &lt; 0.05가 좋음)과 방향이 반대라 자주 헷갈립니다.</p></div>
+    <div class="card"><h3>Durbin-Watson 통계량</h3>
+      <ul>
+        <li>범위 0 ~ 4</li>
+        <li>0 근처: 양의 자기상관</li>
+        <li>2 근처 (1.5~2.5): 독립</li>
+        <li>4 근처: 음의 자기상관</li>
+      </ul></div>
+    <div class="card"><h3>정규성 검정 선택</h3>
+      <ul>
+        <li>Shapiro-Wilk: 표본 <b>2,000 미만</b></li>
+        <li>Kolmogorov-Smirnov: 표본 2,000 초과</li>
+        <li>Q-Q plot: 시각적 판단 (Z-score = 잔차/표준편차)</li>
+      </ul></div>
+    <div class="card"><h3><code>plot(result)</code> 4개 그래프</h3>
+      <ul>
+        <li>Residuals vs Fitted → 선형성</li>
+        <li>Q-Q Residuals → 정규성</li>
+        <li>Scale-Location → 등분산성</li>
+        <li>Residuals vs Leverage → 모델을 흔드는 이상치</li>
+      </ul>
+      <pre>par(mfrow = c(2, 2)); plot(result)</pre></div>
+  </div>
+</section>
+
+<section id="outlier">
+  <h2><span class="n">09</span>이상치 검정과 다중공선성</h2>
+  <div class="grid2">
+    <div class="card"><h3>influencePlot 읽기</h3>
+      <ul>
+        <li><b>X축 Hat (레버리지)</b>: 독립변수 값이 평균에서 얼마나 떨어진 특이한 위치인가</li>
+        <li><b>Y축 StudRes (스튜던트화 잔차)</b>: 그 점을 뺀 나머지로 추정한 표준편차로 나눈 잔차 = 얼마나 틀렸나</li>
+        <li><b>원 크기 Cook's D</b>: 모델에 주는 영향력</li>
+      </ul>
+      <div class="formula">Cook's D &lt; 0.5 → 영향점 없음<br>0.5 ~ 1 → 확인 필요<br>&gt; 1 → 영향점</div>
+    </div>
+    <div class="card"><h3>다중공선성 (VIF)</h3>
+      <p>두 개 이상의 독립변수가 서로 높은 상관 → 회귀계수가 매우 커지고, 변동성이 커져 계수 부호가 실제와 <b>반대</b>가 될 수도 있음. 고차항과 원변수도 수학적으로 강한 상관.</p>
+      <div class="formula">VIF = 1 / (1 − R²ⱼ)<br><span class="c">R²ⱼ: j번째 변수를 나머지 독립변수로 회귀한 R²</span><br>VIF ≥ <b>10</b> → 다중공선성 있음</div>
+      <p class="note">제거 후에도 R²가 유지되거나 높아지는 모델을 찾습니다. Auto 데이터에서는 cylinders, displacement, horsepower, acceleration을 빼고 재분석.</p>
+    </div>
+  </div>
+<pre>cand &lt;- influencePlot(result, id = list(n = 3))   <span class="cm"># StudRes, Hat, CookD 기준 상위 3개씩</span>
+out_rows &lt;- c("229", "446")                       <span class="cm"># 확인 후 직접 입력</span>
+df2 &lt;- df[!rownames(df) %in% out_rows, ]
+result2 &lt;- lm(Diabetes ~ ., data = df2)
+max(cooks.distance(result2))                      <span class="cm"># &lt; 0.5 이면 OK</span>
+
+vif_values &lt;- car::vif(result)
+names(vif_values[vif_values &gt; 7])                 <span class="cm"># 의심 변수 추출</span></pre>
+</section>
+
+<section id="aic">
+  <h2><span class="n">10</span>AIC를 이용한 변수선택</h2>
+  <div class="formula">AIC = −2 × log-likelihood + 2 × k <span class="c">k = 추정한 파라미터 수</span></div>
+  <ul>
+    <li>모형 적합도(로그우도)와 복잡도(변수 수)를 <b>동시에</b> 고려</li>
+    <li>절대 기준이 없음 → <mark>작을수록 좋은 모델</mark>이라는 상대 비교만 가능</li>
+    <li>변수를 빼거나 넣었을 때 AIC가 줄어들면 그 선택이 의미 있음</li>
+  </ul>
+  <div class="tbl"><table>
+    <thead><tr><th>방법</th><th>시작 모형</th><th>R</th></tr></thead>
+    <tbody>
+      <tr><td>후진소거법</td><td>전체 변수 → 하나씩 제거</td><td class="mono">stepAIC(result_bk, direction="backward")</td></tr>
+      <tr><td>전진선택법</td><td>절편만 (<code>y ~ 1</code>) → 하나씩 추가</td><td class="mono">stepAIC(result_fw, direction="forward", scope=formula(result_bk))</td></tr>
+      <tr><td>단계적선택법</td><td>추가·제거를 모두 고려</td><td class="mono">stepAIC(result_bk, direction="both")</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><code>trace = TRUE</code>는 변수를 하나씩 빼거나 넣는 과정을 출력합니다.</p>
+</section>
+
+<section id="rehearsal">
+  <h2><span class="n">R</span>실전 리허설: 실제로 돌린 결과</h2>
+  <p>위 절차를 R 4.6으로 그대로 돌렸습니다. 숫자를 보고 각 단계에서 무엇을 적어야 하는지 연습하세요.</p>
+
+  <h3>A. 당뇨 데이터 (수업 실습)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>단계</th><th>결과</th><th>답안에 적을 판단</th></tr></thead>
+    <tbody>
+      <tr><td>ANOVA (~1 vs 전체)</td><td class="mono">F = 7.284, p = 1.8e-08</td><td>p &lt; 0.05 → 두 모델 차이 있음, 회귀분석 의미 있음</td></tr>
+      <tr><td>전체 모델 summary</td><td class="mono">Pregnancies p=0.145, BloodPressure 0.426, BMI 0.112, Age 0.120</td><td>네 변수는 p &gt; 0.05 → 종속변수를 설명 못 함 → 빼고 다시</td></tr>
+      <tr><td>축소 모델</td><td class="mono">Glucose, SkinThickness, Insulin 모두 p &lt; 0.05<br>R² = 0.056, F p = 1.5e-09</td><td>모델은 유의하나 <b>설명력 5.6%로 매우 낮음</b></td></tr>
+      <tr><td>등분산성 bptest</td><td class="mono">p = 4.2e-05</td><td class="no">p &lt; 0.05 → 이분산성</td></tr>
+      <tr><td>독립성 DW</td><td class="mono">D-W = 2.02, p = 0.83</td><td class="yes">2 근처, p &gt; 0.05 → 독립</td></tr>
+      <tr><td>정규성 shapiro</td><td class="mono">p = 3.2e-25</td><td class="no">p &lt; 0.05 → 정규성 불만족</td></tr>
+      <tr><td>VIF</td><td class="mono">1.14 / 1.25 / 1.40</td><td class="yes">모두 10 미만 → 다중공선성 없음</td></tr>
+      <tr><td>이상치</td><td class="mono">229번 CookD 0.304, 446번 StudRes 5.7</td><td>두 행 제거 후 재분석 → max Cook's D 0.10 &lt; 0.5, 영향점 없음</td></tr>
+      <tr><td>후진소거법</td><td class="mono">Diabetes ~ Glucose + SkinThickness + Insulin</td><td>AIC 기준으로도 같은 세 변수 선택</td></tr>
+      <tr><td>테스트 RMSE</td><td class="mono">0.284</td><td>평균적으로 Diabetes 값을 약 0.28 정도 틀리게 예측</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">이상치 제거 후 Insulin의 p가 0.072로 올라갑니다. 시험에서 이런 변화가 나오면 "이상치 제거 후 Insulin은 유의하지 않게 되었다"고 적고, 필요하면 2단계로 돌아가 다시 빼면 됩니다.</p>
+
+  <h3>B. 아파트 데이터 (데이터셋에 있지만 수업에서 안 쓴 것: 연습용 추천)</h3>
+  <p><code>02.apartment_train.csv</code> (700행) → <code>Price</code>를 Area, Rooms, StationDist, Age, Floor, Playgrounds, GuardPosts, SurveyMonth로 예측. 같은 절차를 직접 돌려 보고 아래와 비교해 보세요.</p>
+  <ol class="steps">
+    <li><div><b>ANOVA</b>: F = 932.4, p &lt; 2.2e-16 → 차이 있음.</div></li>
+    <li><div><b>전체 모델</b>: R² = 0.915. Playgrounds(p=0.67), GuardPosts(0.90), SurveyMonth(0.94)는 유의하지 않음 → 빼고 다시 → 나머지 5개 모두 p &lt; 0.05, R² 0.915 유지.</div></li>
+    <li><div><b>다중공선성</b>: VIF Area <b>26.7</b>, Rooms <b>27.3</b> (10 이상). 둘의 상관계수 0.97. 하나를 빼서 R²가 유지되는 쪽을 고른다: Rooms 제거 시 R² 0.912, Area 제거 시 0.899 → <b>Rooms 제거</b>. 이후 VIF 모두 ≈1.0.</div></li>
+    <li><div><b>가정 검정</b>: bptest p = 0.0025 (이분산), DW 1.87 · p = 0.064 (독립), shapiro p ≈ 0 (정규성 불만족). 잔차 최대값이 17.8로 튀는 점이 있음.</div></li>
+    <li><div><b>이상치</b>: 401번 Cook's D <b>6.77</b> (&gt; 1, 영향점), 87번 StudRes 23.9 · CookD 0.58, 201번 StudRes −6.0 → 세 행 제거 후 재분석.</div></li>
+    <li><div><b>재분석</b>: R² <b>0.966</b>로 상승, max Cook's D 0.022. 이제 shapiro p = 0.88, bptest p = 0.97 → <span class="yes">정규성·등분산성 모두 만족</span>. 이상치가 가정 위반의 원인이었음.</div></li>
+    <li><div><b>최종식</b>: <code>Price = 2.102 + 0.0661·Area − 0.0012·StationDist − 0.0518·Age + 0.0312·Floor</code><br>면적이 넓고 층이 높을수록 비싸고, 역에서 멀고 오래될수록 싸다.</div></li>
+    <li><div><b>저장 → 불러오기 → <code>apartment_test.csv</code> 예측</b>: RMSE <b>0.636</b> (가격 단위 기준 평균 약 0.64 오차). 예: 실제 13.19 → 예측 12.88.</div></li>
+  </ol>
+</section>
+
+<section id="rcheat">
+  <h2><span class="n">11</span>R 함수 한눈에</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>함수</th><th>패키지</th><th>용도</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">lm(y ~ x, data)</td><td>base</td><td>회귀모델 적합 (<code>~ .</code> 전체 변수, <code>~ 1</code> 절편만, <code>~ 0 + x</code> 절편 고정)</td></tr>
+      <tr><td class="mono">summary()</td><td>base</td><td>계수, p-value, R², F검정</td></tr>
+      <tr><td class="mono">residuals() / resid() / fitted()</td><td>base</td><td>잔차 / 적합값</td></tr>
+      <tr><td class="mono">predict(model, newdata)</td><td>base</td><td>새 데이터 예측</td></tr>
+      <tr><td class="mono">saveRDS() / readRDS()</td><td>base</td><td>모델 저장 / 불러오기</td></tr>
+      <tr><td class="mono">anova(m1, m2)</td><td>base</td><td>두 모형의 잔차제곱합 차이 검정</td></tr>
+      <tr><td class="mono">skim()</td><td>skimr</td><td>데이터 요약</td></tr>
+      <tr><td class="mono">corr.test()</td><td>psych</td><td>상관계수와 p-value</td></tr>
+      <tr><td class="mono">bptest()</td><td>lmtest</td><td>등분산성 (Breusch-Pagan)</td></tr>
+      <tr><td class="mono">durbinWatsonTest()</td><td>car</td><td>독립성</td></tr>
+      <tr><td class="mono">shapiro_test()</td><td>rstatix</td><td>정규성</td></tr>
+      <tr><td class="mono">influencePlot() / cooks.distance()</td><td>car / base</td><td>이상치·영향점</td></tr>
+      <tr><td class="mono">vif()</td><td>car</td><td>다중공선성</td></tr>
+      <tr><td class="mono">stepAIC()</td><td>MASS</td><td>AIC 변수선택</td></tr>
+      <tr><td class="mono">ggplot() + geom_point() + geom_smooth(method="lm")</td><td>ggplot2</td><td>산점도와 회귀선</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="quiz">
+  <h2><span class="n">12</span>셀프 퀴즈</h2>
+  <div class="quiz-bar">
+    <p>질문을 누르면 답이 열립니다. 계산 문제는 직접 풀어 본 뒤 확인하세요.</p>
+    <button type="button" id="toggle-all">답 모두 펼치기</button>
+  </div>
+  <h3 id="essay" style="scroll-margin-top:24px">서술형 연습: 자기 말로 쓰기</h3>
+  <p class="note">교수님은 외운 문장보다 이해한 티가 나는 답을 원하십니다. 먼저 빈 종이에 직접 써 보고, 아래 예시와 <b>핵심 단어</b>가 들어갔는지만 비교하세요. 문장은 달라도 됩니다.</p>
+  <div class="qlist">
+    <details class="q"><summary><span class="qn">E1</span><span>단순회귀분석은 어떤 목적으로 수행하나요?<span class="qtype">서술</span></span></summary><div class="a"><p>독립변수 하나와 종속변수 사이에 관계가 있는지 보고, 있다면 그 관계를 y = β₀ + β₁x 같은 직선 함수로 나타내서, 새로운 x가 들어왔을 때 y를 예측하려고 한다. 예를 들어 대퇴부 길이로 상박부 길이를 예측하는 것처럼, 기존 데이터로 함수를 학습하고 새 데이터에 적용한다.</p><p class="note">핵심 단어: 관계 파악 · 함수(식)로 표현 · 예측</p></div></details>
+    <details class="q"><summary><span class="qn">E2</span><span>회귀식 y = β₀ + β₁x + ε 을 설명하세요.<span class="qtype">서술</span></span></summary><div class="a"><p>y는 예측하려는 종속변수, x는 영향을 주는 독립변수. β₀는 x가 0일 때의 기준값(절편), β₁은 x가 1 늘 때 y가 평균적으로 얼마나 변하는지(기울기)를 나타내고, 양수면 같이 늘고 음수면 반대로 움직인다. ε은 모델로 설명하지 못하는 오차. β₀, β₁은 잔차 제곱합(SSE)이 가장 작아지도록 최소제곱법으로 구한다.</p><p class="note">핵심 단어: 종속/독립 · 절편 · 기울기 = 1단위 변화량 · 오차 · 최소제곱법</p></div></details>
+    <details class="q"><summary><span class="qn">E3</span><span>회귀분석의 구조를 그림과 함께 설명하세요.<span class="qtype">서술</span></span></summary><div class="a"><p>[학습 데이터] → [함수 = 모델, y = ax + b] → [결과]. 학습 데이터로 함수를 만들고, 새로운 데이터(검증 데이터)를 그 모델에 넣어 결과를 예측한다. 모델이 잘 맞는지는 검증 데이터의 실제값과 예측값을 비교(RMSE 등)해서 확인한다.</p><p class="note">그림에 들어갈 것: 학습 데이터 · 함수=모델 · 결과 · 새로운 데이터(검증)</p></div></details>
+    <details class="q"><summary><span class="qn">E4</span><span>오차항에 대해 설명하세요.<span class="qtype">서술</span></span></summary><div class="a"><p>오차는 데이터가 만들어질 때 섞여 들어가는 잡음이라 직접 볼 수 없다. 우리가 실제로 계산할 수 있는 건 잔차(실제값 − 예측값)이고, 잔차에는 순수한 오차와 모델이 잘못 맞춘 부분(모형화 오차)이 같이 들어 있다. 모델은 세상의 모든 요인을 넣을 수 없으니(완전성·복잡성) 오차는 항상 남고, 그 부분을 보면 어떤 변수를 더 넣어야 할지 힌트를 얻을 수 있다(통찰력). 오차는 서로 독립이고 평균 0, 분산이 일정한 정규분포를 따른다고 가정한다.</p><p class="note">핵심 단어: 관찰 불가 vs 잔차는 계산 가능 · 잔차 = 순수 오차 + 모형화 오차 · iid N(0, σ²)</p></div></details>
+    <details class="q"><summary><span class="qn">E5</span><span>추론통계와 머신러닝의 차이를 설명하세요.<span class="qtype">서술</span></span></summary><div class="a"><p>둘 다 표본 데이터를 쓰지만, 추론통계는 표본을 보고 모집단이 어떤지(관계가 있는지, 영향을 주는지)를 알아내는 게 목적이고, 머신러닝은 표본으로 학습해서 처음 보는 새 데이터를 정확히 예측하는 게 목적이다. 자동차 대여로 말하면, 추론통계는 "대여 시간이 가격에 영향을 준다"고 결론 내리고, 머신러닝은 "2시간 빌리면 20,000원"이라고 예측한다. 그래서 머신러닝은 학습/테스트 데이터를 나누고 과대적합을 조심한다.</p><p class="note">핵심 단어: 모집단 이해 vs 새 데이터 예측 · 일반화 · 테스트 세트 · 과대적합</p></div></details>
+    <details class="q"><summary><span class="qn">E6</span><span>다중회귀분석은 왜 하나요?<span class="qtype">서술</span></span></summary><div class="a"><p>현실의 결과는 한 가지 요인으로만 결정되지 않는다. 예금 유치액은 홍보비용뿐 아니라 직원 수, 지점 크기에도 영향을 받는다. 독립변수를 여러 개 넣으면 각 변수의 영향을 다른 변수를 고정한 상태에서 따로 볼 수 있고, 더 정확하게 설명·예측할 수 있다. 대신 변수가 많아지면 쓸모없는 변수, 서로 겹치는 변수(다중공선성)가 생기므로 변수 제거와 가정 검정이 필요하다.</p><p class="note">핵심 단어: 여러 요인 · 더 정확한 설명/예측 · 변수별 영향 · 다중공선성 주의</p></div></details>
+  </div>
+  <h3>개념 · 계산 퀴즈</h3>
+  <div class="qlist">
+    <details class="q"><summary><span class="qn">Q1</span><span>추론통계와 기계학습의 목표 차이를 한 문장씩 쓰시오.<span class="qtype">서술</span></span></summary><div class="a"><p>추론통계: 표본으로 모집단의 특성을 이해·추론한다. 기계학습: 표본으로 학습해 새로운 데이터를 정확히 예측한다 (일반화).</p></div></details>
+    <details class="q"><summary><span class="qn">Q2</span><span>기계학습에서 과대적합이란?<span class="qtype">서술</span></span></summary><div class="a"><p>모델이 노이즈·이상치까지 포함해 훈련 데이터를 너무 잘 학습해서 새 데이터에 대한 성능이 떨어지는 현상.</p></div></details>
+    <details class="q"><summary><span class="qn">Q3</span><span>y = β₀ + β₁x + ε 에서 각 기호의 이름과 의미는?<span class="qtype">서술</span></span></summary><div class="a"><p>β₀ 상수(절편): x가 0일 때 y의 기준값. β₁ 회귀계수: x 1단위 증가 시 y의 평균 변화량. x 독립변수, y 종속변수, ε 오차항(관찰 불가능한 잡음, iid N(0, σ²) 가정).</p></div></details>
+    <details class="q"><summary><span class="qn">Q4</span><span>오차와 잔차의 차이는?<span class="qtype">서술</span></span></summary><div class="a"><p>오차는 데이터 생성 시 섞이는 본질적 잡음으로 관찰할 수 없다. 잔차는 관찰값 − 예측값으로 계산할 수 있다. 잔차 = 순수 오차 + 모형화 오차.</p></div></details>
+    <details class="q"><summary><span class="qn">Q5</span><span>오차항의 특징 4가지를 쓰시오.<span class="qtype">암기</span></span></summary><div class="a"><p>완전성, 복잡성, 유연성, 통찰력.</p></div></details>
+    <details class="q"><summary><span class="qn">Q6</span><span>회귀분석 프로세스 4단계는?<span class="qtype">암기</span></span></summary><div class="a"><p>① 산점도 그리기 ② 회귀모형 선택 ③ 회귀계수 추정 ④ 모형 적용이 옳은지 판단.</p></div></details>
+    <details class="q"><summary><span class="qn">Q7</span><span>X = [1, 2, 3, 4, 5], Y = [2, 4, 5, 4, 5] 일 때 β̂₁, β̂₀ 를 구하시오.<span class="qtype">계산</span></span></summary><div class="a"><p>X̄ = 3, Ȳ = 4. Σ(X−X̄)(Y−Ȳ) = (−2)(−2) + (−1)(0) + 0 + (1)(0) + (2)(1) = 6. Σ(X−X̄)² = 10.</p><p>β̂₁ = 6/10 = <b>0.6</b>, β̂₀ = 4 − 0.6×3 = <b>2.2</b> → ŷ = 2.2 + 0.6x</p></div></details>
+    <details class="q"><summary><span class="qn">Q8</span><span>상박부 = −3.66 + 1.197 × 대퇴부 일 때 대퇴부 50 cm의 예측 상박부 길이는?<span class="qtype">계산</span></span></summary><div class="a"><p>−3.66 + 59.85 = <b>56.19 ≈ 56.2 cm</b></p></div></details>
+    <details class="q"><summary><span class="qn">Q9</span><span>Cov(X, Y) = 0 이면 두 변수는 반드시 독립인가?<span class="qtype">O/X</span></span></summary><div class="a"><p><b>X.</b> 독립이면 Cov = 0이지만, 역은 성립하지 않는다. 공분산·상관계수는 <b>직선적</b> 관계만 잡기 때문에 곡선 관계가 있어도 0이 나올 수 있다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q10</span><span>상관계수를 공분산 대신 쓰는 이유는?<span class="qtype">서술</span></span></summary><div class="a"><p>공분산은 단위·스케일에 따라 크기가 달라져 비교가 어렵다. 두 변수의 표준편차로 나눠 정규화하면 −1 ~ 1 범위가 되어 관계의 강도와 방향을 비교할 수 있다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q11</span><span>SST = 2000, SSE = 500, n = 50, k = 3 일 때 R²와 Adjusted R²는?<span class="qtype">계산</span></span></summary><div class="a"><p>R² = 1 − 500/2000 = <b>0.75</b></p><p>Adj R² = 1 − (500/46) / (2000/49) = 1 − 10.870/40.816 = <b>0.734</b></p></div></details>
+    <details class="q"><summary><span class="qn">Q12</span><span>독립변수를 계속 추가하면 R²는 어떻게 되며, 그래서 무엇을 쓰는가?<span class="qtype">서술</span></span></summary><div class="a"><p>R²는 의미 없는 변수를 넣어도 올라간다. 그래서 자유도(n − k − 1)를 반영한 <b>Adjusted R²</b>로 판단한다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q13</span><span>실제값 [10, 12, 15], 예측값 [11, 12, 13] 일 때 MAE, MSE, RMSE는?<span class="qtype">계산</span></span></summary><div class="a"><p>오차: −1, 0, 2. MAE = (1+0+2)/3 = <b>1.0</b>. MSE = (1+0+4)/3 = <b>1.667</b>. RMSE = √1.667 = <b>1.291</b>.</p></div></details>
+    <details class="q"><summary><span class="qn">Q14</span><span>이상치에 민감한 지표 2개는? MAPE와 MPE의 차이는?<span class="qtype">암기</span></span></summary><div class="a"><p>MSE, RMSE (제곱하기 때문). MAPE는 절대값이라 "얼마나 틀렸나", MPE는 부호를 유지해 "어느 쪽으로 틀렸나"(과대/과소)를 본다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q15</span><span><code>Residual standard error: 1.489 on 998 degrees of freedom</code>, 단순회귀일 때 표본 수 n은?<span class="qtype">계산</span></span></summary><div class="a"><p>자유도 = n − k − 1 = 998, k = 1 → <b>n = 1000</b>.</p></div></details>
+    <details class="q"><summary><span class="qn">Q16</span><span>summary 출력에서 F-statistic의 p-value &lt; 2.2e-16 의 의미는?<span class="qtype">해석</span></span></summary><div class="a"><p>H₀ "독립변수는 종속변수를 유의미하게 설명하지 않는다"를 기각한다. 즉 회귀모형 전체가 통계적으로 유의하다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q17</span><span><code>anova(result1, result)</code>에서 result1 = lm(y ~ 1) 은 무엇이고 왜 비교하는가?<span class="qtype">서술</span></span></summary><div class="a"><p>result1은 독립변수 없이 평균으로만 예측하는 모델. 두 모델의 잔차제곱합 차이를 검정해서, 변수를 넣은 모델이 평균만 쓰는 것보다 유의하게 나은지 확인한다 (p &lt; 0.05면 의미 있음).</p></div></details>
+    <details class="q"><summary><span class="qn">Q18</span><span>다중회귀 가정 5가지와 각 R 검정 함수는?<span class="qtype">암기</span></span></summary><div class="a"><p>선형성(Residuals vs Fitted 그래프), 등분산성 <code>bptest</code>, 독립성 <code>durbinWatsonTest</code>, 정규성 <code>shapiro_test</code>, 다중공선성 <code>vif</code>.</p></div></details>
+    <details class="q"><summary><span class="qn">Q19</span><span>shapiro_test 결과 p = 0.90 이다. 해석은?<span class="qtype">해석</span></span></summary><div class="a"><p>p &gt; 0.05 → H₀(잔차가 정규분포를 따른다) 채택 → <b>정규성 만족</b>.</p></div></details>
+    <details class="q"><summary><span class="qn">Q20</span><span>bptest 결과 p = 0.003 이다. 해석은?<span class="qtype">해석</span></span></summary><div class="a"><p>p &lt; 0.05 → 등분산 가정 기각 → <b>이분산성</b>. 잔차의 분산이 일정하지 않다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q21</span><span>Durbin-Watson 통계량이 0.6 이면? 2.0 이면?<span class="qtype">해석</span></span></summary><div class="a"><p>0.6: 0에 가까움 → <b>양의 자기상관</b> (독립성 위반). 2.0: 1.5~2.5 사이 → 잔차 독립.</p></div></details>
+    <details class="q"><summary><span class="qn">Q22</span><span>어떤 독립변수를 나머지 변수로 회귀했더니 R² = 0.9 였다. VIF와 판단은?<span class="qtype">계산</span></span></summary><div class="a"><p>VIF = 1/(1 − 0.9) = <b>10</b> → 기준 10 이상이므로 다중공선성이 있다고 판단.</p></div></details>
+    <details class="q"><summary><span class="qn">Q23</span><span>다중공선성이 있으면 어떤 문제가 생기나?<span class="qtype">서술</span></span></summary><div class="a"><p>회귀계수 값이 매우 커지고 변동성이 커져서, 추정된 계수의 부호가 실제와 반대로 나올 수 있다. 계수 해석을 믿을 수 없게 된다.</p></div></details>
+    <details class="q"><summary><span class="qn">Q24</span><span>max(cooks.distance(result2)) = 0.12 이다. 판단은?<span class="qtype">해석</span></span></summary><div class="a"><p>0.5 미만 → 모형을 흔드는 <b>영향점 없음</b>.</p></div></details>
+    <details class="q"><summary><span class="qn">Q25</span><span>AIC의 공식과 판단 기준, 변수선택 3가지 방법은?<span class="qtype">암기</span></span></summary><div class="a"><p>AIC = −2·log-likelihood + 2k. 절대 기준 없이 <b>작을수록 좋은</b> 모델. 후진소거법(backward), 전진선택법(forward), 단계적선택법(both).</p></div></details>
+    <details class="q"><summary><span class="qn">Q26</span><span>Shapiro-Wilk와 Kolmogorov-Smirnov 검정은 각각 언제 쓰나?<span class="qtype">암기</span></span></summary><div class="a"><p>Shapiro-Wilk: 표본 2,000 미만. Kolmogorov-Smirnov: 2,000 초과.</p></div></details>
+  </div>
+</section>
+
+<footer>
+  <span>자료 출처: <a href="https://github.com/newwwbe/All_class_file/tree/main/Machine-Learning-2">newwwbe/All_class_file · Machine-Learning-2</a></span>
+  <span>슬라이드의 예제 계수(예금 유치액, 시조새 화석)는 원본 데이터로 다시 계산해 확인했습니다. 실전 리허설 수치는 수업 코드를 R 4.6.0으로 실행한 결과입니다.</span>
+</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  var btn=document.getElementById('toggle-all');
+  var qs=document.querySelectorAll('details.q');
+  btn.addEventListener('click',function(){
+    var open=btn.getAttribute('aria-pressed')!=='true';
+    qs.forEach(function(d){d.open=open});
+    btn.setAttribute('aria-pressed',String(open));
+    btn.textContent=open?'답 모두 접기':'답 모두 펼치기';
+  });
+})();
+</script>
+</body>
+</html>
