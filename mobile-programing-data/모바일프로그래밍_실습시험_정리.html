@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모바일프로그래밍 실습시험 정리</title>
+<style>
+:root{
+  --bg:#fafaf7; --surface:#ffffff; --text:#1d1d1b; --muted:#6b6b66; --line:#e4e2dc;
+  --accent:#2f6f4f; --accent-soft:#e6f0ea; --code-bg:#f3f2ee; --warn:#a14a1f; --warn-soft:#fbeee6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161715; --surface:#1e1f1d; --text:#e8e7e2; --muted:#9a9a93; --line:#2f302d;
+    --accent:#7cc39d; --accent-soft:#1f2e26; --code-bg:#232421; --warn:#f0a07a; --warn-soft:#2e221b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161715; --surface:#1e1f1d; --text:#e8e7e2; --muted:#9a9a93; --line:#2f302d;
+  --accent:#7cc39d; --accent-soft:#1f2e26; --code-bg:#232421; --warn:#f0a07a; --warn-soft:#2e221b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  line-height:1.65;font-size:16px}
+.wrap{max-width:880px;margin:0 auto;padding:32px 16px 80px}
+header h1{font-size:1.9rem;margin:0 0 4px;letter-spacing:-0.02em}
+header p{margin:0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  margin:24px -16px 0;padding:10px 16px;display:flex;gap:6px;overflow-x:auto;white-space:nowrap}
+nav a{color:var(--text);text-decoration:none;font-size:.88rem;padding:5px 11px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface)}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+section{margin-top:44px;scroll-margin-top:64px}
+h2{font-size:1.35rem;margin:0 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent);letter-spacing:-0.01em}
+code{font-family:"JetBrains Mono","D2Coding",Consolas,monospace;font-size:.88em;background:var(--code-bg);
+  padding:1px 5px;border-radius:4px}
+.code{position:relative;margin:14px 0}
+.code pre{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;
+  padding:14px 16px;overflow-x:auto;font-size:.85rem;line-height:1.55}
+.code pre code{background:none;padding:0;font-size:inherit}
+.code .lang{position:absolute;top:8px;left:14px;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.code pre{padding-top:30px}
+.copy{position:absolute;top:6px;right:8px;font-size:.75rem;border:1px solid var(--line);background:var(--surface);
+  color:var(--text);border-radius:6px;padding:3px 9px;cursor:pointer}
+.copy:hover{border-color:var(--accent)}
+.tbl{overflow-x:auto;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem;background:var(--surface)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft);font-weight:600}
+td code{white-space:nowrap}
+.check{list-style:none;padding:0;margin:10px 0}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:5px 0}
+.check input{margin-top:6px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.note{background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin:12px 0}
+.warn{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:6px;padding:10px 14px;margin:12px 0}
+ol li,ul li{margin:4px 0}
+.tag{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.toolbar{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:8px;padding:6px 12px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+@media print{
+  nav,.toolbar,.copy{display:none}
+  body{background:#fff;color:#000}
+  section{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>모바일프로그래밍 실습시험 정리</h1>
+  <p>실습 #1~#28 · Java + 안드로이드 XML · 2026-10-25 정리</p>
+  <div class="toolbar">
+    <button class="btn" onclick="window.print()">인쇄 / PDF 저장</button>
+    <button class="btn" id="themeBtn">다크/라이트 전환</button>
+  </div>
+</header>
+
+<nav>
+  <a href="#check">체크리스트</a>
+  <a href="#xml">XML 레이아웃</a>
+  <a href="#link">XML+Java 연결</a>
+  <a href="#basic">변수·출력</a>
+  <a href="#input">입력</a>
+  <a href="#op">연산자</a>
+  <a href="#labs">실습 1~28</a>
+  <a href="#mistakes">자주 틀리는 점</a>
+</nav>
+
+<!-- 1 -->
+<section id="check">
+<h2>시험 범위와 체크리스트</h2>
+<p>범위는 실습 #1~#28(중간과제와 같음)이고, 13시 102호 실습시험입니다. 문제는 크게 두 종류로 나옵니다: <b>순수 Java 콘솔 프로그램</b>(#5~#12, #15~#26)과 <b>안드로이드 XML(+Java) 앱</b>(#1~#4, #13~#14, #27~#28).</p>
+<p>시험장에서 매번 확인할 것:</p>
+<ul class="check">
+  <li><input type="checkbox"><span>첫 줄 주석: <code>//박상훈#번호-제목</code></span></li>
+  <li><input type="checkbox"><span>입력을 받으면 <code>import java.util.Scanner;</code> 또는 <code>import java.io.IOException;</code> + <code>throws IOException</code></span></li>
+  <li><input type="checkbox"><span>변수는 메소드 안에서 선언하고 반드시 초기화</span></li>
+  <li><input type="checkbox"><span><code>float</code>는 숫자 끝에 <code>F</code>, <code>char</code>는 <code>' '</code>, <code>String</code>은 <code>" "</code></span></li>
+  <li><input type="checkbox"><span>위젯이 2개 이상이면 <code>android:orientation="vertical"</code></span></li>
+  <li><input type="checkbox"><span>id는 <code>@+id/이름</code> (+ 빠뜨리지 말 것), 저장(Ctrl+S) 후 Java에서 사용</span></li>
+  <li><input type="checkbox"><span><code>setText()</code>에는 문자열만: 숫자는 <code>String.valueOf()</code>로 변환</span></li>
+  <li><input type="checkbox"><span><code>%</code> 기호를 출력하려면 <code>%%</code></span></li>
+</ul>
+<div class="note">이클립스 단축키: <code>Ctrl+Space</code> 자동완성 · Java에서 <code>Ctrl+/</code> 한 줄씩 주석 · <code>Ctrl+Shift+/</code> 블록 주석(XML에서는 <code>&lt;!-- --&gt;</code>). 객체명에 빨간 줄이 생기면 마우스를 올려 첫 번째 항목(import)을 선택.</div>
+</section>
+
+<!-- 2 -->
+<section id="xml">
+<h2>XML 레이아웃 (res/layout/main.xml)</h2>
+<p>프로젝트 초기 설정: RelativeLayout → <b>LinearLayout</b>으로 바꾸고, 두 번째 줄(tools)과 padding을 모두 지운 뒤 width/height를 <code>fill_parent</code>로 둡니다.</p>
+<div class="code"><span class="lang">xml</span><pre><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" &gt;
+
+    &lt;!-- TextView: 출력용 위젯 --&gt;
+    &lt;TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#2-텍스트뷰연습"
+        android:textSize="8pt"
+        android:textColor="#BCE9B7"
+        android:textStyle="bold" /&gt;
+
+    &lt;!-- 줄바꿈은 \n --&gt;
+    &lt;TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈님\n반갑습니다." /&gt;
+
+    &lt;!-- Java에서 값을 넣을 위젯은 id를 준다 --&gt;
+    &lt;TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_txt" /&gt;
+
+    &lt;!-- EditText: 입력용 위젯 --&gt;
+    &lt;EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_edt" /&gt;
+
+&lt;/LinearLayout&gt;</code></pre></div>
+<div class="tbl"><table>
+<tr><th>속성</th><th>뜻</th><th>값 예시</th></tr>
+<tr><td>layout_width</td><td>폭</td><td>fill_parent, wrap_content</td></tr>
+<tr><td>layout_height</td><td>높이</td><td>fill_parent, wrap_content</td></tr>
+<tr><td>text</td><td>문자열</td><td>"안녕\n하세요"</td></tr>
+<tr><td>textSize</td><td>글자 크기 (pt)</td><td>8pt</td></tr>
+<tr><td>textColor</td><td>색상 #RRGGBB</td><td>#BCE9B7</td></tr>
+<tr><td>textStyle</td><td>스타일</td><td>bold, italic, bold|italic</td></tr>
+<tr><td>orientation</td><td>배치 방향 (위젯 2개 이상)</td><td>vertical, horizontal</td></tr>
+<tr><td>id</td><td>위젯 구별용, 중복 금지</td><td>@+id/a_txt</td></tr>
+</table></div>
+</section>
+
+<!-- 3 -->
+<section id="link">
+<h2>XML + Java 연결 (객체변수, #13·#14·#28)</h2>
+<p>위젯 id와 Java 객체변수는 다른 파일에 있으므로 <code>findViewById()</code>로 연결해야 값을 넘길 수 있습니다.</p>
+<ol>
+  <li>XML에서 위젯에 id 부여: <code>android:id="@+id/a_txt"</code></li>
+  <li>저장(Ctrl+S)해서 id를 메모리(R 파일)에 올린다</li>
+  <li>Java 멤버변수부(클래스 바로 아래)에 객체변수 선언: <code>TextView a_T;</code></li>
+  <li><code>onCreate()</code> 안에서 연결: <code>a_T = (TextView) findViewById(R.id.a_txt);</code></li>
+  <li>값 전달: <code>a_T.setText("문자열");</code></li>
+</ol>
+<div class="code"><span class="lang">java</span><pre><code>package com.knu.psh14;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.widget.TextView;
+import android.widget.EditText;
+
+//박상훈#14-객체변수사용법2
+public class PSH14 extends Activity {
+    // 멤버변수부: id를 준 위젯만 객체변수로 선언
+    TextView a_T, b_T, c_T;
+    EditText a_E;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        // 객체변수와 위젯 id 연결 (오류 나면 캐스트 (TextView) 붙이기)
+        a_T = (TextView) findViewById(R.id.a_txt);
+        b_T = (TextView) findViewById(R.id.b_txt);
+        c_T = (TextView) findViewById(R.id.c_txt);
+        a_E = (EditText) findViewById(R.id.a_edt);
+
+        int e = 777;
+        float f = 3.14F;
+        String h;
+
+        a_T.setText("안녕하세요.");
+        // b_T.setText(e);  -&gt; 오류! 정수는 바로 못 넣음
+        h = String.valueOf(e);   // 정수 -&gt; 문자열
+        b_T.setText(h);
+        h = String.valueOf(f);   // 실수 -&gt; 문자열
+        c_T.setText(h);
+    }
+}</code></pre></div>
+<p>일반변수(int, float, char)는 메소드 안에, 객체변수(TextView, EditText)는 멤버변수부에 선언합니다.</p>
+</section>
+
+<!-- 4 -->
+<section id="basic">
+<h2>Java 기초: 변수와 출력 (#5~#12)</h2>
+<div class="tbl"><table>
+<tr><th>자료형</th><th>저장</th><th>초기화 예</th><th>서식문자</th></tr>
+<tr><td>int</td><td>정수</td><td><code>a = 77;</code></td><td>%d</td></tr>
+<tr><td>float</td><td>실수</td><td><code>a = 123.45f;</code> (F 필수)</td><td>%f</td></tr>
+<tr><td>double</td><td>더 큰/정밀한 실수</td><td><code>b = 123.45;</code></td><td>%f, %7.2f</td></tr>
+<tr><td>char</td><td>문자 1개</td><td><code>d = 'M';</code></td><td>%c</td></tr>
+<tr><td>String</td><td>문자열</td><td><code>e = "안녕";</code></td><td>%s</td></tr>
+<tr><td>boolean</td><td>참/거짓</td><td><code>c = (a &gt;= b);</code></td><td>%b</td></tr>
+</table></div>
+<p><code>%f</code> 기본은 소수점 6자리, <code>%7.2f</code> = 전체 7칸(점 포함), 소수점 아래 2칸.</p>
+<div class="tbl"><table>
+<tr><th>메소드</th><th>동작</th></tr>
+<tr><td><code>System.out.print()</code></td><td>출력만, 줄바꿈 없음</td></tr>
+<tr><td><code>System.out.println()</code></td><td>출력 후 줄바꿈 (<code>println()</code>만 쓰면 빈 줄)</td></tr>
+<tr><td><code>System.out.printf()</code></td><td>서식문자에 맞춰 출력, 줄바꿈은 <code>\n</code></td></tr>
+</table></div>
+<p><code>+</code> 연산자: 숫자+숫자는 덧셈, 문자열+숫자/문자열은 이어붙이기. <code>String.valueOf(숫자)</code>는 숫자를 문자열로 바꿉니다.</p>
+<div class="code"><span class="lang">java</span><pre><code>//박상훈#12-일반변수와 출력메소드 종합연습
+public class PSH12 {
+    public static void main(String[] args) {
+        int a;  float b;  double c;  char d;  String e;
+        a = 100;
+        b = 3.14F;
+        c = 3.14159;
+        d = 'M';
+        e = "박상훈님 반갑습니다.";
+
+        System.out.print(a);        // 100 (줄바꿈 없음)
+        System.out.println(a);      // 100 + 줄바꿈 -&gt; "100100"
+        System.out.printf("정수형변수a=%d\n", a);
+        System.out.printf("실수b=%f, c=%7.2f\n", b, c);
+        System.out.printf("문자=%c, 문자열=%s\n", d, e);
+
+        e = String.valueOf(a);      // "100"
+        System.out.printf("변수=%d\n", a + 100);        // 200 (덧셈)
+        System.out.printf("붙이기=%s\n", e + 777);      // 100777 (연결)
+    }
+}</code></pre></div>
+</section>
+
+<!-- 5 -->
+<section id="input">
+<h2>키보드 입력 (#17~#20)</h2>
+<p><b>System.in.read()</b> — 1바이트(문자 1개)만 읽고 아스키코드로 돌려줍니다. 숫자로 쓰려면 48을 뺍니다('0'=48 … '9'=57). <code>import java.io.IOException;</code>과 <code>throws IOException</code>이 필요합니다.</p>
+<div class="code"><span class="lang">java</span><pre><code>import java.io.IOException;
+
+//박상훈#18-자바에서의 표준입력메소드2
+public class PSH18 {
+    public static void main(String[] args) throws IOException {
+        int a;
+        System.out.println("값을 입력하세요.");
+        a = System.in.read() - 48;      // 문자 '7' -&gt; 숫자 7
+        System.out.printf("변수a = %d\n", a);
+        // 문자 그대로 보려면: a = System.in.read(); printf("%c", a);
+    }
+}</code></pre></div>
+<p><b>Scanner</b> — 정수, 실수, 문자열 모두 입력 가능. 순서: import → 객체 생성 → 입력 메소드 → (선택) <code>scan.close()</code>.</p>
+<div class="tbl"><table>
+<tr><th>메소드</th><th>입력</th></tr>
+<tr><td><code>nextInt()</code></td><td>정수</td></tr>
+<tr><td><code>nextDouble()</code></td><td>실수</td></tr>
+<tr><td><code>next()</code></td><td>공백 전까지 단어</td></tr>
+<tr><td><code>nextLine()</code></td><td>한 줄 전체</td></tr>
+<tr><td><code>next().charAt(0)</code></td><td>문자 1개</td></tr>
+</table></div>
+<div class="code"><span class="lang">java</span><pre><code>import java.util.Scanner;
+
+//박상훈#20-표준입력메소드4(부피 계산)
+public class PSH20 {
+    public static void main(String[] args) {
+        int r, h;
+        double v = 0.0;
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("반지름을 입력하세요:");
+        r = scan.nextInt();
+        System.out.print("높이를 입력하세요:");
+        h = scan.nextInt();
+
+        v = r * r * h * 3.14;
+        System.out.printf("부피: %f\n", v);
+        scan.close();
+    }
+}</code></pre></div>
+<p>합계·평균(#16) 응용: <code>s = a + b; c = s / 2.0F;</code> — 정수끼리 나누면 소수점이 버려지므로 <code>2.0F</code>로 나눕니다.</p>
+</section>
+
+<!-- 6 -->
+<section id="op">
+<h2>연산자 (#15, #21~#26)</h2>
+<div class="tbl"><table>
+<tr><th>종류</th><th>연산자</th><th>예 → 결과 (a=7, b=3)</th><th>실습</th></tr>
+<tr><td>산술</td><td>+ - * / %</td><td><code>a/b</code> → 2 (정수끼리는 몫), <code>a%b</code> → 1</td><td>#15</td></tr>
+<tr><td>증가·감소</td><td>++ --</td><td><code>c = a++</code> → c=7, a=8 / <code>d = ++b</code> → b=4, d=4</td><td>#21</td></tr>
+<tr><td>복합대입</td><td>+= -= *= /=</td><td><code>c += a</code> → c = c + a</td><td>#22</td></tr>
+<tr><td>관계</td><td>&gt; &gt;= &lt; &lt;= == !=</td><td><code>a &gt;= b</code> → true (<code>boolean</code>, %b)</td><td>#23</td></tr>
+<tr><td>논리</td><td>&amp;&amp; || !</td><td>둘 다 참일 때만 참 / 하나라도 참 / 반대</td><td>#24, #25</td></tr>
+<tr><td>시프트</td><td>&lt;&lt; &gt;&gt;</td><td><code>10 &lt;&lt; 2</code> → 40, <code>10 &gt;&gt; 2</code> → 2</td><td>#26</td></tr>
+</table></div>
+<p>후치(<code>a++</code>)는 <b>대입 먼저, 증가 나중</b>, 전치(<code>++a</code>)는 <b>증가 먼저, 대입 나중</b>. 시프트는 2진수로 바꿔 비트를 옮기는 것으로, <code>&lt;&lt; n</code>은 ×2ⁿ, <code>&gt;&gt; n</code>은 ÷2ⁿ(몫)과 같습니다.</p>
+<div class="code"><span class="lang">java</span><pre><code>import java.util.Scanner;
+
+//박상훈#21-증가, 감소 연산자
+public class PSH21 {
+    public static void main(String[] args) {
+        int a, b, c = 0, d = 0;
+        Scanner kk = new Scanner(System.in);
+        System.out.println("정수 1개를 입력하세요.");
+        a = kk.nextInt();
+        System.out.println("정수 1개를 입력하세요.");
+        b = kk.nextInt();
+        c = a++;    // 후치: c에 a 대입 후 a 증가
+        d = ++b;    // 전치: b 증가 후 d에 대입
+        System.out.printf("변수 a = %d, c = %d\n", a, c);
+        System.out.printf("변수 b = %d, d = %d\n", b, d);
+    }
+}</code></pre></div>
+<div class="code"><span class="lang">java</span><pre><code>import java.util.Scanner;
+
+//박상훈#23-관계연산자
+public class PSH23 {
+    public static void main(String[] args) {
+        int a, b;
+        boolean c, d;           // 관계·논리 결과는 boolean에 저장
+        Scanner scan = new Scanner(System.in);
+        System.out.print("첫번째 정수를 입력하세요.");
+        a = scan.nextInt();
+        System.out.print("두번째 정수를 입력하세요.");
+        b = scan.nextInt();
+        c = (a &gt;= b);
+        d = (a == b);
+        System.out.printf("%d &gt;= %d =&gt; %b\n", a, b, c);
+        System.out.printf("%d == %d =&gt; %b\n", a, b, d);
+    }
+}</code></pre></div>
+<div class="code"><span class="lang">java</span><pre><code>import java.io.IOException;
+
+//박상훈#24-논리연산자(대소문자 구별)
+public class PSH24 {
+    public static void main(String[] args) throws IOException {
+        int a;
+        boolean b;
+        a = System.in.read();
+        b = (a &gt;= 'a') &amp;&amp; (a &lt;= 'z');      // 소문자인가?
+        System.out.printf("입력 문자 %c는 %b입니다\n", a, b);
+    }
+}
+// #25 Scanner 버전: String s = scan.next(); char c = s.charAt(0);
+//                  b = (c &gt;= 'A') &amp;&amp; (c &lt;= 'Z');   // 대문자인가?</code></pre></div>
+</section>
+
+<!-- 7 -->
+<section id="labs">
+<h2>실습 1~28 한눈에 보기</h2>
+<div class="tbl"><table>
+<tr><th>#</th><th>주제</th><th>형태</th><th>핵심</th></tr>
+<tr><td>1</td><td>TextView 사용법</td><td><span class="tag">XML</span></td><td>TextView 1개, text 속성</td></tr>
+<tr><td>2</td><td>TextView 2개</td><td><span class="tag">XML</span></td><td>orientation=vertical, textSize, textColor</td></tr>
+<tr><td>3</td><td>TextView 3개</td><td><span class="tag">XML</span></td><td>여러 위젯 배치, <code>\n</code> 줄바꿈</td></tr>
+<tr><td>4</td><td>TextView 줄바꿈</td><td><span class="tag">XML</span></td><td><code>"박상훈님\n 반갑습니다."</code></td></tr>
+<tr><td>5</td><td>정수형 변수</td><td><span class="tag">Java</span></td><td><code>int a; a = 77;</code> 선언·초기화</td></tr>
+<tr><td>6</td><td>정수 출력</td><td><span class="tag">Java</span></td><td><code>printf("a=%d\n", a)</code></td></tr>
+<tr><td>7</td><td>실수형 변수</td><td><span class="tag">Java</span></td><td>float(F 붙이기), double, <code>%7.2f</code></td></tr>
+<tr><td>8</td><td>문자형 변수</td><td><span class="tag">Java</span></td><td><code>char a = 'B';</code>, <code>%c</code></td></tr>
+<tr><td>9</td><td>문자열 변수</td><td><span class="tag">Java</span></td><td><code>String a = "안녕";</code>, <code>%s</code></td></tr>
+<tr><td>10</td><td>문자열 응용</td><td><span class="tag">Java</span></td><td><code>a+100</code> 덧셈 vs <code>b+100</code> 연결</td></tr>
+<tr><td>11</td><td>출력 메소드 3종</td><td><span class="tag">Java</span></td><td>print / println / printf 차이</td></tr>
+<tr><td>12</td><td>변수+출력 종합</td><td><span class="tag">Java</span></td><td><code>String.valueOf()</code>, 문자열+숫자</td></tr>
+<tr><td>13</td><td>객체변수 사용법1</td><td><span class="tag">XML+Java</span></td><td>findViewById, setText</td></tr>
+<tr><td>14</td><td>객체변수 사용법2</td><td><span class="tag">XML+Java</span></td><td>TextView 4개, 숫자→String.valueOf</td></tr>
+<tr><td>15</td><td>산술연산자1</td><td><span class="tag">Java</span></td><td>+ - * / %, <code>%%</code> 출력</td></tr>
+<tr><td>16</td><td>합계·평균</td><td><span class="tag">Java</span></td><td><code>s/2.0F</code></td></tr>
+<tr><td>17</td><td>System.in.read 1</td><td><span class="tag">Java</span></td><td>문자 1개 입력, <code>%c</code></td></tr>
+<tr><td>18</td><td>System.in.read 2</td><td><span class="tag">Java</span></td><td><code>-48</code>로 숫자 변환</td></tr>
+<tr><td>19</td><td>Scanner 1</td><td><span class="tag">Java</span></td><td>nextInt 두 번, 덧셈</td></tr>
+<tr><td>20</td><td>Scanner 2 (부피)</td><td><span class="tag">Java</span></td><td><code>r*r*h*3.14</code></td></tr>
+<tr><td>21</td><td>증가·감소</td><td><span class="tag">Java</span></td><td>전치/후치</td></tr>
+<tr><td>22</td><td>복합대입</td><td><span class="tag">Java</span></td><td><code>c+=a</code>, <code>d-=b</code></td></tr>
+<tr><td>23</td><td>관계연산자</td><td><span class="tag">Java</span></td><td>boolean, <code>%b</code></td></tr>
+<tr><td>24</td><td>논리연산자1</td><td><span class="tag">Java</span></td><td>in.read, 소문자 판별 &amp;&amp;</td></tr>
+<tr><td>25</td><td>논리연산자2</td><td><span class="tag">Java</span></td><td>Scanner + charAt(0), 대문자 판별</td></tr>
+<tr><td>26</td><td>시프트</td><td><span class="tag">Java</span></td><td><code>a&lt;&lt;2</code>, <code>a&gt;&gt;2</code></td></tr>
+<tr><td>27</td><td>EditText 1</td><td><span class="tag">XML</span></td><td>EditText 위젯 추가</td></tr>
+<tr><td>28</td><td>EditText 2</td><td><span class="tag">XML+Java</span></td><td><code>EditText a_E;</code> findViewById 연결</td></tr>
+</table></div>
+<p>순수 Java 실습은 아래 틀에 넣으면 됩니다. 클래스명과 파일명은 같아야 합니다.</p>
+<div class="code"><span class="lang">java</span><pre><code>//박상훈#번호-제목
+public class PSH번호 {
+    public static void main(String[] args) {
+        // 변수 선언, 초기화, 출력
+    }
+}</code></pre></div>
+</section>
+
+<!-- 8 -->
+<section id="mistakes">
+<h2>자주 틀리는 점과 원본 코드의 오류</h2>
+<div class="warn">깃허브에 올라간 중간과제 코드에서 그대로 따라 치면 안 되는 부분이 몇 군데 있습니다.</div>
+<div class="tbl"><table>
+<tr><th>위치</th><th>원본</th><th>고칠 것</th></tr>
+<tr><td>#27 main.xml</td><td><code>android:id="@id/a_edt"</code></td><td><code>@+id/a_edt</code> — + 가 없으면 id가 새로 만들어지지 않아 오류</td></tr>
+<tr><td>#26 printf 두 번째 줄</td><td><code>"%d &lt;&lt; 2 = &gt; %d"</code> (c 출력)</td><td><code>"%d &gt;&gt; 2 =&gt; %d"</code> — 오른쪽 시프트 결과임</td></tr>
+<tr><td>#5, #6, #13, #14 등</td><td>주석 줄이 깨져 코드가 두 번 붙어 있음</td><td>파일 복사 중 생긴 흔적, 클래스는 한 번만</td></tr>
+<tr><td>#28 Java</td><td><code>@Override</code> 빠짐</td><td><code>onCreate</code> 위에 <code>@Override</code> (없어도 동작은 함)</td></tr>
+<tr><td>#20 printf</td><td><code>"부피: %f"</code></td><td>끝에 <code>\n</code>을 넣어야 줄바꿈됨</td></tr>
+</table></div>
+<p>그 밖에 실수하기 쉬운 것:</p>
+<ul>
+  <li><code>setText(777)</code>처럼 숫자를 바로 넣으면 오류 (정수를 리소스 id로 착각) → <code>String.valueOf()</code></li>
+  <li><code>float b = 3.14;</code> → F가 없으면 double로 인식되어 오류</li>
+  <li><code>System.in.read()</code>를 쓰면서 <code>throws IOException</code>을 빼먹음</li>
+  <li><code>Scanner</code>를 쓰면서 <code>import java.util.Scanner;</code>를 빼먹음</li>
+  <li>관계·논리 결과를 <code>int</code>에 저장 → <code>boolean</code>으로 선언, 출력은 <code>%b</code></li>
+  <li><code>char</code>는 작은따옴표 <code>'A'</code>, <code>String</code>은 큰따옴표 <code>"A"</code></li>
+  <li>정수끼리 나눗셈은 몫만 나옴: <code>7/3</code> = 2, 평균은 <code>2.0F</code>로 나누기</li>
+</ul>
+</section>
+
+</div>
+<script>
+document.querySelectorAll('.code').forEach(function(box){
+  var btn=document.createElement('button');
+  btn.className='copy'; btn.textContent='복사';
+  btn.onclick=function(){
+    var t=box.querySelector('code').innerText;
+    var done=function(){btn.textContent='복사됨';setTimeout(function(){btn.textContent='복사'},1200)};
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,function(){fallback(t);done()})}
+    else{fallback(t);done()}
+  };
+  box.appendChild(btn);
+});
+function fallback(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();
+  try{document.execCommand('copy')}catch(e){} document.body.removeChild(a)}
+document.getElementById('themeBtn').onclick=function(){
+  var r=document.documentElement;
+  var dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme=dark?'light':'dark';
+};
+</script>
+</body>
+</html>
