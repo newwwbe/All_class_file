@@ -83,6 +83,20 @@ rownames(z) <- rownames(mf)
 print(cbind(round(cand, 2), z[rownames(cand), ]))
 print(max(cooks.distance(final)))
 
+predicted <- predict(final, newdata = df2)
+rmse <- sqrt(mean((df2$mpg - predicted)^2))
+print(paste("RMSE:", round(rmse, 3)))
+
+set.seed(123)
+idx <- sample(1:nrow(df2), size = 0.7 * nrow(df2))
+train <- df2[idx, ]
+test  <- df2[-idx, ]
+
+model_tr <- lm(mpg ~ weight + year, data = train)
+pred <- predict(model_tr, newdata = test)
+test_rmse <- sqrt(mean((test$mpg - pred)^2))
+print(paste("Test RMSE:", round(test_rmse, 3)))
+
 out_rows <- c("323", "394")
 df3 <- df2[!rownames(df2) %in% out_rows, ]
 nrow(df2)
