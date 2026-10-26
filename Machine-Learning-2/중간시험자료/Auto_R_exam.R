@@ -97,6 +97,29 @@ pred <- predict(model_tr, newdata = test)
 test_rmse <- sqrt(mean((test$mpg - pred)^2))
 print(paste("Test RMSE:", round(test_rmse, 3)))
 
+saveRDS(final, "regression_model.rds")
+loaded_model <- readRDS("regression_model.rds")
+
+new_path <- "C:/Users/Hoon/Downloads/Auto_test.csv"
+new_data <- read.csv(new_path, header = TRUE, stringsAsFactors = TRUE)
+skim(new_data)
+str(new_data)
+
+new_data$horsepower <- as.numeric(as.character(new_data$horsepower))
+new_data <- na.omit(new_data)
+
+new_pred <- predict(loaded_model, newdata = new_data)
+head(new_pred)
+
+new_results <- data.frame(Actual = new_data$mpg, Predicted = new_pred)
+head(new_results)
+
+new_rmse <- sqrt(mean((new_results$Actual - new_results$Predicted)^2))
+print(paste("New data RMSE:", round(new_rmse, 3)))
+
+new_data$Predicted <- new_pred
+write.csv(new_data, "prediction_result.csv", row.names = FALSE)
+
 out_rows <- c("323", "394")
 df3 <- df2[!rownames(df2) %in% out_rows, ]
 nrow(df2)
