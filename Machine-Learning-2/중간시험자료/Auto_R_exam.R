@@ -46,6 +46,10 @@ summary(fit_fw)
 
 final <- result2
 
+coef(final)
+b <- round(coef(final), 5)
+print(paste0("mpg = ", b[1], " + (", b[2], ") * weight + (", b[3], ") * year"))
+
 diag_df <- data.frame(
   Fitted    = fitted(final),
   Residuals = resid(final)

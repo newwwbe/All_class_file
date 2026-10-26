@@ -92,6 +92,15 @@ summary(fit_fw)
 # 6. 최종 모형 진단 (result2 기준) -------------------------------------
 final <- result2
 
+# 회귀식 작성 (중간시험 출제) -----------------------------------------
+# summary의 Estimate 열 = coef() 결과. (Intercept)가 절편 β0
+# 부호 그대로 옮기기: mpg = β0 + β1*weight + β2*year
+coef(final)
+b <- round(coef(final), 5)
+print(paste0("mpg = ", b[1], " + (", b[2], ") * weight + (", b[3], ") * year"))
+# 해석: 연식이 같을 때 weight 1 증가 -> mpg β1만큼 변화,
+#       무게가 같을 때 year 1 증가 -> mpg β2만큼 변화
+
 diag_df <- data.frame(
   Fitted    = fitted(final),
   Residuals = resid(final)
@@ -139,6 +148,48 @@ print(cbind(round(cand, 2), z[rownames(cand), ]))
 
 # Cook's D 최댓값: < 0.5 영향점 없음, 0.5~1 확인 필요, > 1 영향점
 print(max(cooks.distance(final)))
+
+# RMSE: 예측이 평균적으로 몇 mpg 빗나가는지 (작을수록 좋음)
+# 교수님 방식: 모델을 만든 데이터로 다시 예측해서 계산
+predicted <- predict(final, newdata = df2)
+rmse <- sqrt(mean((df2$mpg - predicted)^2))
+print(paste("RMSE:", round(rmse, 3)))
+
+# Test RMSE: 학습 70% / 테스트 30%로 나눠 처음 보는 데이터로 계산 (선택)
+set.seed(123)                                   # 무작위 분할 고정
+idx <- sample(1:nrow(df2), size = 0.7 * nrow(df2))
+train <- df2[idx, ]
+test  <- df2[-idx, ]
+
+model_tr <- lm(mpg ~ weight + year, data = train)
+pred <- predict(model_tr, newdata = test)
+test_rmse <- sqrt(mean((test$mpg - pred)^2))
+print(paste("Test RMSE:", round(test_rmse, 3)))
+
+# 모델 저장 -> 불러오기 -> 교수님이 준 새 CSV 예측
+saveRDS(final, "regression_model.rds")
+loaded_model <- readRDS("regression_model.rds")
+
+new_path <- "C:/Users/Hoon/Downloads/Auto_test.csv"   # ★ 받은 파일 경로로 변경
+new_data <- read.csv(new_path, header = TRUE, stringsAsFactors = TRUE)
+skim(new_data)
+str(new_data)                                         # 모델 변수(weight, year) 이름 확인
+
+new_data$horsepower <- as.numeric(as.character(new_data$horsepower))  # 학습 때와 같은 전처리
+new_data <- na.omit(new_data)
+
+new_pred <- predict(loaded_model, newdata = new_data)
+head(new_pred)
+
+# 새 파일에 정답(mpg)이 있을 때만 아래 3줄 실행
+new_results <- data.frame(Actual = new_data$mpg, Predicted = new_pred)
+head(new_results)
+new_rmse <- sqrt(mean((new_results$Actual - new_results$Predicted)^2))
+print(paste("New data RMSE:", round(new_rmse, 3)))
+
+# 예측값을 열로 붙여 CSV로 저장 (제출 요구 시)
+new_data$Predicted <- new_pred
+write.csv(new_data, "prediction_result.csv", row.names = FALSE)
 
 # 이상치 제거 (Cook's D 최댓값이 0.5 이상일 때만 사용)
 # ★ 위 cbind 출력에서 확인한 행 번호로 직접 바꿔 넣기
