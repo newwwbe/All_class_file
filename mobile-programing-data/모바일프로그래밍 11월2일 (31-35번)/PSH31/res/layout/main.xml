@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 제목: 이름은 본인 이름으로 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#31-버튼사용법1" />
+
+    <!-- EditText: 빈칸이라 text 없이 id만 -->
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_edt" />
+
+    <!-- Button: 이름표(text)와 식별자(id) 두 가지가 핵심 -->
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textSize="15pt"
+        android:id="@+id/b_btn" />
+
+</LinearLayout>

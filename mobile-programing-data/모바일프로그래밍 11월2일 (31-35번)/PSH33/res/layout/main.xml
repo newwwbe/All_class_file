@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 제목 TextView: id 필요 없음 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#33-버튼사용법3" />
+
+    <!-- 입력(Input): EditText -->
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_edt" />
+
+    <!-- 처리(Process): Button -->
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textSize="15pt"
+        android:id="@+id/b_btn" />
+
+    <!-- 출력(Output): +10 결과는 Java에서 계산해서 넣으니 id 필요 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="12pt"
+        android:id="@+id/c_txt" />
+
+</LinearLayout>

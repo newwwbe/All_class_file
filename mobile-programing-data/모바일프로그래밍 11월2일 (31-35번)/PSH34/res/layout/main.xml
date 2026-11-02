@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 제목: id 필요 없음 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#34-덧셈앱" />
+
+    <!-- 입력 1: 첫 번째 정수 -->
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_edt" />
+
+    <!-- 입력 2: 두 번째 정수 -->
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/b_edt" />
+
+    <!-- 동작: 덧셈 버튼 (이름표 + id) -->
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:textSize="10pt"
+        android:id="@+id/c_btn" />
+
+    <!-- 출력: 덧셈 결과 (맨 마지막이라 height fill_parent) -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="14pt"
+        android:id="@+id/d_txt" />
+
+</LinearLayout>
