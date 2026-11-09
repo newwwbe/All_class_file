@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 제목: 결과만 보여주는 간판 역할 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#36-if문1 홀짝수구별" />
+
+    <!-- 안내 문구 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="정수값을 입력하세요" />
+
+    <!-- 입력: 텍스트 없이 id만 -->
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_edt" />
+
+    <!-- 버튼: 이름표(text)와 id 둘 다 필요 -->
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        android:id="@+id/b_btn" />
+
+    <!-- 출력: 결과를 받는 그릇이라 id만 -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/c_txt" />
+
+</LinearLayout>
