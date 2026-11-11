@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">chapter10</string>
+    <string name="app_title1">직접 풀어보기 1</string>
+    <string name="app_title2">직접 풀어보기 2</string>
+    <string name="app_title3">직접 풀어보기 3</string>
+    <string name="app_title4">직접 풀어보기 4</string>
+    <string name="app_title5">직접 풀어보기 5</string>
+    <string name="exercise_title4">연습문제 4</string>
+    <string name="exercise_title5">연습문제 5</string>
+    <string name="exercise_title6">연습문제 6</string>
+    <string name="exercise_title7">연습문제 7</string>
+    <string name="exercise_title8">연습문제 8</string>
+    <string name="exercise_title9">연습문제 9</string>
+    <string name="app_title1_org">직접 풀어보기 1 원본</string>
+    <string name="app_title2_org">직접 풀어보기 2 원본</string>
+    <string name="app_title3_org">직접 풀어보기 3 원본</string>
+    <string name="app_title4_org">직접 풀어보기 4 원본</string>
+    <string name="app_title5_org">직접 풀어보기 5 원본</string>
+    <string name="exercise_title4_org">연습문제 4 원본</string>
+    <string name="exercise_title5_org">연습문제 5 원본</string>
+    <string name="exercise_title6_org">연습문제 6 원본</string>
+    <string name="exercise_title7_org">연습문제 7 원본</string>
+    <string name="exercise_title8_org">연습문제 8 원본</string>
+    <string name="exercise_title9_org">연습문제 9 원본</string>
+</resources>
