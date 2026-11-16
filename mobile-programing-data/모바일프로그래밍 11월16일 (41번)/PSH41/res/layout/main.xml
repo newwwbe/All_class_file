@@ -1,0 +1,37 @@
+<!-- 리니어레이아웃1: 제일 바깥 틀(배경). 화면 가득 채우고 안쪽은 위에서 아래로(vertical) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 리니어레이아웃1 소속 텍스트뷰 (제목) -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#41-리니어레이아웃1 안에 리니어레이아웃 3개" />
+
+    <!-- 리니어레이아웃2: 화면을 등분하려면 height를 match_parent + weight 1 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FFFF00" >
+    </LinearLayout>
+
+    <!-- 리니어레이아웃3 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#FF0000" >
+    </LinearLayout>
+
+    <!-- 리니어레이아웃4: weight가 1:1:1 이라 3개가 3분의 1씩 나눠 가짐 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#0000FF" >
+    </LinearLayout>
+
+</LinearLayout>
