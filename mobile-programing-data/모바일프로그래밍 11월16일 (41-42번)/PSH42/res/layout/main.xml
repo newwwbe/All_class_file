@@ -1,0 +1,63 @@
+<!-- 리니어레이아웃1: 제일 바깥 배경. 2(위)와 4(아래)로 수직 등분하므로 vertical -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- 리니어레이아웃1 소속 텍스트뷰 (제목) -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="박상훈#42-레이아웃 분할 (작년 시험 문제)" />
+
+    <!-- 리니어레이아웃2 (위, 노랑): 왼쪽 2-왼쪽 / 오른쪽 3 으로 나누므로 horizontal -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="#FFFF00" >
+
+        <!-- 2번 왼쪽 (빨강): 좌우 등분이라 width를 match_parent + weight 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FF0000" >
+        </LinearLayout>
+
+        <!-- 리니어레이아웃3 (오른쪽, 파랑): 3-1(위) / 3-2(아래)로 나누므로 vertical -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="#0000FF" >
+
+            <!-- 3-1 (초록): 위아래 등분이라 height를 match_parent + weight 1 -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00FF00" >
+            </LinearLayout>
+
+            <!-- 3-2 (핑크) -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#FF99CC" >
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 리니어레이아웃4 (아래, 회색): 2와 1:1 -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#C0C0C0" >
+    </LinearLayout>
+
+</LinearLayout>
